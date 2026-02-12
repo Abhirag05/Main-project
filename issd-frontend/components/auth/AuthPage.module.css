@@ -1,0 +1,665 @@
+/* 
+ * AuthPage.module.css
+ * Exact replica of the sliding sign-in/sign-up animation template
+ * DO NOT modify animation timings or transitions
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
+
+/* ============================================
+   BASE CONTAINER STYLES
+   ============================================ */
+.container {
+  position: relative;
+  width: 100%;
+  background-color: #fff;
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ============================================
+   FORMS CONTAINER - Holds both forms
+   ============================================ */
+.formsContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+/* Forms wrapper - positioned on right side initially */
+.signinSignup {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 75%;
+  width: 50%;
+  transition: 0.7s 0.5s ease-in-out;
+  display: grid;
+  grid-template-columns: 1fr;
+  z-index: 5;
+}
+
+/* ============================================
+   FORM STYLES
+   ============================================ */
+.authForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0rem 5rem;
+  transition: all 0.2s 0.5s;
+  overflow: hidden;
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+/* Sign up form - hidden initially */
+.signUpForm {
+  opacity: 0;
+  z-index: 1;
+}
+
+/* Sign in form - visible initially */
+.signInForm {
+  z-index: 2;
+}
+
+/* Form title */
+.title {
+  font-size: 2.2rem;
+  color: #444;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+/* ============================================
+   INPUT FIELD STYLES - Rounded pill design
+   ============================================ */
+.inputField {
+  max-width: 380px;
+  width: 100%;
+  background-color: #f0f0f0;
+  margin: 10px 0;
+  height: 55px;
+  border-radius: 55px;
+  display: grid;
+  grid-template-columns: 15% 85%;
+  padding: 0 0.4rem;
+  position: relative;
+}
+
+.inputField svg {
+  width: 20px;
+  height: 20px;
+  color: #acacac;
+  margin: auto;
+  transition: 0.5s;
+}
+
+.inputField input,
+.inputField select {
+  background: none;
+  outline: none;
+  border: none;
+  line-height: 1;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+  font-family: "Poppins", sans-serif;
+  padding-right: 10px;
+}
+
+.inputField select {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 30px;
+}
+
+/* Style the dropdown options */
+.inputField select option {
+  background-color: #fff;
+  color: #333;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  padding: 12px;
+}
+
+.inputField input::placeholder {
+  color: #aaa;
+  font-weight: 500;
+}
+
+/* Smaller input fields for grid layout */
+.inputFieldSmall {
+  max-width: 180px;
+  height: 50px;
+  margin: 8px 0;
+}
+
+.inputFieldSmall input,
+.inputFieldSmall select {
+  font-size: 0.9rem;
+}
+
+/* ============================================
+   BUTTON STYLES
+   ============================================ */
+.btn {
+  width: 150px;
+  background-color: #5995fd;
+  border: none;
+  outline: none;
+  height: 49px;
+  border-radius: 49px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: 0.5s;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+}
+
+.btn:hover {
+  background-color: #4d84e2;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnSolid {
+  background-color: #5995fd;
+}
+
+.btnTransparent {
+  margin: 0;
+  background: none;
+  border: 2px solid #fff;
+  width: 130px;
+  height: 41px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.btnTransparent:hover {
+  background-color: #fff;
+  color: #5995fd;
+}
+
+/* ============================================
+   PANELS CONTAINER - Blue gradient sides
+   ============================================ */
+.panelsContainer {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Large circular gradient background */
+.container::before {
+  content: "";
+  position: absolute;
+  height: 2000px;
+  width: 2000px;
+  top: -10%;
+  right: 48%;
+  transform: translateY(-50%);
+  background-image: linear-gradient(-45deg, #4481eb 0%, #04befe 100%);
+  transition: 1.2s ease-in-out;
+  border-radius: 50%;
+  z-index: 6;
+}
+
+/* Panel styling */
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-around;
+  text-align: center;
+  z-index: 6;
+}
+
+.leftPanel {
+  pointer-events: all;
+  padding: 3rem 17% 2rem 12%;
+}
+
+.rightPanel {
+  pointer-events: none;
+  padding: 3rem 12% 2rem 17%;
+}
+
+/* Panel content text */
+.panelContent {
+  color: #fff;
+  transition: transform 0.6s ease-in-out;
+  transition-delay: 0.4s;
+}
+
+.panelContent h3 {
+  font-weight: 700;
+  line-height: 1.2;
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.panelContent p {
+  font-size: 1.05rem;
+  padding: 1rem 0;
+  line-height: 1.6;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* Panel images */
+.image {
+  width: 100%;
+  max-width: 400px;
+  transition: transform 0.8s ease-in-out;
+  transition-delay: 0.3s;
+}
+
+/* Right panel elements - hidden initially (translated off screen) */
+.rightPanel .image,
+.rightPanel .panelContent {
+  transform: translateX(800px);
+}
+
+/* ============================================
+   SIGN-UP MODE ANIMATIONS
+   When .signUpMode is active, everything slides
+   ============================================ */
+
+/* Move the gradient circle to the right */
+.signUpMode::before {
+  transform: translate(100%, -50%);
+  right: 52%;
+}
+
+/* Slide left panel content off screen */
+.signUpMode .leftPanel .image,
+.signUpMode .leftPanel .panelContent {
+  transform: translateX(-800px);
+}
+
+/* Move forms container to left side */
+.signUpMode .signinSignup {
+  left: 25%;
+}
+
+/* Show sign up form */
+.signUpMode .signUpForm {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Hide sign in form */
+.signUpMode .signInForm {
+  opacity: 0;
+  z-index: 1;
+}
+
+/* Slide right panel content into view */
+.signUpMode .rightPanel .image,
+.signUpMode .rightPanel .panelContent {
+  transform: translateX(0%);
+}
+
+/* Toggle pointer events */
+.signUpMode .leftPanel {
+  pointer-events: none;
+}
+
+.signUpMode .rightPanel {
+  pointer-events: all;
+}
+
+/* ============================================
+   FORM FIELD HELPERS
+   ============================================ */
+.fieldRow {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.radioGroup {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 10px 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.radioGroup label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.radioGroup input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkboxGroup {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+  font-size: 0.85rem;
+  color: #555;
+  width: 100%;
+  max-width: 380px;
+}
+
+.checkboxGroup label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.checkboxGroup input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+.fieldLabel {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 380px;
+  text-align: left;
+}
+
+/* Error message styling */
+.errorText {
+  color: #e74c3c;
+  font-size: 0.75rem;
+  margin-top: 2px;
+  text-align: left;
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Alert boxes */
+.alertSuccess {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  padding: 10px 20px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 0.85rem;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Alert boxes */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alertSuccess {
+  background-color: #f0fff4;
+  border-left: 4px solid #48bb78;
+  color: #276749;
+  padding: 12px 16px;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  max-width: 380px;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.alertError {
+  background-color: #fff5f5;
+  border-left: 4px solid #f56565;
+  color: #c53030;
+  padding: 12px 16px;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  max-width: 380px;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Password toggle button */
+.passwordToggle {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #acacac;
+  font-size: 1rem;
+}
+
+/* Scrollable form for many fields */
+.scrollableForm {
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 20px 5rem;
+  scrollbar-width: thin;
+}
+
+.scrollableForm::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollableForm::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+@media (max-width: 870px) {
+  .container {
+    min-height: 800px;
+    height: 100vh;
+  }
+
+  .signinSignup {
+    width: 100%;
+    top: 95%;
+    transform: translate(-50%, -100%);
+    transition: 0.8s 0.6s ease-in-out;
+  }
+
+  .signinSignup,
+  .signUpMode .signinSignup {
+    left: 50%;
+  }
+
+  .panelsContainer {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
+  }
+
+  .panel {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 2.5rem 8%;
+    grid-column: 1 / 2;
+  }
+
+  .rightPanel {
+    grid-row: 3 / 4;
+  }
+
+  .leftPanel {
+    grid-row: 1 / 2;
+  }
+
+  .image {
+    width: 200px;
+    transition: transform 0.6s ease-in-out;
+    transition-delay: 0.4s;
+  }
+
+  .panelContent {
+    padding-right: 15%;
+    transition: transform 0.6s ease-in-out;
+    transition-delay: 0.6s;
+  }
+
+  .panelContent h3 {
+    font-size: 1.2rem;
+  }
+
+  .panelContent p {
+    font-size: 0.7rem;
+    padding: 0.5rem 0;
+  }
+
+  .btnTransparent {
+    width: 110px;
+    height: 35px;
+    font-size: 0.7rem;
+  }
+
+  .container::before {
+    width: 1500px;
+    height: 1500px;
+    transform: translateX(-50%);
+    left: 30%;
+    bottom: 68%;
+    right: initial;
+    top: initial;
+    transition: 1.4s ease-in-out;
+  }
+
+  .signUpMode::before {
+    transform: translate(-50%, 100%);
+    bottom: 32%;
+    right: initial;
+  }
+
+  .signUpMode .leftPanel .image,
+  .signUpMode .leftPanel .panelContent {
+    transform: translateY(-300px);
+  }
+
+  .signUpMode .rightPanel .image,
+  .signUpMode .rightPanel .panelContent {
+    transform: translateY(0px);
+  }
+
+  .rightPanel .image,
+  .rightPanel .panelContent {
+    transform: translateY(300px);
+  }
+
+  .signUpMode .signinSignup {
+    top: 5%;
+    transform: translate(-50%, 0);
+  }
+
+  .authForm {
+    padding: 0 1.5rem;
+  }
+
+  .scrollableForm {
+    padding: 20px 1.5rem;
+  }
+}
+
+@media (max-width: 570px) {
+  .authForm {
+    padding: 0 1.5rem;
+  }
+
+  .image {
+    display: none;
+  }
+
+  .panelContent {
+    padding: 0.5rem 1rem;
+  }
+
+  .container {
+    padding: 1.5rem;
+  }
+
+  .container::before {
+    bottom: 72%;
+    left: 50%;
+  }
+
+  .signUpMode::before {
+    bottom: 28%;
+    left: 50%;
+  }
+
+  .inputField {
+    height: 50px;
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .fieldRow {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .inputFieldSmall {
+    max-width: 100%;
+  }
+
+  .checkboxGroup {
+    grid-template-columns: 1fr;
+  }
+}
