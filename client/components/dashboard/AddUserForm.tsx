@@ -23,7 +23,7 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
     full_name: "",
     email: "",
     phone: "",
-    role_code: "",
+    role_code: "FACULTY",
     designation: "",
     joining_date: "",
   });
@@ -32,8 +32,6 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
   const [fieldErrors, setFieldErrors] = useState<FormErrors>({});
   const [success, setSuccess] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-
-  const roles = apiClient.getAvailableRoles();
 
   const validateField = (name: string, value: string): string | undefined => {
     switch (name) {
@@ -53,20 +51,12 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
         }
         return undefined;
       
-      case "role_code":
-        if (!value) return "Please select a role";
-        return undefined;
-      
       case "designation":
-        if (formData.role_code === "FACULTY" && !value.trim()) {
-          return "Designation is required for faculty";
-        }
+        if (!value.trim()) return "Designation is required";
         return undefined;
       
       case "joining_date":
-        if (formData.role_code === "FACULTY" && !value) {
-          return "Joining date is required for faculty";
-        }
+        if (!value) return "Joining date is required";
         if (value && new Date(value) > new Date()) {
           return "Joining date cannot be in the future";
         }
@@ -147,19 +137,15 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
     }
 
     try {
-      // Create user
+      // Create faculty
       const userData: any = {
         email: formData.email.trim(),
         full_name: formData.full_name.trim(),
         phone: formData.phone.trim() || undefined,
-        role_code: formData.role_code,
+        role_code: "FACULTY",
+        designation: formData.designation.trim(),
+        joining_date: formData.joining_date,
       };
-
-      // Add faculty-specific fields if role is FACULTY
-      if (formData.role_code === "FACULTY") {
-        userData.designation = formData.designation.trim();
-        userData.joining_date = formData.joining_date;
-      }
 
       await apiClient.createUser(userData);
 
@@ -168,7 +154,7 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
         full_name: "",
         email: "",
         phone: "",
-        role_code: "",
+        role_code: "FACULTY",
         designation: "",
         joining_date: "",
       });
@@ -181,7 +167,7 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
       }, 1500);
     } catch (err) {
       const error = err as Error;
-      setError(error.message || "Failed to create user. Please try again.");
+      setError(error.message || "Failed to create faculty. Please try again.");
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setIsSubmitting(false);
@@ -202,8 +188,8 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
     <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
-        <h2 className="text-2xl font-bold text-white">Add New User</h2>
-        <p className="text-blue-100 mt-1 text-sm">Create a new user account with role assignment</p>
+        <h2 className="text-2xl font-bold text-white">Add New Faculty</h2>
+        <p className="text-blue-100 mt-1 text-sm">Create a new faculty account</p>
       </div>
 
       <div className="px-8 py-6">
@@ -218,7 +204,7 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
               </div>
               <div className="ml-3 flex-1">
                 <p className="text-sm font-medium text-green-800">
-                  User created successfully!
+                  Faculty created successfully!
                 </p>
                 <p className="text-sm text-green-700 mt-1">
                   Default password: <span className="font-mono font-semibold bg-green-100 px-2 py-0.5 rounded">ChangeMe@123</span>
@@ -346,131 +332,93 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
                 )}
               </div>
 
-              {/* Role */}
-              <div className="md:col-span-2">
+            </div>
+          </div>
+
+          {/* Faculty-specific fields */}
+          <div className="bg-blue-50 rounded-lg p-6 border border-blue-100">
+            <div className="flex items-start mb-4">
+              <div className="flex-shrink-0">
+                <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Faculty Information
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  Employee code will be auto-generated (e.g., FAC001, FAC002...)
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Designation */}
+              <div>
                 <label
-                  htmlFor="role_code"
+                  htmlFor="designation"
                   className="block text-sm font-semibold text-gray-700 mb-2"
                 >
-                  User Role <span className="text-red-500" aria-label="required">*</span>
+                  Designation <span className="text-red-500" aria-label="required">*</span>
                 </label>
-                <select
-                  id="role_code"
-                  name="role_code"
-                  value={formData.role_code}
+                <input
+                  type="text"
+                  id="designation"
+                  name="designation"
+                  value={formData.designation}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   required
                   aria-required="true"
-                  aria-invalid={!!(touched.role_code && fieldErrors.role_code)}
-                  aria-describedby={fieldErrors.role_code ? "role_code-error" : undefined}
-                  className={getFieldClassName("role_code")}
-                >
-                  <option value="">Select a role</option>
-                  {roles.map((role) => (
-                    <option key={role.code} value={role.code}>
-                      {role.name}
-                    </option>
-                  ))}
-                </select>
-                {touched.role_code && fieldErrors.role_code && (
-                  <p id="role_code-error" className="mt-1.5 text-sm text-red-600 flex items-center">
+                  aria-invalid={!!(touched.designation && fieldErrors.designation)}
+                  aria-describedby={fieldErrors.designation ? "designation-error" : undefined}
+                  className={getFieldClassName("designation")}
+                  placeholder="e.g., Assistant Professor"
+                />
+                {touched.designation && fieldErrors.designation && (
+                  <p id="designation-error" className="mt-1.5 text-sm text-red-600 flex items-center">
                     <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
-                    {fieldErrors.role_code}
+                    {fieldErrors.designation}
+                  </p>
+                )}
+              </div>
+
+              {/* Joining Date */}
+              <div>
+                <label
+                  htmlFor="joining_date"
+                  className="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  Joining Date <span className="text-red-500" aria-label="required">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="joining_date"
+                  name="joining_date"
+                  value={formData.joining_date}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  required
+                  max={new Date().toISOString().split("T")[0]}
+                  aria-required="true"
+                  aria-invalid={!!(touched.joining_date && fieldErrors.joining_date)}
+                  aria-describedby={fieldErrors.joining_date ? "joining_date-error" : undefined}
+                  className={getFieldClassName("joining_date")}
+                />
+                {touched.joining_date && fieldErrors.joining_date && (
+                  <p id="joining_date-error" className="mt-1.5 text-sm text-red-600 flex items-center">
+                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    {fieldErrors.joining_date}
                   </p>
                 )}
               </div>
             </div>
           </div>
-
-          {/* Faculty-specific fields */}
-          {formData.role_code === "FACULTY" && (
-            <div className="bg-blue-50 rounded-lg p-6 border border-blue-100">
-              <div className="flex items-start mb-4">
-                <div className="flex-shrink-0">
-                  <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Faculty Information
-                  </h3>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Employee code will be auto-generated (e.g., FAC001, FAC002...)
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Designation */}
-                <div>
-                  <label
-                    htmlFor="designation"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
-                  >
-                    Designation <span className="text-red-500" aria-label="required">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="designation"
-                    name="designation"
-                    value={formData.designation}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    required
-                    aria-required="true"
-                    aria-invalid={!!(touched.designation && fieldErrors.designation)}
-                    aria-describedby={fieldErrors.designation ? "designation-error" : undefined}
-                    className={getFieldClassName("designation")}
-                    placeholder="e.g., Assistant Professor"
-                  />
-                  {touched.designation && fieldErrors.designation && (
-                    <p id="designation-error" className="mt-1.5 text-sm text-red-600 flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                      {fieldErrors.designation}
-                    </p>
-                  )}
-                </div>
-
-                {/* Joining Date */}
-                <div>
-                  <label
-                    htmlFor="joining_date"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
-                  >
-                    Joining Date <span className="text-red-500" aria-label="required">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    id="joining_date"
-                    name="joining_date"
-                    value={formData.joining_date}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    required
-                    max={new Date().toISOString().split('T')[0]}
-                    aria-required="true"
-                    aria-invalid={!!(touched.joining_date && fieldErrors.joining_date)}
-                    aria-describedby={fieldErrors.joining_date ? "joining_date-error" : undefined}
-                    className={getFieldClassName("joining_date")}
-                  />
-                  {touched.joining_date && fieldErrors.joining_date && (
-                    <p id="joining_date-error" className="mt-1.5 text-sm text-red-600 flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                      {fieldErrors.joining_date}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Action Buttons */}
           <div className="flex flex-col-reverse sm:flex-row gap-3 pt-6 border-t border-gray-200">
@@ -495,14 +443,14 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Creating User...
+                  Creating Faculty...
                 </>
               ) : (
                 <>
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
-                  Create User
+                  Create Faculty
                 </>
               )}
             </button>
@@ -526,11 +474,11 @@ export default function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  <span>User will be assigned to the default centre automatically</span>
+                  <span>Faculty will be assigned to the default centre automatically</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  <span>Users must change their password on first login</span>
+                  <span>Faculty must change their password on first login</span>
                 </li>
               </ul>
             </div>

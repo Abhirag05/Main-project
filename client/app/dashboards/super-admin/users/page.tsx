@@ -18,7 +18,7 @@ export default function UsersPage() {
   // Edit modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<any | null>(null);
-  const [form, setForm] = useState({ full_name: "", phone: "", role_code: "" });
+  const [form, setForm] = useState({ full_name: "", phone: "" });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
 
@@ -52,20 +52,20 @@ export default function UsersPage() {
       setUsers(Array.isArray(data) ? data : []);
     } catch (err) {
       const e = err as Error;
-      toast.show("error", e.message || "Failed to load users");
+      toast.show("error", e.message || "Failed to load faculty");
       setUsers([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredUsers = users.filter((u) => {
+  const facultyUsers = users.filter((u) => u.role?.code === "FACULTY");
+  const filteredUsers = facultyUsers.filter((u) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (
       u.full_name?.toLowerCase().includes(q) ||
-      u.email?.toLowerCase().includes(q) ||
-      u.role?.code?.toLowerCase().includes(q)
+      u.email?.toLowerCase().includes(q)
     );
   });
 
@@ -74,7 +74,6 @@ export default function UsersPage() {
     setForm({
       full_name: u.full_name || "",
       phone: u.phone || "",
-      role_code: u.role?.code || "",
     });
     setFormErrors({});
     setIsModalOpen(true);
@@ -87,7 +86,6 @@ export default function UsersPage() {
     if (form.phone && !/^[+]?[\d\s()-]{10,}$/.test(form.phone)) {
       errors.phone = "Please enter a valid phone number";
     }
-    if (!form.role_code) errors.role_code = "Please select a role";
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -100,14 +98,13 @@ export default function UsersPage() {
       await apiClient.updateUser(editingUser.id, {
         full_name: form.full_name.trim(),
         phone: form.phone.trim(),
-        role_code: form.role_code,
       });
-      toast.show("success", "User updated successfully");
+      toast.show("success", "Faculty updated successfully");
       setIsModalOpen(false);
       fetchUsers();
     } catch (err) {
       const e = err as Error;
-      toast.show("error", e.message || "Failed to update user");
+      toast.show("error", e.message || "Failed to update faculty");
     } finally {
       setIsSaving(false);
     }
@@ -123,13 +120,13 @@ export default function UsersPage() {
     setIsDeleting(true);
     try {
       await apiClient.deleteUser(userToDelete.id);
-      toast.show("success", `User "${userToDelete.full_name}" deleted successfully`);
+      toast.show("success", `Faculty "${userToDelete.full_name}" deleted successfully`);
       setIsDeleteOpen(false);
       setUserToDelete(null);
       fetchUsers();
     } catch (err) {
       const e = err as Error;
-      toast.show("error", e.message || "Failed to delete user");
+      toast.show("error", e.message || "Failed to delete faculty");
     } finally {
       setIsDeleting(false);
     }
@@ -144,7 +141,7 @@ export default function UsersPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <h2 className="mt-4 text-2xl font-bold text-gray-900">Access Denied</h2>
-            <p className="mt-2 text-gray-600">Only Super Admins can manage users.</p>
+            <p className="mt-2 text-gray-600">Only Super Admins can manage faculty.</p>
           </div>
         </div>
       </DashboardLayout>
@@ -157,8 +154,8 @@ export default function UsersPage() {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-            <p className="mt-1 text-gray-500">Manage all non-student user accounts</p>
+            <h1 className="text-3xl font-bold text-gray-900">Faculty Management</h1>
+            <p className="mt-1 text-gray-500">Manage faculty accounts and profiles</p>
           </div>
           <a
             href="/dashboards/super-admin/add-user"
@@ -167,7 +164,7 @@ export default function UsersPage() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Add User
+            Add Faculty
           </a>
         </div>
 
@@ -180,14 +177,14 @@ export default function UsersPage() {
               </svg>
               <input
                 type="text"
-                placeholder="Search by name, email, or role..."
+                placeholder="Search by name or email..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition-all"
               />
             </div>
             <p className="text-sm text-gray-500 flex-shrink-0">
-              {filteredUsers.length} of {users.length} users
+              {filteredUsers.length} of {facultyUsers.length} faculty members
             </p>
           </div>
         </div>
@@ -206,9 +203,9 @@ export default function UsersPage() {
               <svg className="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No users found</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">No faculty found</h3>
               <p className="mt-1 text-sm text-gray-500">
-                {searchQuery ? "Try a different search term." : "Get started by adding a new user."}
+                {searchQuery ? "Try a different search term." : "Get started by adding a new faculty member."}
               </p>
             </div>
           ) : (
@@ -276,8 +273,8 @@ export default function UsersPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
               <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-                <h2 className="text-lg font-bold text-white">Edit User</h2>
-                <p className="text-blue-100 text-sm">Update user information</p>
+                <h2 className="text-lg font-bold text-white">Edit Faculty</h2>
+                <p className="text-blue-100 text-sm">Update faculty information</p>
               </div>
               <form onSubmit={handleSave} className="p-6 space-y-5">
                 {/* Full Name */}
@@ -327,35 +324,6 @@ export default function UsersPage() {
                   )}
                 </div>
 
-                {/* Role */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Role <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900 ${
-                      formErrors.role_code
-                        ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                        : "border-gray-300 focus:border-blue-500 focus:ring-blue-200 hover:border-gray-400"
-                    }`}
-                    value={form.role_code}
-                    onChange={(e) => {
-                      setForm({ ...form, role_code: e.target.value });
-                      if (formErrors.role_code) setFormErrors({ ...formErrors, role_code: "" });
-                    }}
-                    required
-                  >
-                    {apiClient.getAvailableRoles().map((r) => (
-                      <option key={r.code} value={r.code}>
-                        {r.name}
-                      </option>
-                    ))}
-                  </select>
-                  {formErrors.role_code && (
-                    <p className="mt-1 text-sm text-red-600">{formErrors.role_code}</p>
-                  )}
-                </div>
-
                 {/* Actions */}
                 <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                   <button
@@ -397,7 +365,7 @@ export default function UsersPage() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">Delete User</h3>
+                    <h3 className="text-lg font-bold text-gray-900">Delete Faculty</h3>
                     <p className="text-sm text-gray-500">This action cannot be undone</p>
                   </div>
                 </div>
@@ -423,7 +391,7 @@ export default function UsersPage() {
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
                     )}
-                    {isDeleting ? "Deleting..." : "Delete User"}
+                    {isDeleting ? "Deleting..." : "Delete Faculty"}
                   </button>
                 </div>
               </div>

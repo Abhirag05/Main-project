@@ -129,25 +129,25 @@ export default function AdminDashboard() {
         {/* ── 1. Student Management ── */}
         <Section
           title="Student Management"
-          description="Users, students, batches, and referrals."
+          description="Faculty, students, batches, and referrals."
         >
           <QuickActionCard
             href="/dashboards/admin/add-user"
             gradient="from-blue-400 to-indigo-500"
             iconBg="bg-blue-100 text-blue-700"
             icon={icons.userPlus}
-            title="Add User"
-            description="Create a new user account with role."
-            cta="Add user"
+            title="Add Faculty"
+            description="Create a new faculty account."
+            cta="Add faculty"
           />
           <QuickActionCard
             href="/dashboards/admin/users"
             gradient="from-indigo-400 to-purple-500"
             iconBg="bg-indigo-100 text-indigo-700"
             icon={icons.users}
-            title="Manage Users"
-            description="View and manage all non-student users."
-            cta="View users"
+            title="Manage Faculty"
+            description="View and manage faculty accounts."
+            cta="View faculty"
           />
           <QuickActionCard
             href="/dashboards/admin/students"

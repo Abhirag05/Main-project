@@ -35,7 +35,18 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           icon: "user",
         },
         {
-          name: "Batches",
+          name: "Referral",
+          href: "/dashboards/admin/referral",
+          icon: "link",
+        },
+      ],
+    },
+    {
+      name: "Batch Management",
+      icon: "calendar",
+      subsections: [
+        {
+          name: "View Batches",
           href: "/dashboards/admin/batches",
           icon: "view-list",
         },
@@ -45,23 +56,23 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           icon: "plus",
         },
         {
-          name: "Referral",
-          href: "/dashboards/admin/referral",
-          icon: "link",
+          name: "Batch Templates",
+          href: "/dashboards/admin/academics/batch-templates",
+          icon: "template",
         },
       ],
     },
     {
-      name: "User Management",
+      name: "Faculty Management",
       icon: "users-cog",
       subsections: [
         {
-          name: "Add User",
+          name: "Add Faculty",
           href: "/dashboards/admin/add-user",
           icon: "user-plus",
         },
         {
-          name: "List Users",
+          name: "List Faculty",
           href: "/dashboards/admin/users",
           icon: "users",
         },
@@ -80,11 +91,6 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           name: "Modules",
           href: "/dashboards/admin/academics/subjects",
           icon: "book",
-        },
-        {
-          name: "Batch Templates",
-          href: "/dashboards/admin/academics/batch-templates",
-          icon: "template",
         },
         {
           name: "Course Builder",
