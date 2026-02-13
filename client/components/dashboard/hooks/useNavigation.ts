@@ -76,11 +76,21 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           href: "/dashboards/admin/users",
           icon: "users",
         },
+        {
+          name: "Faculty Modules",
+          href: "/dashboards/admin/faculty/subject-assignments",
+          icon: "clipboard",
+        },
+        {
+          name: "Faculty Batches",
+          href: "/dashboards/admin/faculty/batch-assignments",
+          icon: "calendar",
+        },
       ],
     },
     {
-      name: "Academics",
-      icon: "academic-cap",
+      name: "Course Management",
+      icon: "book-open",
       subsections: [
         {
           name: "Courses",
@@ -97,16 +107,12 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           href: "/dashboards/admin/academics/course-builder",
           icon: "puzzle",
         },
-        {
-          name: "Faculty Modules",
-          href: "/dashboards/admin/faculty/subject-assignments",
-          icon: "clipboard",
-        },
-        {
-          name: "Faculty Batches",
-          href: "/dashboards/admin/faculty/batch-assignments",
-          icon: "calendar",
-        },
+      ],
+    },
+    {
+      name: "Academics",
+      icon: "academic-cap",
+      subsections: [
         {
           name: "Timetable",
           href: "/dashboards/admin/timetable",
@@ -136,13 +142,18 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
       ],
     },
     {
-      name: "Student Progress",
-      icon: "chart-bar",
+      name: "Placement Management",
+      icon: "briefcase",
       subsections: [
         {
-          name: "Student Progress",
-          href: "/dashboards/admin/student-progress",
-          icon: "chart-bar",
+          name: "Placement Lists",
+          href: "/dashboards/placement/lists",
+          icon: "view-list",
+        },
+        {
+          name: "Student Skills",
+          href: "/dashboards/placement/students",
+          icon: "users",
         },
       ],
     },

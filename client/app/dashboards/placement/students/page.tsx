@@ -198,8 +198,9 @@ export default function PlacementStudentsBySkillsPage() {
         }, []);
 
         setAvailableSkills(uniqueSkills);
-      } catch (error: any) {
-        console.error("Failed to load skills:", error);
+      } catch {
+        // Skills endpoint not available yet — show empty filter
+        setAvailableSkills([]);
       }
     };
 
@@ -215,9 +216,9 @@ export default function PlacementStudentsBySkillsPage() {
         setIsLoading(true);
         const data = await placementAPI.getStudentsWithSkills();
         setStudents(data.results);
-      } catch (error: any) {
-        console.error("Failed to load students:", error);
-        toast.show("error", error.message || "Failed to load students");
+      } catch {
+        // Students endpoint not available yet — show empty state
+        setStudents([]);
       } finally {
         setIsLoading(false);
       }
