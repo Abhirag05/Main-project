@@ -44,8 +44,6 @@ export default function TimetableManagementPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingSlot, setEditingSlot] = useState<TimeSlot | null>(null);
 
-  // (Generate sessions temporarily disabled)
-
   // Reference data
   const [batches, setBatches] = useState<Batch[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -160,8 +158,6 @@ export default function TimetableManagementPage() {
     }
     fetchTimeSlots();
   };
-
-  // generate sessions feature removed for now
 
   return (
     <DashboardLayout>
@@ -320,7 +316,6 @@ export default function TimetableManagementPage() {
         faculties={faculties}
       />
 
-      {/* Generate sessions temporarily disabled */}
     </DashboardLayout>
   );
 }
