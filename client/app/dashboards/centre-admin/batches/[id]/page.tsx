@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { apiClient, Batch, BatchDetails, BatchStudent } from "@/lib/api";
 import { useToast } from "@/lib/toast";
+import { isAdminRole } from "@/lib/roles";
 
 export default function BatchDetailPage() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function BatchDetailPage() {
         const userData = JSON.parse(userStr);
         setUser(userData);
 
-        if (userData.role.code !== "CENTRE_ADMIN") {
+        if (!isAdminRole(userData.role.code)) {
           router.push("/dashboards");
         }
       } else {
@@ -38,7 +39,7 @@ export default function BatchDetailPage() {
   }, [router]);
 
   useEffect(() => {
-    if (user?.role.code === "CENTRE_ADMIN") {
+    if (isAdminRole(user?.role.code)) {
       fetchBatchDetail();
     }
   }, [user, batchId]);
@@ -467,71 +468,7 @@ export default function BatchDetailPage() {
           </div>
         </div>
 
-        {/* Batch Mentor Section */}
-        <div className="bg-white rounded-lg shadow-md p-6 mt-6 lg:col-span-2">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 border-b pb-3 flex-1">
-              Batch Mentor
-            </h2>
-            {!batchDetails?.mentor_detail && batch.status === "ACTIVE" && (
-              <button
-                onClick={() => router.push(`/dashboards/centre-admin/batches/${batchId}/assign-mentor`)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm flex items-center"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                </svg>
-                Assign Mentor
-              </button>
-            )}
-          </div>
-
-          {batchDetails?.mentor_detail ? (
-            <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-              <div className="flex-shrink-0">
-                <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span className="text-2xl font-semibold text-blue-600">
-                    {batchDetails.mentor_detail.full_name.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-1">
-                <p className="text-lg font-medium text-gray-900">
-                  {batchDetails.mentor_detail.full_name}
-                </p>
-                <p className="text-sm text-gray-500">{batchDetails.mentor_detail.email}</p>
-                {batchDetails.mentor_detail.phone && (
-                  <p className="text-sm text-gray-400">{batchDetails.mentor_detail.phone}</p>
-                )}
-              </div>
-              {batch.status === "ACTIVE" && (
-                <button
-                  onClick={() => router.push(`/dashboards/centre-admin/batches/${batchId}/assign-mentor`)}
-                  className="px-3 py-1.5 text-sm text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 transition-colors"
-                >
-                  Change Mentor
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="text-center py-8 bg-gray-50 rounded-lg">
-              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              <p className="mt-2 text-sm text-gray-500">No mentor assigned to this batch</p>
-              {batch.status === "ACTIVE" && (
-                <button
-                  onClick={() => router.push(`/dashboards/centre-admin/batches/${batchId}/assign-mentor`)}
-                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
-                >
-                  Assign Mentor Now
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Enrolled Students Section */}
+        {/* Enrolled Students Section */
         <div className="mt-8 bg-white rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold text-gray-900">

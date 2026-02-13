@@ -6,6 +6,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BatchCard from "@/components/batch/BatchCard";
 import { apiClient, Batch } from "@/lib/api";
 import { useToast } from "@/lib/toast";
+import { isAdminRole } from "@/lib/roles";
 
 export default function BatchesPage() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function BatchesPage() {
         setUser(userData);
 
         // Access control: only CENTRE_ADMIN
-        if (userData.role.code !== "CENTRE_ADMIN") {
+        if (!isAdminRole(userData.role.code)) {
           router.push("/dashboards");
         }
       } else {
@@ -37,7 +38,7 @@ export default function BatchesPage() {
   }, [router]);
 
   useEffect(() => {
-    if (user?.role.code === "CENTRE_ADMIN") {
+    if (isAdminRole(user?.role.code)) {
       fetchBatches();
     }
   }, [user, courseFilter, statusFilter]);
@@ -59,7 +60,7 @@ export default function BatchesPage() {
   };
 
   // Access denied state
-  if (user && user.role.code !== "CENTRE_ADMIN") {
+  if (user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">

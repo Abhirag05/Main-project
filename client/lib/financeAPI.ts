@@ -114,6 +114,36 @@ export class FinanceAPI {
   }
 
   /**
+   * Approve a student admission
+   */
+  async approveAdmission(
+    studentProfileId: number,
+  ): Promise<{ message: string }> {
+    return this.request<{ message: string }>(
+      `/admissions/${studentProfileId}/approve/`,
+      {
+        method: "PATCH",
+      },
+    );
+  }
+
+  /**
+   * Reject a student admission
+   */
+  async rejectAdmission(
+    studentProfileId: number,
+    rejectionReason?: string,
+  ): Promise<{ message: string }> {
+    return this.request<{ message: string }>(
+      `/admissions/${studentProfileId}/reject/`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ rejection_reason: rejectionReason || "" }),
+      },
+    );
+  }
+
+  /**
    * Verify full payment for a student
    */
   async verifyFullPayment(

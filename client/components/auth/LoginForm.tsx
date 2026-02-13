@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api";
 import { validateEmail, validatePasswordBasic } from "@/lib/validators";
+import { getDashboardPathForRole } from "@/lib/roles";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -71,32 +72,7 @@ export default function LoginForm() {
 
       // Redirect based on user role code from backend
       const roleCode = response.user.role.code.toUpperCase();
-      const targetPath = (() => {
-        switch (roleCode) {
-          case "SUPER_ADMIN":
-            return "/dashboards/super-admin";
-          case "CENTRE_ADMIN":
-            return "/dashboards/centre-admin";
-          case "ACADEMIC_COORDINATOR":
-            return "/dashboards/academic-coordinator";
-          case "COURSE_COORDINATOR":
-            return "/dashboards/course-coordinator";
-          case "BATCH_MENTOR":
-            return "/dashboards/batch-mentor";
-          case "FACULTY":
-            return "/dashboards/faculty";
-          case "STUDENT":
-            return "/dashboards/student";
-          case "FINANCE":
-            return "/dashboards/finance";
-          case "PLACEMENT":
-            return "/dashboards/placement";
-          case "ALUMNI":
-            return "/dashboards/alumni";
-          default:
-            return "/dashboards/student"; // Default fallback
-        }
-      })();
+      const targetPath = getDashboardPathForRole(roleCode);
 
       console.log("Redirecting to:", targetPath);
       

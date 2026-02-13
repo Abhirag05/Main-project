@@ -52,14 +52,6 @@ function MaterialIcon() {
   );
 }
 
-function SkillsIcon() {
-  return (
-    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-    </svg>
-  );
-}
-
 function MaterialTypeIcon({ type }: { type: string }) {
   switch (type.toUpperCase()) {
     case "PDF":
@@ -244,116 +236,6 @@ export default function StudentDashboardSummary() {
               icon={<MaterialIcon />}
               color="bg-orange-500"
             />
-          </div>
-        ) : null}
-
-        {/* ============ SECTION: My Skills ============ */}
-        {loading ? (
-          <SkeletonSection />
-        ) : dashboardData ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-500 p-2 rounded-lg text-white">
-                  <SkillsIcon />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    My Skills
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    Skills acquired from assessments &amp; assignments
-                  </p>
-                </div>
-              </div>
-              <Link
-                href="/dashboards/student/skills"
-                className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1"
-              >
-                View All Skills
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-            <div className="p-6">
-              {dashboardData.skills.skills.length === 0 ? (
-                <EmptyState message="You haven't acquired any skills yet. Complete assessments to earn skills." />
-              ) : (
-                <div className="space-y-3">
-                  {dashboardData.skills.skills.slice(0, 5).map((s) => {
-                    const pct =
-                      typeof s.percentage_score === "number"
-                        ? s.percentage_score
-                        : Number(s.percentage_score) || 0;
-                    const barColor =
-                      pct >= 80
-                        ? "bg-green-500"
-                        : pct >= 60
-                          ? "bg-yellow-500"
-                          : pct >= 50
-                            ? "bg-blue-500"
-                            : "bg-red-500";
-                    const levelMap: Record<string, string> = {
-                      NOT_ACQUIRED: "Not Acquired",
-                      BEGINNER: "Beginner",
-                      INTERMEDIATE: "Intermediate",
-                      ADVANCED: "Advanced",
-                    };
-                    const levelDisplay = s.level
-                      ? levelMap[s.level] || s.level
-                      : "";
-                    const levelColor =
-                      s.level === "ADVANCED"
-                        ? "text-green-700 bg-green-50"
-                        : s.level === "INTERMEDIATE"
-                          ? "text-blue-700 bg-blue-50"
-                          : s.level === "BEGINNER"
-                            ? "text-yellow-700 bg-yellow-50"
-                            : "text-gray-500 bg-gray-50";
-
-                    return (
-                      <div
-                        key={s.skill || s.id}
-                        className="flex items-center gap-4 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm font-medium text-gray-900">
-                              {s.skill_name}
-                            </span>
-                            <div className="flex items-center gap-2">
-                              <span
-                                className={`text-xs font-medium px-2 py-0.5 rounded-full ${levelColor}`}
-                              >
-                                {levelDisplay}
-                              </span>
-                              <span className="text-sm font-semibold text-gray-700">
-                                {pct.toFixed(1)}%
-                              </span>
-                            </div>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                              className={`h-2 rounded-full transition-all duration-500 ${barColor}`}
-                              style={{ width: `${Math.min(pct, 100)}%` }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {dashboardData.skills.skills.length > 5 && (
-                    <Link
-                      href="/dashboards/student/skills"
-                      className="block text-center text-sm text-blue-600 hover:text-blue-700 font-medium pt-2 border-t border-gray-100"
-                    >
-                      +{dashboardData.skills.skills.length - 5} more skills →
-                    </Link>
-                  )}
-                </div>
-              )}
-            </div>
           </div>
         ) : null}
 

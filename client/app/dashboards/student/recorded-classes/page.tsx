@@ -48,7 +48,7 @@ export default function StudentRecordedClassesPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">My Classes</h1>
           <p className="mt-1 text-sm text-gray-500">
-            View recorded classes uploaded by your batch mentor
+            View recorded classes for your batch
           </p>
         </div>
 
@@ -79,7 +79,7 @@ export default function StudentRecordedClassesPage() {
               No recordings yet
             </h3>
             <p className="mt-2 text-sm text-gray-500">
-              Your mentor hasn’t uploaded any recordings yet.
+              No recordings have been uploaded yet.
             </p>
           </div>
         ) : (

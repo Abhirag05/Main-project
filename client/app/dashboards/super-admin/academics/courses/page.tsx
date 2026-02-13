@@ -8,6 +8,7 @@ import CourseForm from "@/components/academics/CourseForm";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import { apiClient, AcademicCourse } from "@/lib/api";
 import { useToast } from "@/lib/toast";
+import { isAdminRole } from "@/lib/roles";
 
 export default function CoursesPage() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function CoursesPage() {
         setUser(userData);
 
         // Access control: only SUPER_ADMIN
-        if (userData.role.code !== "SUPER_ADMIN") {
+        if (!isAdminRole(userData.role.code)) {
           router.push("/dashboards");
         }
       } else {
@@ -47,7 +48,7 @@ export default function CoursesPage() {
   }, [router]);
 
   useEffect(() => {
-    if (user?.role.code === "SUPER_ADMIN") {
+    if (isAdminRole(user?.role.code)) {
       fetchCourses();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,7 +146,7 @@ export default function CoursesPage() {
   };
 
   // Access denied state
-  if (user && user.role.code !== "SUPER_ADMIN") {
+  if (user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">

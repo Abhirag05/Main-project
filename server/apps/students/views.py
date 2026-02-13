@@ -6,7 +6,7 @@ from apps.academics.models import CourseModule
 from apps.batch_management.models import BatchStudent, BatchMentorAssignment, BatchRecordedSession
 from apps.batch_management.serializers import BatchRecordedSessionSerializer
 from apps.audit.services import AuditService
-from common.permissions import IsFinanceUser, IsStudent, IsPlacementUser
+from common.permissions import IsFinanceUser, IsStudent, IsAdminUser
 from apps.users.models import User
 from apps.students.models import StudentProfile
 from apps.students.serializers import (
@@ -1306,17 +1306,17 @@ class MyBatchModulesView(APIView):
         )
 
 
-class PlacementStudentViewSet(viewsets.ReadOnlyModelViewSet):
+class StudentProgressViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Placement API for viewing verified students with their skills.
+    Student Progress API for viewing verified students with their skills.
 
     PERMISSIONS:
-    - Only users with PLACEMENT role can access these endpoints
+    - Only admin-level users can access these endpoints
 
     ENDPOINTS:
-    - GET /api/placement/students/ - List all verified students with skills
-    - GET /api/placement/students/?skill_name=Python - Filter by skill name
-    - GET /api/placement/students/?min_mastery=INTERMEDIATE - Filter by minimum mastery level
+    - GET /api/student-progress/ - List all verified students with skills
+    - GET /api/student-progress/?skill_name=Python - Filter by skill name
+    - GET /api/student-progress/?min_mastery=INTERMEDIATE - Filter by minimum mastery level
 
     BUSINESS RULES:
     - Only returns students with FULL_PAYMENT_VERIFIED or INSTALLMENT_VERIFIED status
@@ -1325,7 +1325,7 @@ class PlacementStudentViewSet(viewsets.ReadOnlyModelViewSet):
     - Can filter by skill name and minimum mastery level
     - Students are ordered by overall performance (average skill score)
     """
-    permission_classes = [IsAuthenticated, IsPlacementUser]
+    permission_classes = [IsAuthenticated, IsAdminUser]
     serializer_class = PlacementStudentWithSkillsSerializer
 
     def get_queryset(self):
@@ -1460,7 +1460,7 @@ class PlacementStudentViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Get list of all available skills for filtering.
 
-        GET /api/placement/students/available-skills/
+        GET /api/public/student/student-progress/available-skills/
         """
         from apps.assessments.models import Skill
 

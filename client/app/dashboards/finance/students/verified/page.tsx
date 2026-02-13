@@ -6,6 +6,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import StudentAdmissionsTable from "@/components/shared/StudentAdmissionsTable";
 import { useToast } from "@/lib/toast";
 import { financeAPI, StudentAdmission } from "@/lib/financeAPI";
+import { isAdminRole } from "@/lib/roles";
 
 export default function VerifiedStudentsPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -41,7 +42,7 @@ export default function VerifiedStudentsPage() {
   }, [authLoading, user]);
 
   // Access control
-  if (!authLoading && user && user.role.code !== "FINANCE") {
+  if (!authLoading && user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="text-center py-20">

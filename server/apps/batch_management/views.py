@@ -35,6 +35,7 @@ from apps.batch_management.serializers import (
 from apps.academics.models import Course
 from apps.students.models import StudentProfile
 from apps.audit.services import AuditService
+from common.role_constants import ADMIN_ROLE_CODES, is_admin_role
 
 User = get_user_model()
 
@@ -45,7 +46,7 @@ User = get_user_model()
 
 class IsSuperAdminOrReadOnly(permissions.BasePermission):
     """
-    Custom permission: only SUPER_ADMIN role can create/update/delete.
+    Custom permission: only ADMIN-level roles can create/update/delete.
     All authenticated users can read.
     """
 
@@ -54,15 +55,15 @@ class IsSuperAdminOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return request.user and request.user.is_authenticated
 
-        # Only users with SUPER_ADMIN role can create/update/delete
+        # Only users with admin-level role can create/update/delete
         if not request.user or not request.user.is_authenticated:
             return False
 
-        # Check role code for SUPER_ADMIN
+        # Check role code for any admin role
         return (
             hasattr(request.user, 'role') and
             request.user.role and
-            request.user.role.code == 'SUPER_ADMIN'
+            is_admin_role(request.user.role.code)
         )
 
 
@@ -83,41 +84,40 @@ class IsCentreAdminOrSuperAdminReadOnly(permissions.BasePermission):
 
         role_code = request.user.role.code
 
-        # Super Admin has read-only access
-        if role_code == 'SUPER_ADMIN':
+        # Any admin role is allowed
+        if is_admin_role(role_code):
+            # If admin has a centre, full access; otherwise read-only
+            if hasattr(request.user, 'centre') and request.user.centre:
+                return True
             return request.method in permissions.SAFE_METHODS
-
-        # Centre Admin and Finance Admin have full access
-        if role_code in ['CENTRE_ADMIN', 'FINANCE']:
-            # Must have a centre assigned
-            if not hasattr(request.user, 'centre') or not request.user.centre:
-                return False
-            return True
 
         return False
 
     def has_object_permission(self, request, view, obj):
-        """Ensure Centre/Finance Admin can only access their own centre's batches."""
+        """Ensure admin can only access their own centre's batches (or all for super)."""
         if not request.user or not request.user.is_authenticated:
             return False
 
         role_code = request.user.role.code
 
-        # Super Admin can view all batches
-        if role_code == 'SUPER_ADMIN':
+        if is_admin_role(role_code):
+            # Super-level admins can view all
+            if role_code in ('SUPER_ADMIN', 'ADMIN'):
+                if request.method in permissions.SAFE_METHODS:
+                    return True
+            # Centre-scoped admins: own centre only
+            if hasattr(request.user, 'centre') and request.user.centre:
+                return obj.centre_id == request.user.centre_id
+            # Admins without centre can only read
             return request.method in permissions.SAFE_METHODS
-
-        # Centre Admin and Finance Admin can only access their centre's batches
-        if role_code in ['CENTRE_ADMIN', 'FINANCE']:
-            return obj.centre_id == request.user.centre_id
 
         return False
 
 
 class IsCentreAdmin(permissions.BasePermission):
     """
-    Permission class for Centre Admin only actions.
-    Used for student assignment endpoints.
+    Permission class for admin-level actions (was Centre Admin only).
+    Now allows any ADMIN_ROLE_CODES role with a centre assigned.
     """
 
     def has_permission(self, request, view):
@@ -127,44 +127,8 @@ class IsCentreAdmin(permissions.BasePermission):
         if not hasattr(request.user, 'role') or not request.user.role:
             return False
 
-        # Only Centre Admin has access
-        if request.user.role.code != 'CENTRE_ADMIN':
-            return False
-
-        # Must have a centre assigned
-        if not hasattr(request.user, 'centre') or not request.user.centre:
-            return False
-
-        return True
-
-    def has_object_permission(self, request, view, obj):
-        """Ensure Centre Admin can only access their own centre's batches."""
-        if not request.user or not request.user.is_authenticated:
-            return False
-
-        if request.user.role.code != 'CENTRE_ADMIN':
-            return False
-
-        # Centre Admin can only access their centre's batches
-        return obj.centre_id == request.user.centre_id
-
-
-class IsCentreOrFinanceAdmin(permissions.BasePermission):
-    """
-    Permission class for both Centre Admin and Finance Admin.
-    Used for batch management and student assignment endpoints.
-    Both roles have the same permissions for batch operations.
-    """
-
-    def has_permission(self, request, view):
-        if not request.user or not request.user.is_authenticated:
-            return False
-
-        if not hasattr(request.user, 'role') or not request.user.role:
-            return False
-
-        # Allow both Centre Admin and Finance Admin
-        if request.user.role.code not in ['CENTRE_ADMIN', 'FINANCE']:
+        # Allow any admin-level role
+        if not is_admin_role(request.user.role.code):
             return False
 
         # Must have a centre assigned
@@ -178,10 +142,45 @@ class IsCentreOrFinanceAdmin(permissions.BasePermission):
         if not request.user or not request.user.is_authenticated:
             return False
 
-        if request.user.role.code not in ['CENTRE_ADMIN', 'FINANCE']:
+        if not is_admin_role(request.user.role.code):
             return False
 
-        # Both roles can only access their centre's batches
+        # Admin can only access their centre's batches
+        return obj.centre_id == request.user.centre_id
+
+
+class IsCentreOrFinanceAdmin(permissions.BasePermission):
+    """
+    Permission class for admin-level roles.
+    Consolidated: any ADMIN_ROLE_CODES role with a centre is allowed.
+    """
+
+    def has_permission(self, request, view):
+        if not request.user or not request.user.is_authenticated:
+            return False
+
+        if not hasattr(request.user, 'role') or not request.user.role:
+            return False
+
+        # Allow any admin-level role
+        if not is_admin_role(request.user.role.code):
+            return False
+
+        # Must have a centre assigned
+        if not hasattr(request.user, 'centre') or not request.user.centre:
+            return False
+
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        """Ensure admin can only access their own centre's batches."""
+        if not request.user or not request.user.is_authenticated:
+            return False
+
+        if not is_admin_role(request.user.role.code):
+            return False
+
+        # Admin can only access their centre's batches
         return obj.centre_id == request.user.centre_id
 
 
@@ -336,8 +335,9 @@ class BatchViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         # Centre Admin and Finance Admin: Filter by their centre
-        if hasattr(user, 'role') and user.role.code in ['CENTRE_ADMIN', 'FINANCE']:
-            queryset = queryset.filter(centre_id=user.centre_id)
+        if hasattr(user, 'role') and is_admin_role(user.role.code):
+            if hasattr(user, 'centre') and user.centre:
+                queryset = queryset.filter(centre_id=user.centre_id)
 
         # Filter by course
         course_id = self.request.query_params.get('course')

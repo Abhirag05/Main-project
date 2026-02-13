@@ -11,6 +11,7 @@ import {
   CourseSubject,
 } from "@/lib/api";
 import { useToast } from "@/lib/toast";
+import { isAdminRole } from "@/lib/roles";
 
 export default function CourseBuilderPage() {
   const router = useRouter();
@@ -56,7 +57,7 @@ export default function CourseBuilderPage() {
       if (userStr) {
         const userData = JSON.parse(userStr);
         setUser(userData);
-        if (userData.role.code !== "SUPER_ADMIN") {
+        if (!isAdminRole(userData.role.code)) {
           router.push("/dashboards");
         }
       } else {
@@ -67,7 +68,7 @@ export default function CourseBuilderPage() {
 
   // Fetch courses on mount
   useEffect(() => {
-    if (user?.role.code === "SUPER_ADMIN") {
+    if (isAdminRole(user?.role.code)) {
       fetchCourses();
       fetchAllModules();
     }
@@ -279,7 +280,7 @@ export default function CourseBuilderPage() {
   const selectedCourse = courses.find((c) => c.id === selectedCourseId);
 
   // Access denied state
-  if (user && user.role.code !== "SUPER_ADMIN") {
+  if (user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">

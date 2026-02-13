@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { apiClient } from "@/lib/api";
+import { isAdminRole, getDashboardPathForRole, ADMIN_DASHBOARD_PATH } from "@/lib/roles";
 
 export interface NavigationItem {
   name: string;
@@ -10,19 +11,58 @@ export interface NavigationItem {
 
 // Role-based navigation configuration
 const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
-  SUPER_ADMIN: [
+  // ─── Consolidated ADMIN navigation ───────────────────────────────
+  // Shown for every admin-level role (SUPER_ADMIN, CENTRE_ADMIN,
+  // ADMIN, FINANCE) via the isAdminRole() guard.
+  ADMIN: [
+    {
+      name: "Student Management",
+      icon: "users-cog",
+      subsections: [
+        {
+          name: "All Students",
+          href: "/dashboards/admin/students",
+          icon: "users",
+        },
+        {
+          name: "Verified",
+          href: "/dashboards/admin/students/verified",
+          icon: "user-check",
+        },
+        {
+          name: "Disabled",
+          href: "/dashboards/admin/students/disabled",
+          icon: "user",
+        },
+        {
+          name: "Batches",
+          href: "/dashboards/admin/batches",
+          icon: "view-list",
+        },
+        {
+          name: "Create Batch",
+          href: "/dashboards/admin/batches/create",
+          icon: "plus",
+        },
+        {
+          name: "Referral",
+          href: "/dashboards/admin/referral",
+          icon: "link",
+        },
+      ],
+    },
     {
       name: "User Management",
       icon: "users-cog",
       subsections: [
         {
           name: "Add User",
-          href: "/dashboards/super-admin/add-user",
+          href: "/dashboards/admin/add-user",
           icon: "user-plus",
         },
         {
           name: "List Users",
-          href: "/dashboards/super-admin/users",
+          href: "/dashboards/admin/users",
           icon: "users",
         },
       ],
@@ -33,79 +73,70 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
       subsections: [
         {
           name: "Courses",
-          href: "/dashboards/super-admin/academics/courses",
+          href: "/dashboards/admin/academics/courses",
           icon: "book-open",
         },
         {
           name: "Modules",
-          href: "/dashboards/super-admin/academics/subjects",
+          href: "/dashboards/admin/academics/subjects",
           icon: "book",
         },
         {
           name: "Batch Templates",
-          href: "/dashboards/super-admin/academics/batch-templates",
+          href: "/dashboards/admin/academics/batch-templates",
           icon: "template",
         },
         {
           name: "Course Builder",
-          href: "/dashboards/super-admin/academics/course-builder",
+          href: "/dashboards/admin/academics/course-builder",
           icon: "puzzle",
         },
-      ],
-    },
-    {
-      name: "Faculty",
-      icon: "users",
-      subsections: [
         {
-          name: "Module Assignments",
-          href: "/dashboards/super-admin/faculty/subject-assignments",
-          icon: "clipboard",
-        },
-      ],
-    },
-  ],
-  CENTRE_ADMIN: [
-    {
-      name: "Batch Management",
-      icon: "calendar",
-      subsections: [
-        {
-          name: "Batches",
-          href: "/dashboards/centre-admin/batches",
-          icon: "view-list",
-        },
-        {
-          name: "Create Batch",
-          href: "/dashboards/centre-admin/batches/create",
-          icon: "plus",
-        },
-      ],
-    },
-    {
-      name: "Faculty",
-      icon: "users",
-      subsections: [
-        {
-          name: "Module Assignments",
-          href: "/dashboards/centre-admin/faculty/subject-assignments",
+          name: "Faculty Modules",
+          href: "/dashboards/admin/faculty/subject-assignments",
           icon: "clipboard",
         },
         {
-          name: "Batch Assignments",
-          href: "/dashboards/centre-admin/faculty/batch-assignments",
+          name: "Faculty Batches",
+          href: "/dashboards/admin/faculty/batch-assignments",
           icon: "calendar",
+        },
+        {
+          name: "Timetable",
+          href: "/dashboards/admin/timetable",
+          icon: "clock",
+        },
+        {
+          name: "Sessions",
+          href: "/dashboards/admin/sessions",
+          icon: "calendar-check",
         },
       ],
     },
     {
-      name: "Timetable",
-      icon: "clock",
+      name: "Fee & Payments",
+      icon: "currency-dollar",
       subsections: [
         {
-          name: "Time Slots",
-          href: "/dashboards/centre-admin/timetable",
-          icon: "calendar",
+          name: "Full Payment",
+          href: "/dashboards/admin/fee/full-payment",
+          icon: "cash",
+        },
+        {
+          name: "Installment",
+          href: "/dashboards/admin/fee/installment",
+          icon: "credit-card",
+        },
+      ],
+    },
+    {
+      name: "Student Progress",
+      icon: "chart-bar",
+      subsections: [
+        {
+          name: "Student Progress",
+          href: "/dashboards/admin/student-progress",
+          icon: "chart-bar",
         },
       ],
     },
@@ -217,11 +248,6 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           icon: "calendar-check",
         },
         {
-          name: "My Skills",
-          href: "/dashboards/student/skills",
-          icon: "star",
-        },
-        {
           name: "Course Materials",
           href: "/dashboards/student/course-materials",
           icon: "book-open",
@@ -233,14 +259,9 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
       icon: "clipboard",
       subsections: [
         {
-          name: "All Assessments",
+          name: "My Assessments",
           href: "/dashboards/student/assessments",
           icon: "view-list",
-        },
-        {
-          name: "My Results",
-          href: "/dashboards/student/results",
-          icon: "chart-bar",
         },
       ],
     },
@@ -249,7 +270,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
       icon: "document-text",
       subsections: [
         {
-          name: "All Assignments",
+          name: "My Assignments",
           href: "/dashboards/student/assignments",
           icon: "view-list",
         },
@@ -260,106 +281,9 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         },
       ],
     },
-    {
-      name: "Placements",
-      href: "/dashboards/student/placements",
-      icon: "briefcase",
-    },
-    {
-      name: "Referral",
-      href: "/dashboards/student/referral",
-      icon: "link",
-    },
   ],
-  FINANCE: [
-    {
-      name: "Fee Management",
-      icon: "currency-dollar",
-      subsections: [
-        {
-          name: "Full Payment",
-          href: "/dashboards/finance/fee/full-payment",
-          icon: "cash",
-        },
-        {
-          name: "Installment",
-          href: "/dashboards/finance/fee/installment",
-          icon: "credit-card",
-        },
-      ],
-    },
-    {
-      name: "Batch Management",
-      icon: "calendar",
-      subsections: [
-        {
-          name: "Assign Students",
-          href: "/dashboards/finance/batches",
-          icon: "user-add",
-        },
-      ],
-    },
-    {
-      name: "Student Management",
-      icon: "users",
-      subsections: [
-        {
-          name: "All Students",
-          href: "/dashboards/finance/students",
-          icon: "users",
-        },
-        {
-          name: "Verified",
-          href: "/dashboards/finance/students/verified",
-          icon: "user",
-        },
-        {
-          name: "Disabled",
-          href: "/dashboards/finance/students/disabled",
-          icon: "user",
-        },
-      ],
-    },
-    {
-      name: "Referral",
-      href: "/dashboards/finance/referral",
-      icon: "link",
-    },
-  ],
-  BATCH_MENTOR: [
-    {
-      name: "My Batches",
-      href: "/dashboards/batch-mentor/my-batches",
-      icon: "calendar",
-    },
-    {
-      name: "My Students",
-      href: "/dashboards/batch-mentor/students",
-      icon: "users",
-    },
-    {
-      name: "Batch Management",
-      href: "/dashboards/batch-mentor/batch-management",
-      icon: "clipboard-check",
-    },
-    {
-      name: "Timetable",
-      href: "/dashboards/batch-mentor/timetable",
-      icon: "calendar",
-    },
-  ],
-  PLACEMENT: [
-    {
-      name: "Placement Lists",
-      href: "/dashboards/placement/lists",
-      icon: "clipboard-list",
-    },
-    {
-      name: "Students",
-      href: "/dashboards/placement/students",
-      icon: "user-check",
-    },
-  ],
+  // FINANCE, SUPER_ADMIN, CENTRE_ADMIN roles are all
+  // handled by the ADMIN entry above via isAdminRole().
 };
 
 // Common navigation items for all roles
@@ -371,21 +295,7 @@ const COMMON_NAVIGATION: NavigationItem[] = [
  * Get dashboard path based on role code
  */
 export function getDashboardPath(roleCode: string): string {
-  const code = roleCode.toUpperCase();
-  const dashboardPaths: Record<string, string> = {
-    SUPER_ADMIN: "/dashboards/super-admin",
-    CENTRE_ADMIN: "/dashboards/centre-admin",
-    ACADEMIC_COORDINATOR: "/dashboards/academic-coordinator",
-    COURSE_COORDINATOR: "/dashboards/course-coordinator",
-    BATCH_MENTOR: "/dashboards/batch-mentor",
-    FACULTY: "/dashboards/faculty",
-    STUDENT: "/dashboards/student",
-    FINANCE: "/dashboards/finance",
-    PLACEMENT: "/dashboards/placement",
-    ALUMNI: "/dashboards/alumni",
-  };
-
-  return dashboardPaths[code] || "/dashboards/student";
+  return getDashboardPathForRole(roleCode);
 }
 
 /**
@@ -427,7 +337,12 @@ export function useNavigation(roleCode: string) {
     ];
 
     // Add role-specific navigation
-    let roleItems = ROLE_NAVIGATION[code] || [];
+    // Admin-level roles all use the consolidated ADMIN navigation
+    let navKey = code;
+    if (isAdminRole(code)) {
+      navKey = "ADMIN";
+    }
+    let roleItems = ROLE_NAVIGATION[navKey] || ROLE_NAVIGATION[code] || [];
 
     if (code === "STUDENT" && studentMode === "RECORDED") {
       roleItems = roleItems.map((item) => {

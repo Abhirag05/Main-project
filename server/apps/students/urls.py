@@ -8,7 +8,7 @@ from apps.students.views import (
     ReferralCodeValidationView,
     FinanceAdmissionViewSet,
     FinanceReferralViewSet,
-    PlacementStudentViewSet,
+    StudentProgressViewSet,
     MyBatchView,
     MyBatchModulesView,
     StudentReferralView,
@@ -22,8 +22,8 @@ router.register(r'finance/admissions', FinanceAdmissionViewSet,
                 basename='finance-admission')
 router.register(r'finance/referrals', FinanceReferralViewSet,
                 basename='finance-referral')
-router.register(r'placement/students', PlacementStudentViewSet,
-                basename='placement-students')
+router.register(r'student-progress', StudentProgressViewSet,
+                basename='student-progress')
 
 urlpatterns = [
     path('register/', StudentRegistrationView.as_view(), name='student-register'),

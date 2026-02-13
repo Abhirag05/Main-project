@@ -8,6 +8,7 @@ import BatchTemplateModal from '@/components/batch/BatchTemplateModal';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import { apiClient, BatchTemplate, Course } from '@/lib/api';
 import { useToast } from '@/lib/toast';
+import { isAdminRole } from '@/lib/roles';
 
 export default function BatchTemplatesPage() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function BatchTemplatesPage() {
         setUser(userData);
         
         // Access control: only SUPER_ADMIN
-        if (userData.role.code !== 'SUPER_ADMIN') {
+        if (!isAdminRole(userData.role.code)) {
           router.push('/dashboards');
         }
       } else {
@@ -40,7 +41,7 @@ export default function BatchTemplatesPage() {
   }, [router]);
 
   useEffect(() => {
-    if (user?.role.code === 'SUPER_ADMIN') {
+    if (isAdminRole(user?.role.code)) {
       fetchData();
     }
   }, [user]);
@@ -100,7 +101,7 @@ export default function BatchTemplatesPage() {
   };
 
   // Access denied state
-  if (user && user.role.code !== 'SUPER_ADMIN') {
+  if (user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">

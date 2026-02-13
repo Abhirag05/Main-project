@@ -29,6 +29,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api";
 import { validateEmail, validatePhone, validatePassword, validateName } from "@/lib/validators";
+import { getDashboardPathForRole } from "@/lib/roles";
 import styles from "./AuthPage.module.css";
 
 // Course type for dropdown
@@ -191,30 +192,7 @@ export default function AuthPage() {
 
       // Role-based routing after successful login
       const roleCode = response.user.role.code.toUpperCase();
-      const targetPath = (() => {
-        switch (roleCode) {
-          case "SUPER_ADMIN":
-            return "/dashboards/super-admin";
-          case "CENTRE_ADMIN":
-            return "/dashboards/centre-admin";
-          case "FACULTY":
-            return "/dashboards/faculty";
-          case "STUDENT":
-            return "/dashboards/student";
-          case "FINANCE":
-            return "/dashboards/finance";
-          case "PLACEMENT":
-            return "/dashboards/placement";
-          case "BATCH_MENTOR":
-            return "/dashboards/batch-mentor";
-          case "ACADEMIC_COORDINATOR":
-            return "/dashboards/academic-coordinator";
-          case "COURSE_COORDINATOR":
-            return "/dashboards/course-coordinator";
-          default:
-            return "/dashboards/student";
-        }
-      })();
+      const targetPath = getDashboardPathForRole(roleCode);
 
       window.location.href = targetPath;
     } catch (error) {

@@ -9,6 +9,7 @@ import DisableAccessModal from "@/components/shared/DisableAccessModal";
 import EnableAccessModal from "@/components/shared/EnableAccessModal";
 import { useToast } from "@/lib/toast";
 import { financeAPI, StudentAdmission } from "@/lib/financeAPI";
+import { isAdminRole } from "@/lib/roles";
 
 export default function InstallmentStudentsPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -147,7 +148,7 @@ export default function InstallmentStudentsPage() {
   };
 
   // Access control
-  if (!authLoading && user && user.role.code !== "FINANCE") {
+  if (!authLoading && user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="text-center py-20">

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.core.validators import EmailValidator
 from django.utils.translation import gettext_lazy as _
+from common.role_constants import is_admin_role
 
 
 class UserManager(BaseUserManager):
@@ -132,6 +133,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         """Return the user's full name."""
         return self.full_name
+
+    @property
+    def is_admin(self):
+        """Return True if the user has an admin-level role."""
+        if self.is_superuser:
+            return True
+        return hasattr(self, 'role') and self.role and is_admin_role(self.role.code)
 
     def has_permission(self, permission_code):
         """

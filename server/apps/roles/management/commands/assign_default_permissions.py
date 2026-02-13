@@ -25,6 +25,23 @@ class Command(BaseCommand):
             'audit.view',
             'system.admin',
         ],
+        'ADMIN': [
+            # Consolidated admin role – same as SUPER_ADMIN + all centre/finance/placement perms
+            'user.create', 'user.view', 'user.manage', 'user.delete',
+            'role.view', 'role.assign', 'role.create', 'role.manage',
+            'permission.view', 'permission.assign', 'permission.manage',
+            'centre.view', 'centre.create', 'centre.manage',
+            'audit.view',
+            'system.admin',
+            # Timetable management
+            'timetable.view', 'timetable.create', 'timetable.edit', 'timetable.delete',
+            # Batch management
+            'batch.view', 'batch.create', 'batch.edit', 'batch.manage',
+            # Academic management
+            'academic.view', 'academic.create', 'academic.edit', 'academic.delete',
+            # Faculty management
+            'faculty.view', 'faculty.create', 'faculty.edit', 'faculty.delete', 'faculty.assign',
+        ],
         'CENTRE_ADMIN': [
             # Centre-level administration
             'user.create', 'user.view', 'user.manage',

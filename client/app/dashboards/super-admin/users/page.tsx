@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { apiClient } from "@/lib/api";
 import { useToast } from "@/lib/toast";
+import { isAdminRole } from "@/lib/roles";
 
 export default function UsersPage() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function UsersPage() {
       if (userStr) {
         const u = JSON.parse(userStr);
         setUser(u);
-        if (u.role.code !== "SUPER_ADMIN") router.push("/dashboards");
+        if (!isAdminRole(u.role.code)) router.push("/dashboards");
       } else {
         router.push("/login");
       }
@@ -40,7 +41,7 @@ export default function UsersPage() {
   }, [router]);
 
   useEffect(() => {
-    if (user?.role.code === "SUPER_ADMIN") fetchUsers();
+    if (isAdminRole(user?.role.code)) fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -134,7 +135,7 @@ export default function UsersPage() {
     }
   };
 
-  if (user && user.role.code !== "SUPER_ADMIN") {
+  if (user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">

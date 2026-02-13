@@ -3,6 +3,7 @@ Custom DRF permission classes for business authorization.
 Uses user.has_permission(code) for role-based access control.
 """
 from rest_framework.permissions import BasePermission
+from common.role_constants import ADMIN_ROLE_CODES, is_admin_role
 
 
 def permission_required(permission_code):
@@ -91,8 +92,27 @@ class IsFinanceUser(BasePermission):
         if request.user.is_superuser:
             return True
         
-        # Check if user has FINANCE role
-        return hasattr(request.user, 'role') and request.user.role.code == 'FINANCE'
+        # Check if user has FINANCE role or is admin
+        return hasattr(request.user, 'role') and (
+            request.user.role.code == 'FINANCE' or is_admin_role(request.user.role.code)
+        )
+
+
+class IsAdminUser(BasePermission):
+    """
+    Permission class that allows access only to admin-level users.
+    
+    Checks membership in ADMIN_ROLE_CODES (SUPER_ADMIN, CENTRE_ADMIN, ADMIN, etc.).
+    """
+    
+    def has_permission(self, request, view):
+        if not request.user or not request.user.is_authenticated:
+            return False
+        if not request.user.is_active:
+            return False
+        if request.user.is_superuser:
+            return True
+        return hasattr(request.user, 'role') and is_admin_role(request.user.role.code)
 
 
 class IsStudent(BasePermission):
@@ -155,5 +175,7 @@ class IsPlacementUser(BasePermission):
         if request.user.is_superuser:
             return True
         
-        # Check if user has PLACEMENT role
-        return hasattr(request.user, 'role') and request.user.role.code == 'PLACEMENT'
+        # Check if user has PLACEMENT role or is admin
+        return hasattr(request.user, 'role') and (
+            request.user.role.code == 'PLACEMENT' or is_admin_role(request.user.role.code)
+        )

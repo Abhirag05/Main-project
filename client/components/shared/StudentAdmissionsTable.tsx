@@ -11,6 +11,8 @@ interface StudentAdmissionsTableProps {
   onVerifyInstallment: (studentProfileId: number) => void;
   onDisableAccess: (studentProfileId: number) => void;
   onEnableAccess: (studentProfileId: number) => void;
+  onApprove?: (studentProfileId: number) => void;
+  onReject?: (studentProfileId: number) => void;
   isProcessing: boolean;
 }
 
@@ -70,6 +72,8 @@ function StudentAdmissionsTable({
   onVerifyInstallment,
   onDisableAccess,
   onEnableAccess,
+  onApprove,
+  onReject,
   isProcessing,
 }: StudentAdmissionsTableProps) {
   const {
@@ -231,6 +235,38 @@ function StudentAdmissionsTable({
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   {admission.admission_status === "PENDING" ? (
                     <div className="flex space-x-2">
+                      {onApprove && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onApprove(admission.student_profile_id);
+                          }}
+                          disabled={isProcessing}
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Approve
+                        </button>
+                      )}
+                      {onReject && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onReject(admission.student_profile_id);
+                          }}
+                          disabled={isProcessing}
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          Reject
+                        </button>
+                      )}
                       {admission.payment_method === "FULL" && (
                         <button
                           type="button"
@@ -239,7 +275,7 @@ function StudentAdmissionsTable({
                             onVerifyFullPayment(admission.student_profile_id);
                           }}
                           disabled={isProcessing}
-                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                           <svg
                             className="w-4 h-4 mr-1"
@@ -290,7 +326,7 @@ function StudentAdmissionsTable({
                           onDisableAccess(admission.student_profile_id);
                         }}
                         disabled={isProcessing}
-                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         <svg
                           className="w-4 h-4 mr-1"

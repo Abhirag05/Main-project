@@ -62,6 +62,7 @@ from .serializers import (
 from apps.batch_management.models import Batch
 from apps.faculty.models import FacultyProfile
 from common.permissions import permission_required
+from common.role_constants import ADMIN_ROLE_CODES, is_admin_role
 from apps.audit.services import AuditService
 
 
@@ -90,8 +91,8 @@ class TimetablePermission:
         if role_code == 'SUPER_ADMIN':
             return False  # Can view but not manage
 
-        # Centre Admin: manage their centre's batches
-        if role_code == 'CENTRE_ADMIN':
+        # Admin roles (CENTRE_ADMIN, ADMIN, FINANCE, PLACEMENT): manage their centre's batches
+        if is_admin_role(role_code):
             return batch.centre_id == user.centre_id
 
         # Academic/Course Coordinator: manage assigned batches
@@ -135,8 +136,8 @@ class TimetablePermission:
         role_code = getattr(user.role, 'code', None)
 
         # Admin roles can view all
-        if role_code in ['SUPER_ADMIN', 'CENTRE_ADMIN', 'ACADEMIC_COORDINATOR', 'COURSE_COORDINATOR']:
-            if role_code == 'SUPER_ADMIN':
+        if role_code in ['SUPER_ADMIN', 'CENTRE_ADMIN', 'ADMIN', 'ACADEMIC_COORDINATOR', 'COURSE_COORDINATOR'] or is_admin_role(role_code):
+            if role_code in ('SUPER_ADMIN', 'ADMIN'):
                 return True
             return batch.centre_id == user.centre_id
 
@@ -242,7 +243,7 @@ class TimeSlotListCreateAPIView(APIView):
         user = request.user
         role_code = getattr(user.role, 'code', None)
 
-        if role_code == 'CENTRE_ADMIN':
+        if is_admin_role(role_code):
             queryset = queryset.filter(batch__centre=user.centre)
         elif role_code == 'FACULTY':
             queryset = queryset.filter(faculty__user=user)
@@ -478,7 +479,7 @@ class ClassSessionListCreateAPIView(APIView):
         user = request.user
         role_code = getattr(user.role, 'code', None)
 
-        if role_code == 'CENTRE_ADMIN':
+        if is_admin_role(role_code):
             queryset = queryset.filter(time_slot__batch__centre=user.centre)
         elif role_code == 'FACULTY':
             queryset = queryset.filter(time_slot__faculty__user=user)
@@ -834,7 +835,7 @@ class CoursePlanListCreateAPIView(APIView):
         user = request.user
         role_code = getattr(user.role, 'code', None)
 
-        if role_code == 'CENTRE_ADMIN':
+        if is_admin_role(role_code):
             queryset = queryset.filter(batch__centre=user.centre)
         elif role_code == 'FACULTY':
             # Faculty can see plans for batches they teach
@@ -1147,7 +1148,8 @@ class FacultyScheduleAPIView(APIView):
         # Faculty can view their own schedule
         can_view = (
             user.is_superuser or
-            role_code in ['SUPER_ADMIN', 'CENTRE_ADMIN', 'ACADEMIC_COORDINATOR'] or
+            is_admin_role(role_code) or
+            role_code in ['ACADEMIC_COORDINATOR'] or
             (role_code == 'FACULTY' and faculty.user == user)
         )
 
@@ -1271,7 +1273,7 @@ class TodaySessionsAPIView(APIView):
                 queryset = queryset.none()
         elif role_code == 'BATCH_MENTOR':
             queryset = queryset.filter(time_slot__batch__mentor=user)
-        elif role_code == 'CENTRE_ADMIN':
+        elif is_admin_role(role_code):
             queryset = queryset.filter(time_slot__batch__centre=user.centre)
 
         serializer = ClassSessionListSerializer(queryset, many=True)

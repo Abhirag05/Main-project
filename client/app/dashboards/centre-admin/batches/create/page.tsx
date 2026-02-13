@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { apiClient, BatchTemplate, CreateBatchRequest } from "@/lib/api";
 import { useToast } from "@/lib/toast";
+import { isAdminRole } from "@/lib/roles";
 
 // Progress Bar Component (only current step highlighted)
 function WorkflowSteps({ currentStep }: { currentStep: number }) {
@@ -77,7 +78,7 @@ export default function CreateBatchPage() {
         setUser(userData);
 
         // Access control: only CENTRE_ADMIN
-        if (userData.role.code !== "CENTRE_ADMIN") {
+        if (!isAdminRole(userData.role.code)) {
           router.push("/dashboards");
         }
       } else {
@@ -87,7 +88,7 @@ export default function CreateBatchPage() {
   }, [router]);
 
   useEffect(() => {
-    if (user?.role.code === "CENTRE_ADMIN") {
+    if (isAdminRole(user?.role.code)) {
       fetchTemplates();
     }
   }, [user]);
@@ -182,7 +183,7 @@ export default function CreateBatchPage() {
   };
 
   // Access denied state
-  if (user && user.role.code !== "CENTRE_ADMIN") {
+  if (user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">

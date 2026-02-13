@@ -19,8 +19,8 @@ class Command(BaseCommand):
                             help='Full name of the superuser')
         parser.add_argument(
             '--password', type=str, help='Password (optional, will prompt if not provided)')
-        parser.add_argument('--role-code', type=str, default='SUPER_ADMIN',
-                            help='Role code (default: SUPER_ADMIN)')
+        parser.add_argument('--role-code', type=str, default='ADMIN',
+                            help='Role code (default: ADMIN)')
         parser.add_argument('--centre-code', type=str, default='ISSD-MAIN',
                             help='Centre code (default: ISSD-MAIN)')
 
@@ -50,7 +50,7 @@ class Command(BaseCommand):
                 raise CommandError('Passwords do not match.')
 
         # Get role
-        role_code = options.get('role_code', 'SUPER_ADMIN')
+        role_code = options.get('role_code', 'ADMIN')
         try:
             role = Role.objects.get(code=role_code, is_active=True)
         except Role.DoesNotExist:

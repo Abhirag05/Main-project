@@ -13,9 +13,7 @@ import {
   FacultySubjectAssignment,
 } from "@/lib/api";
 import { useToast } from "@/lib/toast";
-
-// Roles that have faculty.view and faculty.assign permissions
-const ALLOWED_ROLES = ["SUPER_ADMIN", "CENTRE_ADMIN"];
+import { isAdminRole } from "@/lib/roles";
 
 export default function CentreAdminFacultyBatchAssignmentsPage() {
   const router = useRouter();
@@ -50,7 +48,7 @@ export default function CentreAdminFacultyBatchAssignmentsPage() {
 
         // Access control: only users with faculty.view/faculty.assign permissions
         // Currently mapped to SUPER_ADMIN and CENTRE_ADMIN roles
-        if (!ALLOWED_ROLES.includes(userData.role.code)) {
+        if (!isAdminRole(userData.role.code)) {
           router.push("/dashboards");
         }
       } else {
@@ -60,7 +58,7 @@ export default function CentreAdminFacultyBatchAssignmentsPage() {
   }, [router]);
 
   useEffect(() => {
-    if (user && ALLOWED_ROLES.includes(user.role.code)) {
+    if (user && isAdminRole(user.role.code)) {
       fetchFacultyList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -189,7 +187,7 @@ export default function CentreAdminFacultyBatchAssignmentsPage() {
   };
 
   // Access denied state
-  if (user && !ALLOWED_ROLES.includes(user.role.code)) {
+  if (user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">

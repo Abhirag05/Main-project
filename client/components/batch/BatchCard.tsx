@@ -8,7 +8,7 @@ interface BatchCardProps {
   baseUrl?: string; // Optional base URL for linking (defaults to centre-admin)
 }
 
-export default function BatchCard({ batch, baseUrl = "/dashboards/centre-admin/batches" }: BatchCardProps) {
+export default function BatchCard({ batch, baseUrl = "/dashboards/admin/batches" }: BatchCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "ACTIVE":

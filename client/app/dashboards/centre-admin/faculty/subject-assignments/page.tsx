@@ -8,6 +8,7 @@ import FacultySubjectAssignmentForm from "@/components/faculty/FacultySubjectAss
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import { apiClient, FacultyProfile, FacultySubjectAssignment } from "@/lib/api";
 import { useToast } from "@/lib/toast";
+import { isAdminRole } from "@/lib/roles";
 
 export default function CentreAdminFacultySubjectAssignmentsPage() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function CentreAdminFacultySubjectAssignmentsPage() {
         setUser(userData);
 
         // Access control: SUPER_ADMIN and CENTRE_ADMIN can access this page
-        if (!["SUPER_ADMIN", "CENTRE_ADMIN"].includes(userData.role.code)) {
+        if (!isAdminRole(userData.role.code)) {
           router.push("/dashboards");
         }
       } else {
@@ -46,7 +47,7 @@ export default function CentreAdminFacultySubjectAssignmentsPage() {
   }, [router]);
 
   useEffect(() => {
-    if (user && ["SUPER_ADMIN", "CENTRE_ADMIN"].includes(user.role.code)) {
+    if (user && isAdminRole(user.role.code)) {
       fetchFacultyList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,7 +151,7 @@ export default function CentreAdminFacultySubjectAssignmentsPage() {
   };
 
   // Access denied state
-  if (user && !["SUPER_ADMIN", "CENTRE_ADMIN"].includes(user.role.code)) {
+  if (user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">

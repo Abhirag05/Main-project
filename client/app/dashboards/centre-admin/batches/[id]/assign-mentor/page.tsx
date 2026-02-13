@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { apiClient, AvailableMentor, BatchDetails } from "@/lib/api";
 import { useToast } from "@/lib/toast";
+import { isAdminRole } from "@/lib/roles";
 
 // Progress Bar Component (only current step highlighted)
 function WorkflowSteps({ currentStep }: { currentStep: number }) {
@@ -142,7 +143,7 @@ export default function AssignMentorPage() {
       if (userStr) {
         const userData = JSON.parse(userStr);
         setUser(userData);
-        if (userData.role.code !== "CENTRE_ADMIN") {
+        if (!isAdminRole(userData.role.code)) {
           router.push("/dashboards");
         }
       } else {
@@ -242,7 +243,7 @@ export default function AssignMentorPage() {
   };
 
   // Access denied state
-  if (user && user.role.code !== "CENTRE_ADMIN") {
+  if (user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">

@@ -11,7 +11,6 @@ import {
   studentAttendanceAPI,
   StudentSessionAttendance,
 } from "@/lib/studentAttendanceAPI";
-import { assessmentApiClient } from "@/lib/assessmentAPI";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -76,26 +75,12 @@ export interface DashboardMaterials {
   recent: DashboardMaterialRecent[];
 }
 
-export interface DashboardSkill {
-  id: number;
-  skill: number;
-  skill_name: string;
-  percentage_score: number;
-  level: string;
-}
-
-export interface DashboardSkills {
-  total: number;
-  skills: DashboardSkill[];
-}
-
 export interface DashboardSummary {
   student: DashboardStudent;
   attendance: DashboardAttendance;
   assessments: DashboardAssessments;
   assignments: DashboardAssignments;
   materials: DashboardMaterials;
-  skills: DashboardSkills;
 }
 
 // ==================== HELPERS ====================
@@ -219,20 +204,6 @@ async function fetchAssignments(): Promise<DashboardAssignments> {
   };
 }
 
-async function fetchSkills(): Promise<DashboardSkills> {
-  const data = await assessmentApiClient.getStudentSkills();
-  return {
-    total: data.summary?.total_skills ?? data.skills.length,
-    skills: data.skills.map((s) => ({
-      id: s.id,
-      skill: s.skill,
-      skill_name: s.skill_name,
-      percentage_score: s.percentage_score,
-      level: s.level,
-    })),
-  };
-}
-
 async function fetchMaterials(): Promise<DashboardMaterials> {
   const data: StudentMaterial[] =
     await courseMaterialAPI.getStudentMaterials();
@@ -266,14 +237,13 @@ export async function fetchDashboardSummary(): Promise<{
 }> {
   const errors: string[] = [];
 
-  const [studentResult, attendanceResult, assessmentsResult, assignmentsResult, materialsResult, skillsResult] =
+  const [studentResult, attendanceResult, assessmentsResult, assignmentsResult, materialsResult] =
     await Promise.allSettled([
       fetchStudentInfo(),
       fetchAttendance(),
       fetchAssessments(),
       fetchAssignments(),
       fetchMaterials(),
-      fetchSkills(),
     ]);
 
   const student: DashboardStudent =
@@ -316,16 +286,8 @@ export async function fetchDashboardSummary(): Promise<{
           return { total: 0, recent: [] };
         })();
 
-  const skills: DashboardSkills =
-    skillsResult.status === "fulfilled"
-      ? skillsResult.value
-      : (() => {
-          errors.push("Failed to load skills");
-          return { total: 0, skills: [] };
-        })();
-
   return {
-    data: { student, attendance, assessments, assignments, materials, skills },
+    data: { student, attendance, assessments, assignments, materials },
     errors,
   };
 }

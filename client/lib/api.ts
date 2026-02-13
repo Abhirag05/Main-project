@@ -421,15 +421,14 @@ class ApiClient {
    */
   getAvailableRoles() {
     return [
+      { code: "ADMIN", name: "Admin" },
       { code: "SUPER_ADMIN", name: "Super Admin" },
       { code: "CENTRE_ADMIN", name: "Centre Admin" },
       { code: "ACADEMIC_COORDINATOR", name: "Academic Coordinator" },
       { code: "COURSE_COORDINATOR", name: "Course Coordinator" },
-      { code: "BATCH_MENTOR", name: "Batch Mentor" },
       { code: "FACULTY", name: "Faculty" },
       { code: "STUDENT", name: "Student" },
       { code: "FINANCE", name: "Finance" },
-      { code: "PLACEMENT", name: "Placement" },
       { code: "ALUMNI", name: "Alumni" },
     ];
   }
