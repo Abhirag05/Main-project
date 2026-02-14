@@ -263,6 +263,11 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           href: "/dashboards/student/course-materials",
           icon: "book-open",
         },
+        {
+          name: "My Skills",
+          href: "/dashboards/student/skills",
+          icon: "star",
+        },
       ],
     },
     {
@@ -278,11 +283,6 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           name: "My Results",
           href: "/dashboards/student/results",
           icon: "chart-bar",
-        },
-        {
-          name: "My Skills",
-          href: "/dashboards/student/skills",
-          icon: "star",
         },
       ],
     },
