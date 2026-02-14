@@ -39,6 +39,16 @@ export interface StudentReferralInfo {
   confirmed_count: number;
 }
 
+export interface StudentSkillInfo {
+  skill_id: number;
+  skill_name: string;
+  skill_description: string;
+  level: "NOT_ACQUIRED" | "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+  percentage_score: number;
+  attempts_count: number;
+  last_updated: string | null;
+}
+
 class ApiClient {
   private baseURL: string;
   private isRefreshing: boolean = false;
@@ -1182,6 +1192,19 @@ class ApiClient {
       `${this.baseURL}/student/referral/`,
       { method: "GET" },
     );
+  }
+
+  /**
+   * Get student's own skills
+   * GET /api/student/my-skills/
+   * Access: STUDENT only
+   */
+  async getMySkills(): Promise<StudentSkillInfo[]> {
+    const res = await this.authenticatedFetch<{ skills: StudentSkillInfo[] }>(
+      `${this.baseURL}/student/my-skills/`,
+      { method: "GET" },
+    );
+    return res.skills;
   }
 
   /**
@@ -2335,4 +2358,5 @@ export type {
   FacultyAssessmentResults,
   FacultyAssessmentResultsSummary,
   StudentResultForFaculty,
+  StudentSkillInfo,
 };

@@ -1165,6 +1165,54 @@ class StudentRecordedSessionsView(drf_generics.ListAPIView):
         return BatchRecordedSession.objects.filter(batch=batch).order_by('-session_date', '-created_at')
 
 
+class MySkillsView(APIView):
+    """
+    Student API for viewing their own skills.
+
+    GET /api/student/my-skills/
+
+    Response:
+    {
+        "skills": [
+            {
+                "skill_id": 1,
+                "skill_name": "Python",
+                "skill_description": "Python programming language",
+                "level": "INTERMEDIATE",
+                "percentage_score": 72.5,
+                "attempts_count": 3,
+                "last_updated": "2026-02-10T12:00:00Z"
+            }
+        ]
+    }
+    """
+    permission_classes = [IsAuthenticated, IsStudent]
+
+    def get(self, request):
+        from apps.assessments.models import StudentSkill
+
+        student_profile = get_object_or_404(StudentProfile, user=request.user)
+
+        student_skills = StudentSkill.objects.filter(
+            student=student_profile
+        ).select_related('skill').order_by('skill__name')
+
+        skills_data = [
+            {
+                'skill_id': ss.skill.id,
+                'skill_name': ss.skill.name,
+                'skill_description': ss.skill.description if hasattr(ss.skill, 'description') else '',
+                'level': ss.level,
+                'percentage_score': float(ss.percentage_score),
+                'attempts_count': ss.attempts_count,
+                'last_updated': ss.last_updated.isoformat() if ss.last_updated else None,
+            }
+            for ss in student_skills
+        ]
+
+        return Response({'skills': skills_data}, status=status.HTTP_200_OK)
+
+
 class MyBatchModulesView(APIView):
     """
     API for students to view modules and faculty in their assigned batch.

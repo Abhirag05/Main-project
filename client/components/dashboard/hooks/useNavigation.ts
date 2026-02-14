@@ -274,6 +274,16 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           href: "/dashboards/student/assessments",
           icon: "view-list",
         },
+        {
+          name: "My Results",
+          href: "/dashboards/student/results",
+          icon: "chart-bar",
+        },
+        {
+          name: "My Skills",
+          href: "/dashboards/student/skills",
+          icon: "star",
+        },
       ],
     },
     {
@@ -289,6 +299,28 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           name: "My Submissions",
           href: "/dashboards/student/assignments/submissions",
           icon: "inbox",
+        },
+      ],
+    },
+    {
+      name: "Placements",
+      icon: "briefcase",
+      subsections: [
+        {
+          name: "Placement Links",
+          href: "/dashboards/student/placements",
+          icon: "link",
+        },
+      ],
+    },
+    {
+      name: "Referral",
+      icon: "user-group",
+      subsections: [
+        {
+          name: "My Referral",
+          href: "/dashboards/student/referral",
+          icon: "gift",
         },
       ],
     },
