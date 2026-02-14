@@ -357,7 +357,7 @@ export default function FacultySchedulePage() {
             const updateAttendanceMarked = (sessions: ClassSession[]) =>
               sessions.map((s) =>
                 s.id === attendanceSession.id
-                  ? { ...s, attendance_marked: true, status: "COMPLETED" }
+                  ? { ...s, attendance_marked: true, status: "COMPLETED" as SessionStatus }
                   : s,
               );
             setTodaySessions(updateAttendanceMarked);
