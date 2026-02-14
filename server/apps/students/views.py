@@ -253,6 +253,23 @@ class FinanceAdmissionViewSet(viewsets.ReadOnlyModelViewSet):
             student_profile.id), performed_by=request.user, details={'previous_status': previous_status})
         return Response({'message': 'Installment payment verified successfully'}, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['patch'], url_path='complete-course')
+    @transaction.atomic
+    def complete_course(self, request, pk=None):
+        """Mark course as completed and disable access"""
+        student_profile = get_object_or_404(StudentProfile, pk=pk)
+        if student_profile.admission_status != 'FULL_PAYMENT_VERIFIED':
+            return Response({'error': 'Only full-payment-verified students can be marked as course completed.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        previous_status = student_profile.admission_status
+        student_profile.admission_status = 'COURSE_COMPLETED'
+        student_profile.save(update_fields=['admission_status', 'updated_at'])
+        student_profile.user.is_active = False
+        student_profile.user.save(update_fields=['is_active'])
+        AuditService.log(action='COURSE_COMPLETED', entity='StudentProfile', entity_id=str(student_profile.id),
+                         performed_by=request.user, details={'previous_status': previous_status})
+        return Response({'message': 'Course marked as completed. Student access disabled.'}, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['patch'], url_path='disable-access')
     @transaction.atomic
     def disable_access(self, request, pk=None):

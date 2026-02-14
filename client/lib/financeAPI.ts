@@ -9,6 +9,7 @@ export type AdmissionStatus =
   | "FULL_PAYMENT_VERIFIED"
   | "INSTALLMENT_VERIFIED"
   | "INSTALLMENT_PENDING"
+  | "COURSE_COMPLETED"
   | "DISABLED";
 
 export type PaymentStatus = "PENDING" | "FULL_PAYMENT" | "INSTALLMENT";
@@ -193,6 +194,20 @@ export class FinanceAPI {
   ): Promise<PaymentVerificationResponse> {
     return this.request<PaymentVerificationResponse>(
       `/admissions/${studentProfileId}/enable-access/`,
+      {
+        method: "PATCH",
+      },
+    );
+  }
+
+  /**
+   * Mark course as completed (full payment students only)
+   */
+  async completeCourse(
+    studentProfileId: number,
+  ): Promise<{ message: string }> {
+    return this.request<{ message: string }>(
+      `/admissions/${studentProfileId}/complete-course/`,
       {
         method: "PATCH",
       },

@@ -21,6 +21,7 @@ class StudentProfile(models.Model):
         ('FULL_PAYMENT_VERIFIED', 'Full Payment Verified'),
         ('INSTALLMENT_VERIFIED', 'Installment Verified'),
         ('INSTALLMENT_PENDING', 'Installment Pending'),
+        ('COURSE_COMPLETED', 'Course Completed'),
         ('DISABLED', 'Disabled'),
     ]
 

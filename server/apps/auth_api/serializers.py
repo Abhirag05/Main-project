@@ -119,13 +119,19 @@ class LoginSerializer(serializers.Serializer):
                         if profile.admission_status not in allowed_statuses:
                             # Customize message based on status
                             if profile.admission_status == 'PENDING':
-                                msg = 'Your admission is pending approval/verification. Please wait for confirmation.'
+                                msg = 'Your admission is pending payment verification. Please wait for the admin to verify your payment before you can access the system.'
                             elif profile.admission_status == 'REJECTED':
-                                msg = 'Your admission application has been rejected.'
+                                msg = 'Your admission application has been rejected. Please contact the admin for more details.'
                             elif profile.admission_status == 'INSTALLMENT_PENDING':
-                                msg = 'Your installment payment is pending verification. Please contact finance.'
+                                msg = 'Your access has been suspended due to pending installment payment. Please complete your installment and contact the admin to restore access.'
+                            elif profile.admission_status == 'DISABLED':
+                                msg = 'Your account has been disabled by the admin due to payment issues. Please contact the admin to resolve this.'
+                            elif profile.admission_status == 'COURSE_COMPLETED':
+                                msg = 'Your course has been completed. Your access to the system has ended. Thank you for learning with us!'
+                            elif profile.admission_status == 'APPROVED':
+                                msg = 'Your admission is approved but payment is not yet verified. Please contact the admin.'
                             else:
-                                msg = f'Your admission status is {profile.admission_status.replace("_", " ").title()}. Please contact support.'
+                                msg = f'Your account is currently inactive. Please contact the admin for assistance.'
 
                             raise serializers.ValidationError(
                                 msg, code='payment_verification')

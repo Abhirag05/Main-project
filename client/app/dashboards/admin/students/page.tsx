@@ -8,8 +8,6 @@ import VerifyFullPaymentModal from "@/components/shared/VerifyFullPaymentModal";
 import VerifyInstallmentModal from "@/components/shared/VerifyInstallmentModal";
 import DisableAccessModal from "@/components/shared/DisableAccessModal";
 import EnableAccessModal from "@/components/shared/EnableAccessModal";
-import ApproveConfirmationModal from "@/components/shared/ApproveConfirmationModal";
-import RejectModal from "@/components/shared/RejectModal";
 import { useToast } from "@/lib/toast";
 import { financeAPI, StudentAdmission } from "@/lib/financeAPI";
 import { isAdminRole } from "@/lib/roles";
@@ -23,18 +21,6 @@ export default function AdminAllStudentsPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   // Modal states
-  const [approveModal, setApproveModal] = useState<{
-    isOpen: boolean;
-    studentProfileId: number | null;
-    studentName: string;
-  }>({ isOpen: false, studentProfileId: null, studentName: "" });
-
-  const [rejectModal, setRejectModal] = useState<{
-    isOpen: boolean;
-    studentProfileId: number | null;
-    studentName: string;
-  }>({ isOpen: false, studentProfileId: null, studentName: "" });
-
   const [verifyFullPaymentModal, setVerifyFullPaymentModal] = useState<{
     isOpen: boolean;
     studentProfileId: number | null;
@@ -54,6 +40,12 @@ export default function AdminAllStudentsPage() {
   }>({ isOpen: false, studentProfileId: null, studentName: "" });
 
   const [enableAccessModal, setEnableAccessModal] = useState<{
+    isOpen: boolean;
+    studentProfileId: number | null;
+    studentName: string;
+  }>({ isOpen: false, studentProfileId: null, studentName: "" });
+
+  const [completeCourseModal, setCompleteCourseModal] = useState<{
     isOpen: boolean;
     studentProfileId: number | null;
     studentName: string;
@@ -79,64 +71,6 @@ export default function AdminAllStudentsPage() {
       fetchAdmissions();
     }
   }, [authLoading, user]);
-
-  // ── Approve / Reject handlers ──────────────────────────────────
-
-  const handleApproveClick = (studentProfileId: number) => {
-    const admission = admissions.find(
-      (a) => a.student_profile_id === studentProfileId
-    );
-    if (admission) {
-      setApproveModal({
-        isOpen: true,
-        studentProfileId,
-        studentName: admission.full_name,
-      });
-    }
-  };
-
-  const handleApproveConfirm = async () => {
-    if (!approveModal.studentProfileId) return;
-    try {
-      setIsProcessing(true);
-      await financeAPI.approveAdmission(approveModal.studentProfileId);
-      toast.show("success", "Admission approved successfully");
-      setApproveModal({ isOpen: false, studentProfileId: null, studentName: "" });
-      fetchAdmissions();
-    } catch (error: any) {
-      toast.show("error", error.message || "Failed to approve admission");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleRejectClick = (studentProfileId: number) => {
-    const admission = admissions.find(
-      (a) => a.student_profile_id === studentProfileId
-    );
-    if (admission) {
-      setRejectModal({
-        isOpen: true,
-        studentProfileId,
-        studentName: admission.full_name,
-      });
-    }
-  };
-
-  const handleRejectConfirm = async () => {
-    if (!rejectModal.studentProfileId) return;
-    try {
-      setIsProcessing(true);
-      await financeAPI.rejectAdmission(rejectModal.studentProfileId);
-      toast.show("success", "Admission rejected");
-      setRejectModal({ isOpen: false, studentProfileId: null, studentName: "" });
-      fetchAdmissions();
-    } catch (error: any) {
-      toast.show("error", error.message || "Failed to reject admission");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
 
   // ── Payment verification handlers ──────────────────────────────
 
@@ -254,6 +188,36 @@ export default function AdminAllStudentsPage() {
     }
   };
 
+  // ── Course complete handler ────────────────────────────────────
+
+  const handleCompleteCourseClick = (studentProfileId: number) => {
+    const admission = admissions.find(
+      (a) => a.student_profile_id === studentProfileId
+    );
+    if (admission) {
+      setCompleteCourseModal({
+        isOpen: true,
+        studentProfileId,
+        studentName: admission.full_name,
+      });
+    }
+  };
+
+  const handleCompleteCourseConfirm = async () => {
+    if (!completeCourseModal.studentProfileId) return;
+    try {
+      setIsProcessing(true);
+      await financeAPI.completeCourse(completeCourseModal.studentProfileId);
+      toast.show("success", "Course marked as completed. Student access has been disabled.");
+      setCompleteCourseModal({ isOpen: false, studentProfileId: null, studentName: "" });
+      fetchAdmissions();
+    } catch (error: any) {
+      toast.show("error", error.message || "Failed to mark course as completed");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   // ── Filtered data ──────────────────────────────────────────────
 
   const filteredAdmissions = admissions.filter((admission) => {
@@ -300,7 +264,7 @@ export default function AdminAllStudentsPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">All Students</h1>
             <p className="mt-1 text-sm text-gray-600">
-              View, approve, and manage student admissions
+              Manage student payments and access
             </p>
           </div>
           <button
@@ -342,11 +306,10 @@ export default function AdminAllStudentsPage() {
               >
                 <option value="all">All Statuses</option>
                 <option value="PENDING">Pending</option>
-                <option value="APPROVED">Approved</option>
-                <option value="REJECTED">Rejected</option>
                 <option value="FULL_PAYMENT_VERIFIED">Full Payment Verified</option>
-                <option value="INSTALLMENT_VERIFIED">Installment Verified</option>
+                <option value="INSTALLMENT_VERIFIED">Installment Active</option>
                 <option value="INSTALLMENT_PENDING">Installment Pending</option>
+                <option value="COURSE_COMPLETED">Course Completed</option>
                 <option value="DISABLED">Disabled</option>
               </select>
             </div>
@@ -381,6 +344,7 @@ export default function AdminAllStudentsPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
+          {/* Pending */}
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
@@ -395,7 +359,7 @@ export default function AdminAllStudentsPage() {
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Pending</dt>
                     <dd className="text-lg font-semibold text-gray-900">
-                      {admissions.filter((a) => a.admission_status === "PENDING").length}
+                      {admissions.filter((a) => a.admission_status === "PENDING" || a.admission_status === "APPROVED").length}
                     </dd>
                   </dl>
                 </div>
@@ -403,28 +367,7 @@ export default function AdminAllStudentsPage() {
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="rounded-md bg-green-500 p-3">
-                    <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Approved</dt>
-                    <dd className="text-lg font-semibold text-gray-900">
-                      {admissions.filter((a) => a.admission_status === "APPROVED").length}
-                    </dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
-          </div>
-
+          {/* Verified */}
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
@@ -450,21 +393,22 @@ export default function AdminAllStudentsPage() {
             </div>
           </div>
 
+          {/* Installment Pending */}
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="rounded-md bg-red-500 p-3">
+                  <div className="rounded-md bg-orange-500 p-3">
                     <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.832c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
                     </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Rejected</dt>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Installment Pending</dt>
                     <dd className="text-lg font-semibold text-gray-900">
-                      {admissions.filter((a) => a.admission_status === "REJECTED").length}
+                      {admissions.filter((a) => a.admission_status === "INSTALLMENT_PENDING").length}
                     </dd>
                   </dl>
                 </div>
@@ -472,6 +416,30 @@ export default function AdminAllStudentsPage() {
             </div>
           </div>
 
+          {/* Course Completed */}
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="rounded-md bg-purple-500 p-3">
+                    <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Course Completed</dt>
+                    <dd className="text-lg font-semibold text-gray-900">
+                      {admissions.filter((a) => a.admission_status === "COURSE_COMPLETED").length}
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Disabled */}
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
@@ -486,10 +454,7 @@ export default function AdminAllStudentsPage() {
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Disabled</dt>
                     <dd className="text-lg font-semibold text-gray-900">
-                      {admissions.filter((a) =>
-                        a.admission_status === "DISABLED" ||
-                        a.admission_status === "INSTALLMENT_PENDING"
-                      ).length}
+                      {admissions.filter((a) => a.admission_status === "DISABLED").length}
                     </dd>
                   </dl>
                 </div>
@@ -502,37 +467,16 @@ export default function AdminAllStudentsPage() {
         <StudentAdmissionsTable
           admissions={filteredAdmissions}
           isLoading={isLoading}
-          onApprove={handleApproveClick}
-          onReject={handleRejectClick}
           onVerifyFullPayment={handleVerifyFullPaymentClick}
           onVerifyInstallment={handleVerifyInstallmentClick}
           onDisableAccess={handleDisableAccessClick}
           onEnableAccess={handleEnableAccessClick}
+          onCompleteCourse={handleCompleteCourseClick}
           isProcessing={isProcessing}
         />
       </div>
 
       {/* Modals */}
-      <ApproveConfirmationModal
-        isOpen={approveModal.isOpen}
-        studentName={approveModal.studentName}
-        onConfirm={handleApproveConfirm}
-        onCancel={() =>
-          setApproveModal({ isOpen: false, studentProfileId: null, studentName: "" })
-        }
-        isLoading={isProcessing}
-      />
-
-      <RejectModal
-        isOpen={rejectModal.isOpen}
-        studentName={rejectModal.studentName}
-        onConfirm={handleRejectConfirm}
-        onCancel={() =>
-          setRejectModal({ isOpen: false, studentProfileId: null, studentName: "" })
-        }
-        isLoading={isProcessing}
-      />
-
       <VerifyFullPaymentModal
         isOpen={verifyFullPaymentModal.isOpen}
         studentName={verifyFullPaymentModal.studentName}
@@ -572,6 +516,52 @@ export default function AdminAllStudentsPage() {
         }
         isLoading={isProcessing}
       />
+
+      {/* Course Complete Confirmation Modal */}
+      {completeCourseModal.isOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={() => setCompleteCourseModal({ isOpen: false, studentProfileId: null, studentName: "" })} />
+            <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <div className="sm:flex sm:items-start">
+                <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-purple-100 sm:mx-0 sm:h-10 sm:w-10">
+                  <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  </svg>
+                </div>
+                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                  <h3 className="text-base font-semibold leading-6 text-gray-900">
+                    Mark Course as Completed
+                  </h3>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      Are you sure you want to mark <strong>{completeCourseModal.studentName}</strong>&apos;s course as completed?
+                      This will disable their access to the student dashboard.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse gap-3">
+                <button
+                  type="button"
+                  onClick={handleCompleteCourseConfirm}
+                  disabled={isProcessing}
+                  className="inline-flex w-full justify-center rounded-md bg-purple-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 sm:w-auto disabled:opacity-50"
+                >
+                  {isProcessing ? "Processing..." : "Confirm"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCompleteCourseModal({ isOpen: false, studentProfileId: null, studentName: "" })}
+                  className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }

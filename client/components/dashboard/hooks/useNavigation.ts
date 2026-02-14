@@ -34,6 +34,16 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           href: "/dashboards/admin/students/disabled",
           icon: "user",
         },
+        {
+          name: "Full Payment",
+          href: "/dashboards/admin/fee/full-payment",
+          icon: "cash",
+        },
+        {
+          name: "Installment",
+          href: "/dashboards/admin/fee/installment",
+          icon: "credit-card",
+        },
       ],
     },
     {
@@ -117,22 +127,6 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           name: "Sessions",
           href: "/dashboards/admin/sessions",
           icon: "calendar-check",
-        },
-      ],
-    },
-    {
-      name: "Fee & Payments",
-      icon: "currency-dollar",
-      subsections: [
-        {
-          name: "Full Payment",
-          href: "/dashboards/admin/fee/full-payment",
-          icon: "cash",
-        },
-        {
-          name: "Installment",
-          href: "/dashboards/admin/fee/installment",
-          icon: "credit-card",
         },
       ],
     },
