@@ -84,7 +84,7 @@ export default function StudentResultsPage() {
         ) : (
           <>
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
               <div className="bg-white overflow-hidden shadow rounded-lg p-5">
                 <p className="text-sm font-medium text-gray-500">Total Assessments</p>
                 <p className="mt-1 text-2xl font-bold text-gray-900">

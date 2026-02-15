@@ -170,13 +170,13 @@ export default function ClassSessionList({
                 return (
                   <div
                     key={session.id}
-                    className={`px-6 py-4 hover:bg-gray-50 transition-colors ${
+                    className={`px-4 py-4 sm:px-6 hover:bg-gray-50 transition-colors ${
                       pastSession ? "bg-red-50" : ""
                     }`}
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                           <span className="text-lg font-medium text-gray-900">
                             {session.module_name || "Module"}
                           </span>
@@ -205,7 +205,7 @@ export default function ClassSessionList({
                           )}
                         </div>
 
-                        <div className="mt-1 flex items-center space-x-4 text-sm text-gray-600">
+                        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
                           <span className="flex items-center">
                             <svg
                               className="w-4 h-4 mr-1"
@@ -271,7 +271,7 @@ export default function ClassSessionList({
                         )}
                       </div>
 
-                      <div className="flex items-center space-x-2 ml-4">
+                      <div className="flex items-center space-x-2 sm:ml-4 flex-shrink-0">
                         {showStatusDropdown &&
                           !["COMPLETED", "CANCELLED"].includes(
                             session.status,

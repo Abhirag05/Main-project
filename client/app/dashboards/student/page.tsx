@@ -381,7 +381,7 @@ export default function StudentDashboardSummary() {
                 <EmptyState message="No assignments yet" />
               ) : (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-4 gap-2 text-center">
+                  <div className="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
                     <div className="bg-gray-50 rounded-lg p-2.5">
                       <p className="text-lg font-bold text-gray-900">
                         {dashboardData.assignments.total}

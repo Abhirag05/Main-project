@@ -159,7 +159,7 @@ export default function SubmitAssignmentPage() {
       <div className="max-w-4xl mx-auto">
         {/* Breadcrumb */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 mb-2">
             <Link href="/dashboards/student" className="hover:text-blue-600">Dashboard</Link>
             <span>/</span>
             <Link href="/dashboards/student/assignments" className="hover:text-blue-600">Assignments</Link>
@@ -182,9 +182,9 @@ export default function SubmitAssignmentPage() {
 
         {/* Assignment Details */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{assignment.title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{assignment.title}</h1>
 
-          <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+          <div className="grid grid-cols-1 gap-4 mb-6 text-sm sm:grid-cols-2">
             <div>
               <span className="font-medium text-gray-700">Module:</span>
               <span className="ml-2 text-gray-900">{assignment.module_name}</span>
@@ -297,7 +297,7 @@ export default function SubmitAssignmentPage() {
                 )}
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <button
                   onClick={handleSubmit}
                   disabled={!submissionFile || submitting}

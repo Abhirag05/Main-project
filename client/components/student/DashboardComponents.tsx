@@ -69,7 +69,7 @@ export function DashboardSection({
 }: DashboardSectionProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="px-4 py-4 border-b border-gray-100 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
           {subtitle && (
@@ -209,7 +209,7 @@ export function SkeletonCard() {
 export function SkeletonSection() {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
-      <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="px-4 py-4 border-b border-gray-100 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="space-y-1.5">
           <div className="h-5 bg-gray-200 rounded w-36" />
           <div className="h-3 bg-gray-200 rounded w-24" />

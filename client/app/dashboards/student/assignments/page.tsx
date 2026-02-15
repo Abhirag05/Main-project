@@ -95,7 +95,7 @@ export default function StudentAssignmentsPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">My Assignments</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Assignments</h1>
           <p className="text-gray-600 mt-1">View and submit your assignments</p>
         </div>
 
@@ -108,7 +108,7 @@ export default function StudentAssignmentsPage() {
 
         {/* Filter Tabs */}
         <div className="mb-6 border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
+          <nav className="-mb-px flex space-x-4 overflow-x-auto sm:space-x-8">
             {["all", "pending", "submitted", "overdue"].map((tab) => (
               <button
                 key={tab}
@@ -145,7 +145,7 @@ export default function StudentAssignmentsPage() {
                 key={assignment.id}
                 className="bg-white rounded-xl shadow-md border border-gray-100 p-6 flex flex-col gap-4"
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                   <div>
                     <h2 className="text-xl font-semibold text-gray-900">{assignment.title}</h2>
                     <p className="text-sm text-gray-600 mt-1">
