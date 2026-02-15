@@ -136,12 +136,12 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
       subsections: [
         {
           name: "Placement Lists",
-          href: "/dashboards/placement/lists",
+          href: "/dashboards/admin/placement/lists",
           icon: "view-list",
         },
         {
           name: "Student Skills",
-          href: "/dashboards/placement/students",
+          href: "/dashboards/admin/placement/students",
           icon: "users",
         },
       ],

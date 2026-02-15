@@ -164,7 +164,7 @@ export default function StudentAssessmentsPage() {
             <span className="block px-4 py-2 bg-yellow-100 text-yellow-800 rounded-md text-sm font-medium mb-1">
               Scheduled
             </span>
-            <span className="text-xs text-gray-500">{formatDate(start)}</span>
+            <span className="text-xs text-gray-500">{formatDate(start.toISOString())}</span>
           </div>
         ),
         status: "Scheduled",

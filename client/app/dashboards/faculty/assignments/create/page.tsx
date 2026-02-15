@@ -1,13 +1,27 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { assignmentAPIClient, CreateAssignmentData } from "@/lib/assignmentAPI";
 import { apiClient } from "@/lib/api";
 
-export default function CreateAssignmentPage() {
+export default function CreateAssignmentPageWrapper() {
+  return (
+    <Suspense fallback={
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </DashboardLayout>
+    }>
+      <CreateAssignmentPage />
+    </Suspense>
+  );
+}
+
+function CreateAssignmentPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const assignmentId = searchParams.get('id');

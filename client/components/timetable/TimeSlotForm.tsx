@@ -75,8 +75,8 @@ export default function TimeSlotForm({
     if (response.subjects && Array.isArray(response.subjects)) {
       return response.subjects.map((cm) => ({
         id: cm.module,
-        name: cm.subject_name,
-        code: cm.subject_code,
+        name: cm.module_name,
+        code: cm.module_code,
       }));
     }
 

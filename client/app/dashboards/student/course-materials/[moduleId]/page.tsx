@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import {
@@ -16,7 +16,21 @@ const TYPE_BADGES: Record<string, { bg: string; text: string }> = {
   LINK: { bg: "bg-cyan-100", text: "text-cyan-700" },
 };
 
-export default function ModuleMaterialsPage() {
+export default function ModuleMaterialsPageWrapper() {
+  return (
+    <Suspense fallback={
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </DashboardLayout>
+    }>
+      <ModuleMaterialsPage />
+    </Suspense>
+  );
+}
+
+function ModuleMaterialsPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();

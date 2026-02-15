@@ -81,7 +81,9 @@ export interface CreateAssessmentRequest {
   end_time: string;
 }
 
-export interface UpdateAssessmentRequest extends Partial<CreateAssessmentRequest> {}
+export interface UpdateAssessmentRequest extends Partial<CreateAssessmentRequest> {
+  status?: string;
+}
 
 export interface QuestionOption {
   id?: number;

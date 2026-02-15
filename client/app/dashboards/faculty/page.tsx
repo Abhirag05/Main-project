@@ -45,7 +45,7 @@ export default function FacultyDashboard() {
       setModuleCount(moduleData.length);
     } catch (err) {
       const error = err as Error;
-      toast.show("error", error.message || "Failed to load data");
+      setToast({ type: "error", message: error.message || "Failed to load data" });
     } finally {
       setLoading(false);
     }
@@ -64,7 +64,7 @@ export default function FacultyDashboard() {
 
   const handleProfileUpdate = () => {
     fetchData();
-    toast.show("success", "Profile updated successfully");
+    setToast({ type: "success", message: "Profile updated successfully" });
   };
 
   if (!isAllowed) {
@@ -91,7 +91,7 @@ export default function FacultyDashboard() {
           <FacultyProfileCard
             profile={profile}
             onUpdate={handleProfileUpdate}
-            onError={(msg) => toast.show("error", msg)}
+            onError={(msg) => setToast({ type: "error", message: msg })}
           />
         ) : (
           <FacultyCard className="p-6 mb-6">

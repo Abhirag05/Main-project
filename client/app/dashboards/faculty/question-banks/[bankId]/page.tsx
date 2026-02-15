@@ -1,12 +1,26 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { assessmentApiClient, QuestionBankDetail, BankQuestion } from "@/lib/assessmentAPI";
 
-export default function QuestionBankDetailPage() {
+export default function QuestionBankDetailPageWrapper() {
+  return (
+    <Suspense fallback={
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </DashboardLayout>
+    }>
+      <QuestionBankDetailPage />
+    </Suspense>
+  );
+}
+
+function QuestionBankDetailPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();

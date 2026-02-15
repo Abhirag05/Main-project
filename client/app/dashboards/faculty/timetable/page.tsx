@@ -81,7 +81,7 @@ export default function FacultyTimetablePage() {
         ) : (
           <FacultyBatchTimetable
             batchAssignments={batchAssignments}
-            onError={(msg) => toast.show("error", msg)}
+            onError={(msg) => setToast({ type: "error", message: msg })}
           />
         )}
       </div>

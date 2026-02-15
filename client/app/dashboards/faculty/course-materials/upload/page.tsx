@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
@@ -22,7 +22,21 @@ const MATERIAL_TYPES = [
 const FILE_TYPES = ["PDF", "PPT", "DOC"];
 const LINK_TYPES = ["VIDEO", "LINK"];
 
-export default function UploadMaterialPage() {
+export default function UploadMaterialPageWrapper() {
+  return (
+    <Suspense fallback={
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </DashboardLayout>
+    }>
+      <UploadMaterialPage />
+    </Suspense>
+  );
+}
+
+function UploadMaterialPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const materialId = searchParams.get("id");

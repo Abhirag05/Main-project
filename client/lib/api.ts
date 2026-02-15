@@ -1799,12 +1799,13 @@ interface Batch {
 }
 
 interface CreateBatchRequest {
-  name: string;
-  code: string;
-  course_id: number;
+  name?: string;
+  code?: string;
+  course_id?: number;
+  template_id?: number;
   start_date: string;
   end_date: string;
-  capacity: number;
+  capacity?: number;
 }
 
 // Eligible Student for batch assignment
@@ -2358,5 +2359,4 @@ export type {
   FacultyAssessmentResults,
   FacultyAssessmentResultsSummary,
   StudentResultForFaculty,
-  StudentSkillInfo,
 };
