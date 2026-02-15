@@ -51,15 +51,15 @@ export default function StudentReferralPage() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Referral</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-foreground">My Referral</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Share your referral code with friends and track referrals
           </p>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-red-700">
@@ -68,8 +68,8 @@ export default function StudentReferralPage() {
         ) : referral ? (
           <div className="max-w-lg mx-auto">
             {/* Referral Code Card */}
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-center">
+            <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
+              <div className="bg-gradient-to-r from-primary to-indigo-600 px-6 py-8 text-center">
                 <svg
                   className="mx-auto h-12 w-12 text-white/80"
                   fill="none"
@@ -87,13 +87,13 @@ export default function StudentReferralPage() {
                   Your Referral Code
                 </h2>
                 <div className="mt-3 flex items-center justify-center gap-3">
-                  <span className="text-3xl font-bold tracking-widest text-white bg-white/20 rounded-lg px-6 py-3">
+                  <span className="text-3xl font-bold tracking-widest text-white bg-card/20 rounded-lg px-6 py-3">
                     {referral.referral_code}
                   </span>
                 </div>
                 <button
                   onClick={handleCopy}
-                  className="mt-4 inline-flex items-center gap-2 rounded-md bg-white/20 hover:bg-white/30 px-4 py-2 text-sm font-medium text-white transition"
+                  className="mt-4 inline-flex items-center gap-2 rounded-md bg-card/20 hover:bg-card/30 px-4 py-2 text-sm font-medium text-white transition"
                 >
                   {copied ? (
                     <>
@@ -116,10 +116,10 @@ export default function StudentReferralPage() {
               <div className="px-6 py-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-500">
+                    <p className="text-sm font-medium text-muted-foreground">
                       Confirmed Referrals
                     </p>
-                    <p className="mt-1 text-3xl font-bold text-gray-900">
+                    <p className="mt-1 text-3xl font-bold text-foreground">
                       {referral.confirmed_count}
                     </p>
                   </div>
@@ -139,7 +139,7 @@ export default function StudentReferralPage() {
                     </svg>
                   </div>
                 </div>
-                <p className="mt-4 text-sm text-gray-500">
+                <p className="mt-4 text-sm text-muted-foreground">
                   Share this code with friends during their registration. Once their referral is confirmed by the admin, it will appear here.
                 </p>
               </div>

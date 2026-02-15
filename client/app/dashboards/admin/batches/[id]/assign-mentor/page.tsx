@@ -29,21 +29,21 @@ function WorkflowSteps({ currentStep }: { currentStep: number }) {
                 className="hidden sm:absolute sm:inset-0 sm:flex sm:items-center"
                 aria-hidden="true"
               >
-                <div className="h-0.5 w-full bg-gray-200" />
+                <div className="h-0.5 w-full bg-muted" />
               </div>
               <div
-                className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 bg-white ${
-                  isCurrent ? "border-blue-600" : "border-gray-300"
+                className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 bg-card ${
+                  isCurrent ? "border-primary" : "border-border"
                 }`}
               >
                 <span
                   className={`h-2.5 w-2.5 rounded-full ${
-                    isCurrent ? "bg-blue-600" : "bg-gray-300"
+                    isCurrent ? "bg-primary" : "bg-muted"
                   }`}
                 />
                 <span className="sr-only">{step.name}</span>
               </div>
-              <span className="mt-2 text-xs font-medium text-gray-500 sm:mt-0 sm:absolute sm:-bottom-7 sm:left-1/2 sm:-translate-x-1/2 sm:whitespace-nowrap">
+              <span className="mt-2 text-xs font-medium text-muted-foreground sm:mt-0 sm:absolute sm:-bottom-7 sm:left-1/2 sm:-translate-x-1/2 sm:whitespace-nowrap">
                 {step.name}
               </span>
             </li>
@@ -69,14 +69,14 @@ function MentorCard({
       onClick={onSelect}
       className={`relative p-4 border-2 rounded-lg cursor-pointer transition-all ${
         isSelected
-          ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
-          : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
+          ? "border-primary bg-primary/10 ring-2 ring-ring/30"
+          : "border-border hover:border-border hover:shadow-sm"
       }`}
     >
       {isSelected && (
         <div className="absolute top-2 right-2">
           <svg
-            className="h-6 w-6 text-blue-600"
+            className="h-6 w-6 text-primary"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -92,11 +92,11 @@ function MentorCard({
         <div className="flex-shrink-0">
           <div
             className={`h-12 w-12 rounded-full flex items-center justify-center ${
-              isSelected ? "bg-blue-200" : "bg-gray-200"
+              isSelected ? "bg-primary/20" : "bg-muted"
             }`}
           >
             <span
-              className={`text-lg font-semibold ${isSelected ? "text-blue-700" : "text-gray-600"}`}
+              className={`text-lg font-semibold ${isSelected ? "text-primary" : "text-muted-foreground"}`}
             >
               {mentor.full_name.charAt(0).toUpperCase()}
             </span>
@@ -104,13 +104,13 @@ function MentorCard({
         </div>
         <div className="flex-1 min-w-0">
           <p
-            className={`text-sm font-medium ${isSelected ? "text-blue-900" : "text-gray-900"}`}
+            className={`text-sm font-medium ${isSelected ? "text-primary" : "text-foreground"}`}
           >
             {mentor.full_name}
           </p>
-          <p className="text-sm text-gray-500">{mentor.email}</p>
+          <p className="text-sm text-muted-foreground">{mentor.email}</p>
           {mentor.phone && (
-            <p className="text-xs text-gray-400">{mentor.phone}</p>
+            <p className="text-xs text-muted-foreground/70">{mentor.phone}</p>
           )}
         </div>
       </div>
@@ -260,10 +260,10 @@ export default function AssignMentorPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">
+            <h2 className="mt-4 text-2xl font-bold text-foreground">
               Access Denied
             </h2>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-muted-foreground">
               Only Centre Admins can assign mentors.
             </p>
           </div>
@@ -278,8 +278,8 @@ export default function AssignMentorPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Loading...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -293,10 +293,10 @@ export default function AssignMentorPage() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-foreground">
             Step 3: Assign Batch Mentor
           </h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <p className="mt-2 text-sm text-foreground/80">
             {assignmentComplete
               ? "Mentor has been assigned to this batch."
               : "Select a mentor to assign to this batch."}
@@ -305,27 +305,27 @@ export default function AssignMentorPage() {
 
         {/* Batch Info Card */}
         {batchDetails && (
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-card rounded-lg shadow border border-border p-6 mb-6">
+            <h2 className="text-lg font-medium text-foreground mb-4">
               Batch Information
             </h2>
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
-                <dt className="text-sm font-medium text-gray-500">
+                <dt className="text-sm font-medium text-muted-foreground">
                   Batch Code
                 </dt>
-                <dd className="mt-1 text-sm text-gray-900 font-semibold">
+                <dd className="mt-1 text-sm text-foreground font-semibold">
                   {batchDetails.code}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500">Course</dt>
-                <dd className="mt-1 text-sm text-gray-900">
+                <dt className="text-sm font-medium text-muted-foreground">Course</dt>
+                <dd className="mt-1 text-sm text-foreground">
                   {batchDetails.course_name}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500">Mode</dt>
+                <dt className="text-sm font-medium text-muted-foreground">Mode</dt>
                 <dd className="mt-1">
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -339,8 +339,8 @@ export default function AssignMentorPage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500">Students</dt>
-                <dd className="mt-1 text-sm text-gray-900">
+                <dt className="text-sm font-medium text-muted-foreground">Students</dt>
+                <dd className="mt-1 text-sm text-foreground">
                   {batchDetails.current_student_count} /{" "}
                   {batchDetails.max_students}
                 </dd>
@@ -379,14 +379,14 @@ export default function AssignMentorPage() {
             </div>
 
             {/* Assigned Mentor Card */}
-            <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <div className="bg-card rounded-lg shadow border border-border p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900">
+                <h3 className="text-lg font-medium text-foreground">
                   Assigned Mentor
                 </h3>
                 <button
                   onClick={handleChangeMentor}
-                  className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="inline-flex items-center px-3 py-1.5 border border-border text-sm font-medium rounded-md text-foreground/80 bg-card hover:bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
                 >
                   <svg
                     className="mr-1.5 h-4 w-4"
@@ -406,8 +406,8 @@ export default function AssignMentorPage() {
               </div>
               <div className="flex items-center space-x-4">
                 <div className="flex-shrink-0">
-                  <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-2xl font-semibold text-blue-600">
+                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="text-2xl font-semibold text-primary">
                       {batchDetails.mentor_detail.full_name
                         .charAt(0)
                         .toUpperCase()}
@@ -415,14 +415,14 @@ export default function AssignMentorPage() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-lg font-medium text-gray-900">
+                  <p className="text-lg font-medium text-foreground">
                     {batchDetails.mentor_detail.full_name}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {batchDetails.mentor_detail.email}
                   </p>
                   {batchDetails.mentor_detail.phone && (
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-muted-foreground/70">
                       {batchDetails.mentor_detail.phone}
                     </p>
                   )}
@@ -431,12 +431,12 @@ export default function AssignMentorPage() {
             </div>
 
             {/* Summary Card */}
-            <div className="bg-blue-50 rounded-lg border border-blue-200 p-6">
-              <h3 className="text-lg font-medium text-blue-900 mb-4">
+            <div className="bg-primary/10 rounded-lg border border-primary/20 p-6">
+              <h3 className="text-lg font-medium text-primary mb-4">
                 Setup Summary
               </h3>
               <ul className="space-y-3">
-                <li className="flex items-center text-sm text-blue-800">
+                <li className="flex items-center text-sm text-primary">
                   <svg
                     className="h-5 w-5 text-green-500 mr-3"
                     fill="currentColor"
@@ -453,7 +453,7 @@ export default function AssignMentorPage() {
                     {batchDetails.code}
                   </span>
                 </li>
-                <li className="flex items-center text-sm text-blue-800">
+                <li className="flex items-center text-sm text-primary">
                   <svg
                     className="h-5 w-5 text-green-500 mr-3"
                     fill="currentColor"
@@ -470,7 +470,7 @@ export default function AssignMentorPage() {
                     {batchDetails.current_student_count}
                   </span>
                 </li>
-                <li className="flex items-center text-sm text-blue-800">
+                <li className="flex items-center text-sm text-primary">
                   <svg
                     className="h-5 w-5 text-green-500 mr-3"
                     fill="currentColor"
@@ -493,7 +493,7 @@ export default function AssignMentorPage() {
             <div className="flex justify-end">
               <button
                 onClick={handleFinish}
-                className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
               >
                 <svg
                   className="mr-2 h-5 w-5"
@@ -546,18 +546,18 @@ export default function AssignMentorPage() {
               </div>
             )}
             {loadingMentors ? (
-              <div className="bg-white rounded-lg shadow border border-gray-200 p-8">
+              <div className="bg-card rounded-lg shadow border border-border p-8">
                 <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                  <span className="ml-3 text-gray-600">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <span className="ml-3 text-muted-foreground">
                     Loading available mentors...
                   </span>
                 </div>
               </div>
             ) : availableMentors.length === 0 ? (
-              <div className="bg-white rounded-lg shadow border border-gray-200 p-8 text-center">
+              <div className="bg-card rounded-lg shadow border border-border p-8 text-center">
                 <svg
-                  className="mx-auto h-12 w-12 text-gray-400"
+                  className="mx-auto h-12 w-12 text-muted-foreground/70"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -569,10 +569,10 @@ export default function AssignMentorPage() {
                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                <h3 className="mt-4 text-lg font-medium text-gray-900">
+                <h3 className="mt-4 text-lg font-medium text-foreground">
                   No Available Mentors
                 </h3>
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-sm text-muted-foreground">
                   There are no available mentors at this centre.
                   <br />
                   All mentors might already be assigned to other batches.
@@ -581,14 +581,14 @@ export default function AssignMentorPage() {
                   {isChangingMentor ? (
                     <button
                       onClick={handleCancelChange}
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      className="inline-flex items-center px-4 py-2 border border-border text-sm font-medium rounded-md text-foreground/80 bg-card hover:bg-secondary/50"
                     >
                       Cancel
                     </button>
                   ) : (
                     <button
                       onClick={handleSkip}
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      className="inline-flex items-center px-4 py-2 border border-border text-sm font-medium rounded-md text-foreground/80 bg-card hover:bg-secondary/50"
                     >
                       Skip for Now
                     </button>
@@ -597,8 +597,8 @@ export default function AssignMentorPage() {
               </div>
             ) : (
               <>
-                <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">
+                <div className="bg-card rounded-lg shadow border border-border p-6">
+                  <h3 className="text-lg font-medium text-foreground mb-4">
                     Select a Mentor ({availableMentors.length} available)
                   </h3>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -617,14 +617,14 @@ export default function AssignMentorPage() {
                   {isChangingMentor ? (
                     <button
                       onClick={handleCancelChange}
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      className="inline-flex items-center px-4 py-2 border border-border text-sm font-medium rounded-md text-foreground/80 bg-card hover:bg-secondary/50"
                     >
                       Cancel
                     </button>
                   ) : (
                     <button
                       onClick={handleSkip}
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      className="inline-flex items-center px-4 py-2 border border-border text-sm font-medium rounded-md text-foreground/80 bg-card hover:bg-secondary/50"
                     >
                       Skip for Now
                     </button>
@@ -632,7 +632,7 @@ export default function AssignMentorPage() {
                   <button
                     onClick={handleAssignMentor}
                     disabled={!selectedMentorId || assigning}
-                    className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {assigning ? (
                       <>

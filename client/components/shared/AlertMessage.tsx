@@ -33,10 +33,10 @@ const ALERT_STYLES: Record<AlertType, { bg: string; border: string; text: string
     icon: "text-amber-500",
   },
   info: {
-    bg: "bg-blue-50",
-    border: "border-l-4 border-blue-500",
-    text: "text-blue-800",
-    icon: "text-blue-500",
+    bg: "bg-primary/10",
+    border: "border-l-4 border-primary",
+    text: "text-primary",
+    icon: "text-primary/80",
   },
 };
 

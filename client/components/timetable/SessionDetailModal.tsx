@@ -68,9 +68,9 @@ export default function SessionDetailModal({
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      SCHEDULED: "bg-blue-100 text-blue-800",
+      SCHEDULED: "bg-primary/10 text-primary",
       IN_PROGRESS: "bg-green-100 text-green-800",
-      COMPLETED: "bg-gray-100 text-gray-800",
+      COMPLETED: "bg-secondary text-foreground",
       CANCELLED: "bg-red-100 text-red-800",
       RESCHEDULED: "bg-yellow-100 text-yellow-800",
     };
@@ -79,10 +79,10 @@ export default function SessionDetailModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+      <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center space-x-3">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-foreground">
               Session Details
             </h2>
             <span
@@ -95,7 +95,7 @@ export default function SessionDetailModal({
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-muted-foreground/70 hover:text-muted-foreground"
           >
             <svg
               className="w-6 h-6"
@@ -117,18 +117,18 @@ export default function SessionDetailModal({
           {/* Module & Time Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">
+              <h3 className="text-lg font-medium text-foreground">
                 {session.module_name}
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 {session.time_slot_detail?.module_detail?.code || ""}
               </p>
             </div>
             <div className="text-right">
-              <div className="text-sm font-medium text-gray-900">
+              <div className="text-sm font-medium text-foreground">
                 {formatDateTime(session.session_date, session.scheduled_start)}
               </div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-muted-foreground">
                 Duration: {session.scheduled_start.slice(0, 5)} -{" "}
                 {session.scheduled_end.slice(0, 5)}
               </div>
@@ -137,32 +137,32 @@ export default function SessionDetailModal({
 
           {/* Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-xs font-medium text-gray-500 uppercase">
+            <div className="bg-secondary/50 rounded-lg p-4">
+              <div className="text-xs font-medium text-muted-foreground uppercase">
                 Batch
               </div>
-              <div className="mt-1 text-sm font-medium text-gray-900">
+              <div className="mt-1 text-sm font-medium text-foreground">
                 {session.batch_code}
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-muted-foreground">
                 {session.time_slot_detail?.batch_detail?.course_name || ""}
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-xs font-medium text-gray-500 uppercase">
+            <div className="bg-secondary/50 rounded-lg p-4">
+              <div className="text-xs font-medium text-muted-foreground uppercase">
                 Faculty
               </div>
-              <div className="mt-1 text-sm font-medium text-gray-900">
+              <div className="mt-1 text-sm font-medium text-foreground">
                 {session.faculty_name}
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-muted-foreground">
                 {session.time_slot_detail?.faculty_detail?.employee_code || ""}
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-xs font-medium text-gray-500 uppercase">
+            <div className="bg-secondary/50 rounded-lg p-4">
+              <div className="text-xs font-medium text-muted-foreground uppercase">
                 Meeting Link
               </div>
               <div className="mt-2">
@@ -173,7 +173,7 @@ export default function SessionDetailModal({
                     onChange={(e) =>
                       setFormData({ ...formData, meeting_link: e.target.value })
                     }
-                    className="w-full border border-gray-300 rounded px-2 py-1 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border border-border rounded px-2 py-1 text-sm text-foreground placeholder-gray-400 focus:ring-2 focus:ring-ring focus:border-transparent"
                     placeholder="https://..."
                   />
                 ) : session.meeting_link || session.effective_meeting_link ? (
@@ -181,12 +181,12 @@ export default function SessionDetailModal({
                     href={session.meeting_link || session.effective_meeting_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800"
+                    className="inline-flex items-center text-primary hover:text-primary"
                   >
                     Join Meeting
                   </a>
                 ) : (
-                  <span className="text-sm text-gray-500">Not set</span>
+                  <span className="text-sm text-muted-foreground">Not set</span>
                 )}
               </div>
             </div>
@@ -194,8 +194,8 @@ export default function SessionDetailModal({
 
           {/* Timestamps */}
           {(session.created_at || session.updated_at) && (
-            <div className="border-t border-gray-200 pt-4">
-              <div className="grid grid-cols-2 gap-4 text-xs text-gray-500">
+            <div className="border-t border-border pt-4">
+              <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
                 {session.created_at && (
                   <div>
                     <span className="font-medium">Created:</span>{" "}
@@ -214,19 +214,19 @@ export default function SessionDetailModal({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex justify-end space-x-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <div className="flex justify-end space-x-3 px-6 py-4 border-t border-border bg-secondary/50">
           {isEditing ? (
             <>
               <button
                 onClick={() => setIsEditing(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 text-sm font-medium text-foreground/80 bg-card border border-border rounded-lg hover:bg-secondary/50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 disabled:opacity-50"
               >
                 {loading ? "Saving..." : "Save Changes"}
               </button>
@@ -235,7 +235,7 @@ export default function SessionDetailModal({
             <>
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 text-sm font-medium text-foreground/80 bg-card border border-border rounded-lg hover:bg-secondary/50"
               >
                 Close
               </button>
@@ -243,7 +243,7 @@ export default function SessionDetailModal({
                 !["COMPLETED", "CANCELLED"].includes(session.status) && (
                   <button
                     onClick={handleEdit}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                    className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90"
                   >
                     Edit Session
                   </button>

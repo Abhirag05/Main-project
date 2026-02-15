@@ -14,9 +14,9 @@ function StatusBadge({ status }: { status: AdmissionStatus }) {
     APPROVED: "bg-green-100 text-green-800 border-green-200",
     REJECTED: "bg-red-100 text-red-800 border-red-200",
     FULL_PAYMENT_VERIFIED: "bg-green-100 text-green-800 border-green-200",
-    INSTALLMENT_VERIFIED: "bg-blue-100 text-blue-800 border-blue-200",
+    INSTALLMENT_VERIFIED: "bg-primary/10 text-primary border-primary/20",
     INSTALLMENT_PENDING: "bg-orange-100 text-orange-800 border-orange-200",
-    DISABLED: "bg-gray-100 text-gray-800 border-gray-200",
+    DISABLED: "bg-secondary text-foreground border-border",
   };
 
   const labels: Record<AdmissionStatus, string> = {
@@ -42,12 +42,12 @@ function TableSkeleton() {
   return (
     <div className="animate-pulse">
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="border-b border-gray-200">
+        <div key={i} className="border-b border-border">
           <div className="px-6 py-4 flex space-x-4">
-            <div className="flex-1 h-4 bg-gray-200 rounded"></div>
-            <div className="flex-1 h-4 bg-gray-200 rounded"></div>
-            <div className="flex-1 h-4 bg-gray-200 rounded"></div>
-            <div className="w-24 h-4 bg-gray-200 rounded"></div>
+            <div className="flex-1 h-4 bg-muted rounded"></div>
+            <div className="flex-1 h-4 bg-muted rounded"></div>
+            <div className="flex-1 h-4 bg-muted rounded"></div>
+            <div className="w-24 h-4 bg-muted rounded"></div>
           </div>
         </div>
       ))}
@@ -61,7 +61,7 @@ function PlacementStudentsTable({
 }: PlacementStudentsTableProps) {
   if (isLoading) {
     return (
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="bg-card shadow-md rounded-lg overflow-hidden">
         <TableSkeleton />
       </div>
     );
@@ -69,9 +69,9 @@ function PlacementStudentsTable({
 
   if (students.length === 0) {
     return (
-      <div className="bg-white shadow-md rounded-lg p-12 text-center">
+      <div className="bg-card shadow-md rounded-lg p-12 text-center">
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className="mx-auto h-12 w-12 text-muted-foreground/70"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -83,10 +83,10 @@ function PlacementStudentsTable({
             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
           />
         </svg>
-        <h3 className="mt-2 text-sm font-medium text-gray-900">
+        <h3 className="mt-2 text-sm font-medium text-foreground">
           No verified students found
         </h3>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           Students verified by Finance Admin will appear here.
         </p>
       </div>
@@ -94,54 +94,54 @@ function PlacementStudentsTable({
   }
 
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden">
+    <div className="bg-card shadow-md rounded-lg overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-border">
+          <thead className="bg-secondary/50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 #
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Student Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Phone
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Centre
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Interested Courses
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Study Mode
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Verified Date
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-card divide-y divide-border">
             {students.map((student, index) => (
               <tr
                 key={student.student_profile_id}
-                className="hover:bg-gray-50 transition-colors"
+                className="hover:bg-secondary/50 transition-colors"
               >
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {index + 1}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10">
-                      <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                        <span className="text-blue-600 font-medium text-sm">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-primary font-medium text-sm">
                           {student.full_name
                             .split(" ")
                             .map((n) => n[0])
@@ -152,27 +152,27 @@ function PlacementStudentsTable({
                       </div>
                     </div>
                     <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-foreground">
                         {student.full_name}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-muted-foreground">
                         ID: {student.student_profile_id}
                       </div>
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {student.email}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {student.phone || "-"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-secondary text-foreground">
                     {student.centre_code}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {student.interested_courses || "-"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -180,7 +180,7 @@ function PlacementStudentsTable({
                     className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
                       student.study_mode === "LIVE"
                         ? "bg-purple-100 text-purple-800"
-                        : "bg-gray-100 text-gray-800"
+                        : "bg-secondary text-foreground"
                     }`}
                   >
                     {student.study_mode || "LIVE"}
@@ -189,7 +189,7 @@ function PlacementStudentsTable({
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusBadge status={student.admission_status} />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {new Date(student.updated_at).toLocaleDateString("en-IN", {
                     day: "2-digit",
                     month: "short",
@@ -203,8 +203,8 @@ function PlacementStudentsTable({
       </div>
       
       {/* Table Footer with count */}
-      <div className="bg-gray-50 px-6 py-3 border-t border-gray-200">
-        <p className="text-sm text-gray-600">
+      <div className="bg-secondary/50 px-6 py-3 border-t border-border">
+        <p className="text-sm text-muted-foreground">
           Showing <span className="font-medium">{students.length}</span> verified student{students.length !== 1 ? "s" : ""}
         </p>
       </div>

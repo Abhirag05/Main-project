@@ -164,10 +164,10 @@ export default function CoursesPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">
+            <h2 className="mt-4 text-2xl font-bold text-foreground">
               Access Denied
             </h2>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-muted-foreground">
               You don&apos;t have permission to access this page. Only Super
               Admins can manage courses.
             </p>
@@ -183,8 +183,8 @@ export default function CoursesPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Loading...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -197,17 +197,17 @@ export default function CoursesPage() {
         {/* Header */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-foreground">
               Course Management
             </h1>
-            <p className="mt-1 text-gray-500">
+            <p className="mt-1 text-muted-foreground">
               Manage academic courses including programs, degrees, and
               certifications.
             </p>
           </div>
           <button
             onClick={handleCreate}
-            className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm"
+            className="px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-sm"
           >
             <svg
               className="w-5 h-5"

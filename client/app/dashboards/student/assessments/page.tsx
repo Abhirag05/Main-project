@@ -41,8 +41,8 @@ export default function StudentAssessmentsPage() {
     const styles: Record<string, string> = {
       SCHEDULED: "bg-yellow-100 text-yellow-800",
       ACTIVE: "bg-green-100 text-green-800",
-      COMPLETED: "bg-blue-100 text-blue-800",
-      DRAFT: "bg-gray-100 text-gray-800",
+      COMPLETED: "bg-primary/10 text-primary",
+      DRAFT: "bg-secondary text-foreground",
     };
     return (
       <span
@@ -75,11 +75,11 @@ export default function StudentAssessmentsPage() {
         return {
           button: (
             <div className="flex flex-col gap-2">
-              <span className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-sm font-medium text-center">
+              <span className="px-4 py-2 bg-secondary text-foreground/80 rounded-md text-sm font-medium text-center">
                 Submitted
               </span>
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors font-medium"
                 onClick={() =>
                   router.push(
                     `/dashboards/student/assessments/${assessment.id}/result`,
@@ -101,7 +101,7 @@ export default function StudentAssessmentsPage() {
               >
                 {passed ? "Passed" : "Failed"}
               </span>
-              <span className="text-xs text-gray-600">
+              <span className="text-xs text-muted-foreground">
                 {attempt.percentage.toFixed(1)}% ({attempt.total_marks_obtained}
                 /{assessment.total_marks})
               </span>
@@ -134,7 +134,7 @@ export default function StudentAssessmentsPage() {
       } else {
         return {
           button: (
-            <span className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md text-sm">
+            <span className="px-4 py-2 bg-secondary text-muted-foreground rounded-md text-sm">
               Attempted
             </span>
           ),
@@ -147,7 +147,7 @@ export default function StudentAssessmentsPage() {
       return {
         button: (
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors font-medium"
             onClick={() => handleStartAssessment(assessment.id)}
           >
             Start Assessment
@@ -164,7 +164,7 @@ export default function StudentAssessmentsPage() {
             <span className="block px-4 py-2 bg-yellow-100 text-yellow-800 rounded-md text-sm font-medium mb-1">
               Scheduled
             </span>
-            <span className="text-xs text-gray-500">{formatDate(start.toISOString())}</span>
+            <span className="text-xs text-muted-foreground">{formatDate(start.toISOString())}</span>
           </div>
         ),
         status: "Scheduled",
@@ -224,14 +224,14 @@ export default function StudentAssessmentsPage() {
         <div className="mb-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Assessments</h1>
-              <p className="text-gray-600 mt-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Assessments</h1>
+              <p className="text-muted-foreground mt-2">
                 View and attempt assessments assigned to your batch
               </p>
             </div>
             <button
               onClick={fetchAssessments}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm font-medium"
               disabled={loading}
             >
               <svg
@@ -255,7 +255,7 @@ export default function StudentAssessmentsPage() {
         {/* Content */}
         {loading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -268,9 +268,9 @@ export default function StudentAssessmentsPage() {
             </button>
           </div>
         ) : assessments.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <div className="bg-card rounded-lg shadow-md p-8 text-center">
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="mx-auto h-12 w-12 text-muted-foreground/70"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -282,10 +282,10 @@ export default function StudentAssessmentsPage() {
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <h3 className="mt-2 text-lg font-medium text-gray-900">
+            <h3 className="mt-2 text-lg font-medium text-foreground">
               No assessments yet
             </h3>
-            <p className="mt-1 text-gray-500">
+            <p className="mt-1 text-muted-foreground">
               There are no assessments assigned to your batch at this time.
             </p>
           </div>
@@ -294,67 +294,67 @@ export default function StudentAssessmentsPage() {
             {assessments.map((assessment) => (
               <div
                 key={assessment.id}
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                className="bg-card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-xl font-semibold text-gray-900">
+                      <h2 className="text-xl font-semibold text-foreground">
                         {assessment.title}
                       </h2>
                       {getStatusBadge(assessment.status)}
                     </div>
                     {assessment.description && (
-                      <p className="text-gray-600 mb-4">
+                      <p className="text-muted-foreground mb-4">
                         {assessment.description}
                       </p>
                     )}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-500">Subject:</span>
-                        <p className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Subject:</span>
+                        <p className="font-medium text-foreground">
                           {assessment.subject?.name}
                         </p>
                       </div>
                       <div>
-                        <span className="text-gray-500">Faculty:</span>
-                        <p className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Faculty:</span>
+                        <p className="font-medium text-foreground">
                           {assessment.faculty?.full_name}
                         </p>
                       </div>
                       <div>
-                        <span className="text-gray-500">Duration:</span>
-                        <p className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Duration:</span>
+                        <p className="font-medium text-foreground">
                           {assessment.duration_minutes} mins
                         </p>
                       </div>
                       <div>
-                        <span className="text-gray-500">Total Marks:</span>
-                        <p className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Total Marks:</span>
+                        <p className="font-medium text-foreground">
                           {assessment.total_marks}
                         </p>
                       </div>
                       <div>
-                        <span className="text-gray-500">Start:</span>
-                        <p className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Start:</span>
+                        <p className="font-medium text-foreground">
                           {formatDate(assessment.start_datetime)}
                         </p>
                       </div>
                       <div>
-                        <span className="text-gray-500">End:</span>
-                        <p className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">End:</span>
+                        <p className="font-medium text-foreground">
                           {formatDate(assessment.end_datetime)}
                         </p>
                       </div>
                       <div>
-                        <span className="text-gray-500">Questions:</span>
-                        <p className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Questions:</span>
+                        <p className="font-medium text-foreground">
                           {assessment.questions_count}
                         </p>
                       </div>
                       <div>
-                        <span className="text-gray-500">Passing:</span>
-                        <p className="font-medium text-gray-900">
+                        <span className="text-muted-foreground">Passing:</span>
+                        <p className="font-medium text-foreground">
                           {assessment.passing_percentage}%
                         </p>
                       </div>

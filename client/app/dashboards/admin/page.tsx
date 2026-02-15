@@ -65,9 +65,9 @@ function useAdminDashboardData() {
 /** Skeleton placeholder while stats load */
 function StatSkeleton() {
   return (
-    <div className="animate-pulse rounded-2xl border border-slate-200 bg-white p-5">
-      <div className="h-4 w-20 rounded bg-slate-200" />
-      <div className="mt-3 h-8 w-16 rounded bg-slate-200" />
+    <div className="animate-pulse rounded-2xl border border-border bg-card p-5">
+      <div className="h-4 w-20 rounded bg-muted" />
+      <div className="mt-3 h-8 w-16 rounded bg-muted" />
     </div>
   );
 }
@@ -78,19 +78,27 @@ function StatCard({
   value,
   icon,
   accent,
+  accentBg,
 }: {
   label: string;
   value: number;
   icon: React.ReactNode;
   accent: string;
+  accentBg?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex items-center gap-3">
-        <span className={accent}>{icon}</span>
-        <span className="text-sm font-medium text-slate-500">{label}</span>
+    <div className="group relative rounded-2xl border border-border bg-card overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+      {/* Top accent strip */}
+      <div className={`h-1 ${accentBg || 'bg-primary'}`} />
+      <div className="p-5">
+        <div className="flex items-center gap-3">
+          <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${accentBg ? accentBg + '/15' : 'bg-primary/10'} ${accent}`}>
+            {icon}
+          </span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
+        </div>
+        <p className={`mt-3 text-3xl font-bold ${accent}`}>{value}</p>
       </div>
-      <p className={`mt-2 text-3xl font-bold ${accent}`}>{value}</p>
     </div>
   );
 }
@@ -116,7 +124,7 @@ function QuickActionCard({
   return (
     <Link
       href={href}
-      className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+      className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
     >
       <div
         className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${gradient}`}
@@ -128,9 +136,9 @@ function QuickActionCard({
           {icon}
         </span>
         <div>
-          <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-          <p className="mt-2 text-sm text-slate-600">{description}</p>
-          <span className="mt-4 inline-flex items-center text-sm font-semibold text-slate-900">
+          <h3 className="text-base font-semibold text-foreground">{title}</h3>
+          <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+          <span className="mt-4 inline-flex items-center text-sm font-semibold text-foreground">
             {cta}
             <span className="ml-2 transition group-hover:translate-x-0.5">
               &rarr;
@@ -153,10 +161,10 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-100 px-6 py-5">
-        <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-        <p className="mt-1 text-sm text-slate-600">{description}</p>
+    <section className="rounded-2xl border border-border bg-card shadow-sm">
+      <div className="border-b border-border px-6 py-5">
+        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
       </div>
       <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 lg:p-8">
         {children}
@@ -272,10 +280,10 @@ export default function AdminDashboard() {
         {/* ── Header ─────────────────────────────── */}
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">
+            <h1 className="text-3xl font-bold text-foreground">
               Admin Dashboard
             </h1>
-            <p className="mt-1 text-slate-500">
+            <p className="mt-1 text-muted-foreground">
               Manage students, academics, assessments, and progress from one
               place.
             </p>
@@ -304,30 +312,35 @@ export default function AdminDashboard() {
               value={stats.totalStudents}
               icon={icons.users}
               accent="text-emerald-600"
+              accentBg="bg-emerald-500"
             />
             <StatCard
               label="Faculty"
               value={stats.totalFaculty}
               icon={icons.faculty}
               accent="text-indigo-600"
+              accentBg="bg-indigo-500"
             />
             <StatCard
               label="Active Batches"
               value={stats.activeBatches}
               icon={icons.batch}
               accent="text-amber-600"
+              accentBg="bg-amber-500"
             />
             <StatCard
               label="Courses"
               value={stats.totalCourses}
               icon={icons.academic}
               accent="text-violet-600"
+              accentBg="bg-violet-500"
             />
             <StatCard
               label="Modules"
               value={stats.totalModules}
               icon={icons.book}
               accent="text-sky-600"
+              accentBg="bg-sky-500"
             />
           </div>
         ) : null}
@@ -339,8 +352,8 @@ export default function AdminDashboard() {
         >
           <QuickActionCard
             href="/dashboards/admin/add-user"
-            gradient="from-blue-400 to-indigo-500"
-            iconBg="bg-blue-100 text-blue-700"
+            gradient="from-primary/70 to-indigo-500"
+            iconBg="bg-primary/10 text-primary"
             icon={icons.userPlus}
             title="Add Faculty"
             description="Create a new faculty account."

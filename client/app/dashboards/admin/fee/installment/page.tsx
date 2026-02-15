@@ -165,8 +165,8 @@ export default function InstallmentStudentsPage() {
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
             />
           </svg>
-          <h1 className="mt-4 text-2xl font-bold text-gray-900">Access Denied</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="mt-4 text-2xl font-bold text-foreground">Access Denied</h1>
+          <p className="mt-2 text-muted-foreground">
             You do not have permission to access this page.
           </p>
         </div>
@@ -180,18 +180,18 @@ export default function InstallmentStudentsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Installment Students</h1>
-            <p className="mt-1 text-sm text-gray-600">
+            <h1 className="text-3xl font-bold text-foreground">Installment Students</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               Students who opted for installment payment method
             </p>
           </div>
           <button
             onClick={fetchAdmissions}
             disabled={isLoading}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className="inline-flex items-center px-4 py-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground/80 bg-card hover:bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50"
           >
             <svg
-              className={`-ml-1 mr-2 h-5 w-5 text-gray-500 ${
+              className={`-ml-1 mr-2 h-5 w-5 text-muted-foreground ${
                 isLoading ? "animate-spin" : ""
               }`}
               fill="none"
@@ -211,18 +211,18 @@ export default function InstallmentStudentsPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6">
+          <div className="bg-gradient-to-r from-primary/10 to-primary/10 border border-primary/20 rounded-lg p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="rounded-full bg-blue-500 p-3">
+                <div className="rounded-full bg-primary/80 p-3">
                   <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                 </div>
               </div>
               <div className="ml-5">
-                <h2 className="text-2xl font-bold text-gray-900">{admissions.length}</h2>
-                <p className="text-sm text-gray-600">Total Installment Students</p>
+                <h2 className="text-2xl font-bold text-foreground">{admissions.length}</h2>
+                <p className="text-sm text-muted-foreground">Total Installment Students</p>
               </div>
             </div>
           </div>
@@ -237,10 +237,10 @@ export default function InstallmentStudentsPage() {
                 </div>
               </div>
               <div className="ml-5">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-foreground">
                   {admissions.filter((a) => a.admission_status === "INSTALLMENT_PENDING" || a.admission_status === "PENDING" || a.admission_status === "APPROVED").length}
                 </h2>
-                <p className="text-sm text-gray-600">Pending / In Progress</p>
+                <p className="text-sm text-muted-foreground">Pending / In Progress</p>
               </div>
             </div>
           </div>

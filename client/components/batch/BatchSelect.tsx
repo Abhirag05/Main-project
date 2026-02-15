@@ -57,14 +57,14 @@ export default function BatchSelect({
   return (
     <div className={className}>
       {loading ? (
-        <div className="animate-pulse bg-gray-100 rounded px-3 py-2 w-56" />
+        <div className="animate-pulse bg-secondary rounded px-3 py-2 w-56" />
       ) : (
         <select
           value={value || ""}
           onChange={(e) =>
             onChange?.(e.target.value ? Number(e.target.value) : null)
           }
-          className="w-96 px-3 py-2 border border-gray-400 rounded-lg bg-white text-black font-medium"
+          className="w-96 px-3 py-2 border border-border rounded-lg bg-card text-black font-medium"
         >
           <option value="">Select batch</option>
           {batches.map((b: any) => (

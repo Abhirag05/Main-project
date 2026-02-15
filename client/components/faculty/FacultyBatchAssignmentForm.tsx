@@ -289,15 +289,15 @@ export default function FacultyBatchAssignmentForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-foreground">
               {selectedFacultyId ? "Assign Batch" : "Assign Faculty to Batch"}
             </h2>
             <button
               onClick={handleClose}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-muted-foreground/70 hover:text-muted-foreground"
               disabled={loading}
             >
               <svg
@@ -324,14 +324,14 @@ export default function FacultyBatchAssignmentForm({
 
           {loadingData ? (
             <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Faculty Dropdown - Only show if not pre-selected */}
               {!selectedFacultyId && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground/80 mb-2">
                     Faculty Member <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -342,18 +342,18 @@ export default function FacultyBatchAssignmentForm({
                         faculty_id: parseInt(e.target.value),
                       })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-border text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                     required
                     disabled={loading}
                   >
-                    <option value={0} className="text-gray-500">
+                    <option value={0} className="text-muted-foreground">
                       Select Faculty
                     </option>
                     {facultyList.map((faculty) => (
                       <option
                         key={faculty.id}
                         value={faculty.id}
-                        className="text-gray-900"
+                        className="text-foreground"
                       >
                         {faculty.employee_code} - {faculty.user.full_name} (
                         {faculty.designation})
@@ -365,7 +365,7 @@ export default function FacultyBatchAssignmentForm({
 
               {/* Batch Dropdown */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground/80 mb-2">
                   Batch <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -376,29 +376,29 @@ export default function FacultyBatchAssignmentForm({
                       batch_id: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                   required
                   disabled={loading}
                 >
-                  <option value={0} className="text-gray-500">
+                  <option value={0} className="text-muted-foreground">
                     Select Batch
                   </option>
                   {batchList.map((batch) => (
                     <option
                       key={batch.id}
                       value={batch.id}
-                      className="text-gray-900"
+                      className="text-foreground"
                     >
                       {batch.code} - {batch.course_name} ({batch.centre_name})
                     </option>
                   ))}
                 </select>
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-muted-foreground">
                   Only batches whose course includes all modules taught by the
                   selected faculty are shown.
                 </p>
                 {filteringBatches && (
-                  <p className="mt-1 text-xs text-blue-600">
+                  <p className="mt-1 text-xs text-primary">
                     Filtering batches based on faculty modules...
                   </p>
                 )}
@@ -422,37 +422,37 @@ export default function FacultyBatchAssignmentForm({
 
               {/* Selected Batch Info */}
               {selectedBatch && (
-                <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">
+                <div className="bg-secondary/50 border border-border rounded-md p-4">
+                  <h4 className="text-sm font-medium text-foreground mb-2">
                     Batch Details
                   </h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      <span className="text-gray-500">Course:</span>{" "}
-                      <span className="text-gray-900">
+                      <span className="text-muted-foreground">Course:</span>{" "}
+                      <span className="text-foreground">
                         {selectedBatch.course_name}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-500">Centre:</span>{" "}
-                      <span className="text-gray-900">
+                      <span className="text-muted-foreground">Centre:</span>{" "}
+                      <span className="text-foreground">
                         {selectedBatch.centre_name}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-500">Mode:</span>{" "}
-                      <span className="text-gray-900">
+                      <span className="text-muted-foreground">Mode:</span>{" "}
+                      <span className="text-foreground">
                         {selectedBatch.mode}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-500">Status:</span>{" "}
+                      <span className="text-muted-foreground">Status:</span>{" "}
                       <span
                         className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${
                           selectedBatch.status === "ACTIVE"
                             ? "bg-green-100 text-green-800"
                             : selectedBatch.status === "COMPLETED"
-                              ? "bg-blue-100 text-blue-800"
+                              ? "bg-primary/10 text-primary"
                               : "bg-red-100 text-red-800"
                         }`}
                       >
@@ -460,16 +460,16 @@ export default function FacultyBatchAssignmentForm({
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-500">Start:</span>{" "}
-                      <span className="text-gray-900">
+                      <span className="text-muted-foreground">Start:</span>{" "}
+                      <span className="text-foreground">
                         {new Date(
                           selectedBatch.start_date,
                         ).toLocaleDateString()}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-500">End:</span>{" "}
-                      <span className="text-gray-900">
+                      <span className="text-muted-foreground">End:</span>{" "}
+                      <span className="text-foreground">
                         {new Date(selectedBatch.end_date).toLocaleDateString()}
                       </span>
                     </div>
@@ -478,10 +478,10 @@ export default function FacultyBatchAssignmentForm({
               )}
 
               {/* Information Box */}
-              <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+              <div className="bg-primary/10 border border-primary/20 rounded-md p-4">
                 <div className="flex">
                   <svg
-                    className="h-5 w-5 text-blue-400 mr-3"
+                    className="h-5 w-5 text-primary/70 mr-3"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -491,7 +491,7 @@ export default function FacultyBatchAssignmentForm({
                       clipRule="evenodd"
                     />
                   </svg>
-                  <div className="text-sm text-blue-700">
+                  <div className="text-sm text-primary">
                     <p className="font-medium">Assignment Info</p>
                     <p className="mt-1">
                       Assigning a faculty member to a batch allows them to teach
@@ -507,14 +507,14 @@ export default function FacultyBatchAssignmentForm({
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 border border-border text-foreground/80 rounded-md hover:bg-secondary/50 transition-colors"
                   disabled={loading}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   disabled={loading}
                 >
                   {loading && (

@@ -17,9 +17,9 @@ import {
 
 const STATUS_COLORS: Record<AssessmentStatus, string> = {
   DRAFT: "bg-yellow-100 text-yellow-800",
-  SCHEDULED: "bg-blue-100 text-blue-800",
+  SCHEDULED: "bg-primary/10 text-primary",
   ACTIVE: "bg-green-100 text-green-800",
-  COMPLETED: "bg-gray-100 text-gray-800",
+  COMPLETED: "bg-secondary text-foreground",
 };
 
 export default function MyAssessmentsPage() {
@@ -102,11 +102,11 @@ export default function MyAssessmentsPage() {
         <div className="max-w-7xl mx-auto">
           <FacultyCard className="p-6">
             <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+              <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
               <div className="space-y-4">
-                <div className="h-12 bg-gray-200 rounded"></div>
-                <div className="h-12 bg-gray-200 rounded"></div>
-                <div className="h-12 bg-gray-200 rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
               </div>
             </div>
           </FacultyCard>
@@ -125,7 +125,7 @@ export default function MyAssessmentsPage() {
           action={
             <Link
               href="/dashboards/faculty/assessments/create"
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors"
             >
               <svg
                 className="w-5 h-5"
@@ -181,7 +181,7 @@ export default function MyAssessmentsPage() {
               action={
                 <Link
                   href="/dashboards/faculty/assessments/create"
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   Create Assessment
                 </Link>
@@ -189,60 +189,60 @@ export default function MyAssessmentsPage() {
             />
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-secondary/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Title
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Batch
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Module
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Skills Assessed
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Start Time
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       End Time
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-border">
                   {assessments.map((assessment) => (
-                    <tr key={assessment.id} className="hover:bg-gray-50">
+                    <tr key={assessment.id} className="hover:bg-secondary/50">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {assessment.title}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-muted-foreground">
                           {assessment.questions_count} questions •{" "}
                           {assessment.total_marks} marks •{" "}
                           {assessment.duration_minutes} min
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-foreground">
                           {assessment.batch.code}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-muted-foreground">
                           {assessment.batch.course_name}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                         {assessment.subject.name}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
+                      <td className="px-6 py-4 text-sm text-foreground">
                         {assessment.skills && assessment.skills.length > 0 ? (
                           <div className="flex flex-wrap gap-1">
                             {assessment.skills.map((skill) => (
@@ -255,15 +255,15 @@ export default function MyAssessmentsPage() {
                             ))}
                           </div>
                         ) : (
-                          <span className="text-gray-400 italic">
+                          <span className="text-muted-foreground/70 italic">
                             No skills
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                         {formatDateTime(assessment.start_datetime)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                         {formatDateTime(assessment.end_datetime)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -282,17 +282,17 @@ export default function MyAssessmentsPage() {
                             <>
                               <Link
                                 href={`/dashboards/faculty/assessments/create?edit=${assessment.id}`}
-                                className="text-blue-600 hover:text-blue-900"
+                                className="text-primary hover:text-primary"
                                 title="Edit"
                               >
                                 Edit
                               </Link>
-                              <span className="text-gray-300">|</span>
+                              <span className="text-muted-foreground/50">|</span>
                             </>
                           )}
                           <Link
                             href={`/dashboards/faculty/assessments/${assessment.id}/questions`}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-primary hover:text-primary"
                             title={
                               assessment.status === "DRAFT"
                                 ? "Add Questions"
@@ -306,7 +306,7 @@ export default function MyAssessmentsPage() {
                           {(assessment.status === "ACTIVE" ||
                             assessment.status === "COMPLETED") && (
                             <>
-                              <span className="text-gray-300">|</span>
+                              <span className="text-muted-foreground/50">|</span>
                               <Link
                                 href={`/dashboards/faculty/assessments/${assessment.id}/results`}
                                 className="text-green-600 hover:text-green-900"
@@ -316,7 +316,7 @@ export default function MyAssessmentsPage() {
                               </Link>
                             </>
                           )}
-                          <span className="text-gray-300">|</span>
+                          <span className="text-muted-foreground/50">|</span>
                           <button
                             onClick={() =>
                               setDeleteConfirm({

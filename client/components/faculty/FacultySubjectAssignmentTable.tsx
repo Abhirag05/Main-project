@@ -19,13 +19,13 @@ function FacultySubjectAssignmentTable({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
         <div className="animate-pulse">
-          <div className="h-12 bg-gray-200"></div>
+          <div className="h-12 bg-muted"></div>
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="h-16 bg-gray-100 border-t border-gray-200"
+              className="h-16 bg-secondary border-t border-border"
             ></div>
           ))}
         </div>
@@ -35,9 +35,9 @@ function FacultySubjectAssignmentTable({
 
   if (safeAssignments.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-12 text-center">
+      <div className="bg-card rounded-lg shadow p-12 text-center">
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className="mx-auto h-12 w-12 text-muted-foreground/70"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -49,10 +49,10 @@ function FacultySubjectAssignmentTable({
             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
           />
         </svg>
-        <h3 className="mt-2 text-lg font-medium text-gray-900">
+        <h3 className="mt-2 text-lg font-medium text-foreground">
           No module assignments found
         </h3>
-        <p className="mt-1 text-gray-500">
+        <p className="mt-1 text-muted-foreground">
           Select a faculty member to view their assigned modules, or assign a
           module using the button above.
         </p>
@@ -61,41 +61,41 @@ function FacultySubjectAssignmentTable({
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-border">
+          <thead className="bg-secondary/50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Module Code
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Module Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Assigned At
               </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-card divide-y divide-border">
             {safeAssignments.map((assignment) => (
               <tr
                 key={assignment.id}
-                className="hover:bg-gray-50 transition-colors"
+                className="hover:bg-secondary/50 transition-colors"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {assignment.module?.code || assignment.subject?.code}
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {assignment.module?.name || assignment.subject?.name}
                   </div>
                 </td>
@@ -104,13 +104,13 @@ function FacultySubjectAssignmentTable({
                     className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       assignment.is_active
                         ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-800"
+                        : "bg-secondary text-foreground"
                     }`}
                   >
                     {assignment.is_active ? "Active" : "Inactive"}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {new Date(assignment.assigned_at).toLocaleDateString(
                     "en-US",
                     {

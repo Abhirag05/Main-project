@@ -97,11 +97,11 @@ export default function BatchTemplateModal({
   };
 
   const getFieldClass = (name: keyof FieldErrors) => {
-    const base = "w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900";
+    const base = "w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-foreground";
     if (touched[name] && fieldErrors[name]) {
       return `${base} border-red-300 focus:border-red-500 focus:ring-red-200`;
     }
-    return `${base} border-gray-300 focus:border-blue-500 focus:ring-blue-200 hover:border-gray-400`;
+    return `${base} border-border focus:border-ring focus:ring-ring/30 hover:border-border`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -132,7 +132,7 @@ export default function BatchTemplateModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-card rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="bg-gradient-to-r from-rose-600 to-rose-700 px-6 py-4 flex items-center justify-between">
           <div>
@@ -169,7 +169,7 @@ export default function BatchTemplateModal({
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Course Dropdown */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                 Course <span className="text-red-500">*</span>
               </label>
               <select
@@ -197,7 +197,7 @@ export default function BatchTemplateModal({
 
             {/* Template Name */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                 Template Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -217,36 +217,36 @@ export default function BatchTemplateModal({
 
             {/* Mode Radio Buttons */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-foreground/80 mb-2">
                 Mode <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-4">
-                <label className={`flex items-center gap-2.5 px-4 py-3 border rounded-lg cursor-pointer transition-all ${formData.mode === 'LIVE' ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200' : 'border-gray-300 hover:border-gray-400'}`}>
+                <label className={`flex items-center gap-2.5 px-4 py-3 border rounded-lg cursor-pointer transition-all ${formData.mode === 'LIVE' ? 'border-primary bg-primary/10 ring-2 ring-ring/30' : 'border-border hover:border-border'}`}>
                   <input
                     type="radio"
                     value="LIVE"
                     checked={formData.mode === 'LIVE'}
                     onChange={() => setFormData({ ...formData, mode: 'LIVE' })}
-                    className="text-blue-600 focus:ring-blue-500"
+                    className="text-primary focus:ring-ring"
                     disabled={loading}
                   />
                   <div>
-                    <span className="text-sm font-semibold text-gray-700">Live</span>
-                    <p className="text-xs text-gray-500">Real-time classes</p>
+                    <span className="text-sm font-semibold text-foreground/80">Live</span>
+                    <p className="text-xs text-muted-foreground">Real-time classes</p>
                   </div>
                 </label>
-                <label className={`flex items-center gap-2.5 px-4 py-3 border rounded-lg cursor-pointer transition-all ${formData.mode === 'RECORDED' ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200' : 'border-gray-300 hover:border-gray-400'}`}>
+                <label className={`flex items-center gap-2.5 px-4 py-3 border rounded-lg cursor-pointer transition-all ${formData.mode === 'RECORDED' ? 'border-primary bg-primary/10 ring-2 ring-ring/30' : 'border-border hover:border-border'}`}>
                   <input
                     type="radio"
                     value="RECORDED"
                     checked={formData.mode === 'RECORDED'}
                     onChange={() => setFormData({ ...formData, mode: 'RECORDED' })}
-                    className="text-blue-600 focus:ring-blue-500"
+                    className="text-primary focus:ring-ring"
                     disabled={loading}
                   />
                   <div>
-                    <span className="text-sm font-semibold text-gray-700">Recorded</span>
-                    <p className="text-xs text-gray-500">Pre-recorded content</p>
+                    <span className="text-sm font-semibold text-foreground/80">Recorded</span>
+                    <p className="text-xs text-muted-foreground">Pre-recorded content</p>
                   </div>
                 </label>
               </div>
@@ -254,7 +254,7 @@ export default function BatchTemplateModal({
 
             {/* Max Students */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                 Max Students <span className="text-red-500">*</span>
               </label>
               <input
@@ -271,30 +271,30 @@ export default function BatchTemplateModal({
               {touched.max_students && fieldErrors.max_students && (
                 <p className="mt-1 text-sm text-red-600">{fieldErrors.max_students}</p>
               )}
-              <p className="mt-1 text-xs text-gray-500">Maximum number of students per batch</p>
+              <p className="mt-1 text-xs text-muted-foreground">Maximum number of students per batch</p>
             </div>
 
             {/* Status Toggle */}
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-lg">
               <input
                 type="checkbox"
                 id="batch_is_active"
                 checked={formData.is_active}
                 onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-primary focus:ring-ring border-border rounded"
                 disabled={loading}
               />
-              <label htmlFor="batch_is_active" className="text-sm text-gray-700">
+              <label htmlFor="batch_is_active" className="text-sm text-foreground/80">
                 <span className="font-semibold">Active</span> — Template is available for batch creation
               </label>
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <div className="flex justify-end gap-3 pt-4 border-t border-border">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-5 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-5 py-2.5 border-2 border-border text-foreground/80 font-semibold rounded-lg hover:bg-secondary/50 transition-colors"
                 disabled={loading}
               >
                 Cancel

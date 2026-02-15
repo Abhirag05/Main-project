@@ -151,11 +151,11 @@ export default function FacultySubjectAssignmentForm({
   };
 
   const getFieldClass = (name: keyof FieldErrors) => {
-    const base = "w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900";
+    const base = "w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-foreground";
     if (touched[name] && fieldErrors[name]) {
       return `${base} border-red-300 focus:border-red-500 focus:ring-red-200`;
     }
-    return `${base} border-gray-300 focus:border-blue-500 focus:ring-blue-200 hover:border-gray-400`;
+    return `${base} border-border focus:border-ring focus:ring-ring/30 hover:border-border`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -208,7 +208,7 @@ export default function FacultySubjectAssignmentForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-card rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4 flex items-center justify-between">
           <div>
@@ -248,14 +248,14 @@ export default function FacultySubjectAssignmentForm({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              <p className="text-sm text-gray-500">Loading faculty and modules...</p>
+              <p className="text-sm text-muted-foreground">Loading faculty and modules...</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Faculty Dropdown - Only show if not pre-selected */}
               {!selectedFacultyId && (
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                     Faculty Member <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -284,7 +284,7 @@ export default function FacultySubjectAssignmentForm({
 
               {/* Subject Dropdown */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                   Module <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -310,18 +310,18 @@ export default function FacultySubjectAssignmentForm({
                 {touched.module_id && fieldErrors.module_id && (
                   <p className="mt-1 text-sm text-red-600">{fieldErrors.module_id}</p>
                 )}
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-muted-foreground">
                   Only active modules not already assigned to this faculty are shown
                 </p>
               </div>
 
               {/* Information Box */}
-              <div className="bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-4">
+              <div className="bg-primary/10 border-l-4 border-primary/70 rounded-r-lg p-4">
                 <div className="flex">
-                  <svg className="h-5 w-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="h-5 w-5 text-primary/80 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
-                  <div className="ml-3 text-sm text-blue-700">
+                  <div className="ml-3 text-sm text-primary">
                     <p className="font-semibold">Assignment Info</p>
                     <p className="mt-1">
                       Assigning a module to faculty allows them to teach that module across different batches.
@@ -332,11 +332,11 @@ export default function FacultySubjectAssignmentForm({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+              <div className="flex justify-end gap-3 pt-4 border-t border-border">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-5 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-5 py-2.5 border-2 border-border text-foreground/80 font-semibold rounded-lg hover:bg-secondary/50 transition-colors"
                   disabled={loading}
                 >
                   Cancel

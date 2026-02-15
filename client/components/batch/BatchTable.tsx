@@ -11,10 +11,10 @@ export default function BatchTable({ batches, onStatusUpdate }: BatchTableProps)
   const getStatusBadge = (status: string) => {
     const badges = {
       ACTIVE: "bg-green-100 text-green-800",
-      COMPLETED: "bg-gray-100 text-gray-800",
+      COMPLETED: "bg-secondary text-foreground",
       CANCELLED: "bg-red-100 text-red-800",
     };
-    return badges[status as keyof typeof badges] || "bg-gray-100 text-gray-800";
+    return badges[status as keyof typeof badges] || "bg-secondary text-foreground";
   };
 
   const getModeBadge = (mode: string) => {
@@ -34,47 +34,47 @@ export default function BatchTable({ batches, onStatusUpdate }: BatchTableProps)
   return (
     <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
       <table className="min-w-full divide-y divide-gray-300">
-        <thead className="bg-gray-50">
+        <thead className="bg-secondary/50">
           <tr>
             <th
               scope="col"
-              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-foreground sm:pl-6"
             >
               Batch Code
             </th>
             <th
               scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
             >
               Course
             </th>
             <th
               scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
             >
               Mode
             </th>
             <th
               scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
             >
               Start Date
             </th>
             <th
               scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
             >
               End Date
             </th>
             <th
               scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
             >
               Students
             </th>
             <th
               scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
             >
               Status
             </th>
@@ -86,21 +86,21 @@ export default function BatchTable({ batches, onStatusUpdate }: BatchTableProps)
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
+        <tbody className="divide-y divide-border bg-card">
           {batches.map((batch) => (
             <tr key={batch.id}>
-              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-foreground sm:pl-6">
                 {batch.code}
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
                 <div>
-                  <div className="font-medium text-gray-900">
+                  <div className="font-medium text-foreground">
                     {batch.course_name}
                   </div>
-                  <div className="text-gray-500">{batch.course_code}</div>
+                  <div className="text-muted-foreground">{batch.course_code}</div>
                 </div>
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
                 <span
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getModeBadge(
                     batch.mode
@@ -109,16 +109,16 @@ export default function BatchTable({ batches, onStatusUpdate }: BatchTableProps)
                   {batch.mode}
                 </span>
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
                 {formatDate(batch.start_date)}
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
                 {formatDate(batch.end_date)}
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
                 {batch.current_student_count} / {batch.max_students}
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              <td className="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
                 <span
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadge(
                     batch.status
@@ -131,7 +131,7 @@ export default function BatchTable({ batches, onStatusUpdate }: BatchTableProps)
                 {batch.status === "ACTIVE" && (
                   <button
                     onClick={() => onStatusUpdate(batch)}
-                    className="text-blue-600 hover:text-blue-900"
+                    className="text-primary hover:text-primary"
                   >
                     Update Status
                   </button>

@@ -17,9 +17,9 @@ interface ClassSessionListProps {
 }
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
-  SCHEDULED: { bg: "bg-blue-100", text: "text-blue-800" },
+  SCHEDULED: { bg: "bg-primary/10", text: "text-primary" },
   IN_PROGRESS: { bg: "bg-green-100", text: "text-green-800" },
-  COMPLETED: { bg: "bg-gray-100", text: "text-gray-800" },
+  COMPLETED: { bg: "bg-secondary", text: "text-foreground" },
   CANCELLED: { bg: "bg-red-100", text: "text-red-800" },
   RESCHEDULED: { bg: "bg-yellow-100", text: "text-yellow-800" },
 };
@@ -70,13 +70,13 @@ export default function ClassSessionList({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-card rounded-lg shadow overflow-hidden">
         <div className="animate-pulse">
-          <div className="h-12 bg-gray-200"></div>
+          <div className="h-12 bg-muted"></div>
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="h-20 bg-gray-100 border-t border-gray-200"
+              className="h-20 bg-secondary border-t border-border"
             ></div>
           ))}
         </div>
@@ -86,9 +86,9 @@ export default function ClassSessionList({
 
   if (safeSessions.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-12 text-center">
+      <div className="bg-card rounded-lg shadow p-12 text-center">
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className="mx-auto h-12 w-12 text-muted-foreground/70"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -100,10 +100,10 @@ export default function ClassSessionList({
             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
           />
         </svg>
-        <h3 className="mt-2 text-lg font-medium text-gray-900">
+        <h3 className="mt-2 text-lg font-medium text-foreground">
           No sessions found
         </h3>
-        <p className="mt-1 text-gray-500">
+        <p className="mt-1 text-muted-foreground">
           Generate sessions from time slots to populate the schedule.
         </p>
       </div>
@@ -131,36 +131,36 @@ export default function ClassSessionList({
   const sortedDates = Object.keys(sessionsByDate).sort();
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="divide-y divide-gray-200">
+    <div className="bg-card rounded-lg shadow overflow-hidden">
+      <div className="divide-y divide-border">
         {sortedDates.map((date) => (
-          <div key={date} className="border-t-4 border-blue-100">
+          <div key={date} className="border-t-4 border-primary/20">
             <div
               className={`px-6 py-4 ${
-                isToday(date) ? "bg-blue-50" : "bg-gray-50"
+                isToday(date) ? "bg-primary/10" : "bg-secondary/50"
               } flex items-center justify-between`}
             >
               <div className="flex items-center space-x-2">
                 <span
                   className={`font-medium ${
-                    isToday(date) ? "text-blue-700" : "text-gray-700"
+                    isToday(date) ? "text-primary" : "text-foreground/80"
                   }`}
                 >
                   {formatDate(date)}
                 </span>
                 {isToday(date) && (
-                  <span className="inline-flex px-2 py-0.5 text-xs font-semibold bg-blue-600 text-white rounded-full">
+                  <span className="inline-flex px-2 py-0.5 text-xs font-semibold bg-primary text-white rounded-full">
                     Today
                   </span>
                 )}
               </div>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-muted-foreground">
                 {sessionsByDate[date].length} session
                 {sessionsByDate[date].length !== 1 ? "s" : ""}
               </span>
             </div>
 
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-border">
               {sessionsByDate[date].map((session) => {
                 const statusColor =
                   STATUS_COLORS[session.status] || STATUS_COLORS.SCHEDULED;
@@ -170,14 +170,14 @@ export default function ClassSessionList({
                 return (
                   <div
                     key={session.id}
-                    className={`px-4 py-4 sm:px-6 hover:bg-gray-50 transition-colors ${
+                    className={`px-4 py-4 sm:px-6 hover:bg-secondary/50 transition-colors ${
                       pastSession ? "bg-red-50" : ""
                     }`}
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                          <span className="text-lg font-medium text-gray-900">
+                          <span className="text-lg font-medium text-foreground">
                             {session.module_name || "Module"}
                           </span>
                           <span
@@ -205,7 +205,7 @@ export default function ClassSessionList({
                           )}
                         </div>
 
-                        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
+                        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                           <span className="flex items-center">
                             <svg
                               className="w-4 h-4 mr-1"
@@ -281,13 +281,13 @@ export default function ClassSessionList({
                               onChange={(e) =>
                                 onStatusChange(session, e.target.value)
                               }
-                              className="text-sm border border-gray-300 rounded-md px-2 py-1 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              className="text-sm border border-border rounded-md px-2 py-1 bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                             >
                               {STATUS_OPTIONS.map((option) => (
                                 <option
                                   key={option.value}
                                   value={option.value}
-                                  className="text-gray-900"
+                                  className="text-foreground"
                                 >
                                   {option.label}
                                 </option>
@@ -330,7 +330,7 @@ export default function ClassSessionList({
 
                         <button
                           onClick={() => onViewDetails(session)}
-                          className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100"
+                          className="p-2 text-muted-foreground/70 hover:text-muted-foreground rounded-full hover:bg-secondary"
                           title="View Details"
                         >
                           <svg
@@ -359,7 +359,7 @@ export default function ClassSessionList({
                             href={session.effective_meeting_link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 text-blue-600 hover:text-blue-800 rounded-full hover:bg-blue-50"
+                            className="p-2 text-primary hover:text-primary rounded-full hover:bg-primary/10"
                             title="Join Meeting"
                           >
                             <svg
@@ -383,7 +383,7 @@ export default function ClassSessionList({
                             onClick={() => onMarkAttendance(session)}
                             className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors flex items-center ${
                               session.attendance_marked
-                                ? "text-white bg-blue-600 hover:bg-blue-700"
+                                ? "text-white bg-primary hover:bg-primary/90"
                                 : "text-white bg-green-600 hover:bg-green-700"
                             }`}
                             title={

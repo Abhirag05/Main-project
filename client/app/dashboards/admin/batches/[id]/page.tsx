@@ -112,11 +112,11 @@ export default function BatchDetailPage() {
       case "ACTIVE":
         return "bg-green-100 text-green-800";
       case "COMPLETED":
-        return "bg-blue-100 text-blue-800";
+        return "bg-primary/10 text-primary";
       case "CANCELLED":
         return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-secondary text-foreground";
     }
   };
 
@@ -127,7 +127,7 @@ export default function BatchDetailPage() {
       case "RECORDED":
         return "bg-orange-100 text-orange-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-secondary text-foreground";
     }
   };
 
@@ -136,8 +136,8 @@ export default function BatchDetailPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading batch details...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Loading batch details...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -162,7 +162,7 @@ export default function BatchDetailPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">
+            <h2 className="mt-4 text-2xl font-bold text-foreground">
               Batch Not Found
             </h2>
           </div>
@@ -177,7 +177,7 @@ export default function BatchDetailPage() {
         {/* Back Button */}
         <button
           onClick={() => router.back()}
-          className="mb-6 flex items-center text-sm text-gray-600 hover:text-gray-900"
+          className="mb-6 flex items-center text-sm text-muted-foreground hover:text-foreground"
         >
           <svg
             className="w-5 h-5 mr-2"
@@ -196,11 +196,11 @@ export default function BatchDetailPage() {
         </button>
 
         {/* Header with Actions */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-card rounded-lg shadow-md p-6 mb-6">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center space-x-3">
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-3xl font-bold text-foreground">
                   {batch.code}
                 </h1>
                 <span
@@ -218,7 +218,7 @@ export default function BatchDetailPage() {
                   {batch.mode}
                 </span>
               </div>
-              <p className="mt-2 text-lg text-gray-600">{batch.course_name}</p>
+              <p className="mt-2 text-lg text-muted-foreground">{batch.course_name}</p>
             </div>
             
             {/* Action Buttons */}
@@ -226,7 +226,7 @@ export default function BatchDetailPage() {
               <div className="flex space-x-2">
                 <button
                   onClick={handleEdit}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm flex items-center"
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm flex items-center"
                 >
                   <svg
                     className="w-4 h-4 mr-2"
@@ -256,7 +256,7 @@ export default function BatchDetailPage() {
                 </button>
                 <button
                   onClick={handleCancelEdit}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors font-medium text-sm"
+                  className="px-4 py-2 bg-muted text-foreground/80 rounded-lg hover:bg-muted-foreground/30 transition-colors font-medium text-sm"
                 >
                   Cancel
                 </button>
@@ -268,48 +268,48 @@ export default function BatchDetailPage() {
         {/* Batch Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column */}
-          <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900 border-b pb-3">
+          <div className="bg-card rounded-lg shadow-md p-6 space-y-6">
+            <h2 className="text-xl font-semibold text-foreground border-b pb-3">
               Batch Information
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Batch Code
                 </label>
-                <p className="mt-1 text-base text-gray-900">{batch.code}</p>
+                <p className="mt-1 text-base text-foreground">{batch.code}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Course
                 </label>
-                <p className="mt-1 text-base text-gray-900">
+                <p className="mt-1 text-base text-foreground">
                   {batch.course_name} ({batch.course_code})
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Centre
                 </label>
-                <p className="mt-1 text-base text-gray-900">
+                <p className="mt-1 text-base text-foreground">
                   {batch.centre_name} ({batch.centre_code})
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Duration
                 </label>
-                <p className="mt-1 text-base text-gray-900">
+                <p className="mt-1 text-base text-foreground">
                   {batch.course_duration_months} months
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Mode
                 </label>
                 <span
@@ -322,19 +322,19 @@ export default function BatchDetailPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Maximum Students
                 </label>
-                <p className="mt-1 text-base text-gray-900">
+                <p className="mt-1 text-base text-foreground">
                   {batch.max_students}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Current Enrollment
                 </label>
-                <p className="mt-1 text-base text-gray-900">
+                <p className="mt-1 text-base text-foreground">
                   {batch.current_student_count} students
                 </p>
               </div>
@@ -342,14 +342,14 @@ export default function BatchDetailPage() {
           </div>
 
           {/* Right Column */}
-          <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900 border-b pb-3">
+          <div className="bg-card rounded-lg shadow-md p-6 space-y-6">
+            <h2 className="text-xl font-semibold text-foreground border-b pb-3">
               Schedule & Status
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Start Date
                 </label>
                 {isEditing ? (
@@ -362,10 +362,10 @@ export default function BatchDetailPage() {
                         start_date: e.target.value,
                       })
                     }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-gray-700"
+                    className="mt-1 block w-full rounded-md border-border shadow-sm focus:border-ring focus:ring-ring sm:text-sm text-foreground/80"
                   />
                 ) : (
-                  <p className="mt-1 text-base text-gray-900">
+                  <p className="mt-1 text-base text-foreground">
                     {new Date(batch.start_date).toLocaleDateString("en-US", {
                       weekday: "long",
                       year: "numeric",
@@ -377,7 +377,7 @@ export default function BatchDetailPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   End Date
                 </label>
                 {isEditing ? (
@@ -390,10 +390,10 @@ export default function BatchDetailPage() {
                         end_date: e.target.value,
                       })
                     }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm text-gray-700"
+                    className="mt-1 block w-full rounded-md border-border shadow-sm focus:border-ring focus:ring-ring sm:text-sm text-foreground/80"
                   />
                 ) : (
-                  <p className="mt-1 text-base text-gray-900">
+                  <p className="mt-1 text-base text-foreground">
                     {new Date(batch.end_date).toLocaleDateString("en-US", {
                       weekday: "long",
                       year: "numeric",
@@ -405,7 +405,7 @@ export default function BatchDetailPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Status
                 </label>
                 <div className="mt-2 flex items-center space-x-2">
@@ -420,7 +420,7 @@ export default function BatchDetailPage() {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleStatusChange("COMPLETED")}
-                        className="px-3 py-1 bg-blue-600 text-white rounded-md text-xs hover:bg-blue-700"
+                        className="px-3 py-1 bg-primary text-white rounded-md text-xs hover:bg-primary/90"
                       >
                         Mark Completed
                       </button>
@@ -436,10 +436,10 @@ export default function BatchDetailPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Created
                 </label>
-                <p className="mt-1 text-base text-gray-900">
+                <p className="mt-1 text-base text-foreground">
                   {new Date(batch.created_at).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
@@ -451,10 +451,10 @@ export default function BatchDetailPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Last Updated
                 </label>
-                <p className="mt-1 text-base text-gray-900">
+                <p className="mt-1 text-base text-foreground">
                   {new Date(batch.updated_at).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
@@ -469,12 +469,12 @@ export default function BatchDetailPage() {
         </div>
 
         {/* Enrolled Students Section */}
-        <div className="mt-8 bg-white rounded-lg shadow-md p-6">
+        <div className="mt-8 bg-card rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-foreground">
               Enrolled Students
               {batchDetails && (
-                <span className="ml-2 text-sm font-normal text-gray-500">
+                <span className="ml-2 text-sm font-normal text-muted-foreground">
                   ({batchDetails.enrolled_students.length} of {batch.max_students} max)
                 </span>
               )}
@@ -482,7 +482,7 @@ export default function BatchDetailPage() {
             {batch.status === "ACTIVE" && batch.current_student_count < batch.max_students && (
               <button
                 onClick={() => router.push(`/dashboards/admin/batches/${batchId}/assign-students`)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm flex items-center"
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm flex items-center"
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -504,41 +504,41 @@ export default function BatchDetailPage() {
 
           {batchDetails && batchDetails.enrolled_students.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-secondary/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       #
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Student Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Email
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Enrollment Date
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Status
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-border">
                   {batchDetails.enrolled_students.map((student, index) => (
-                    <tr key={student.student_profile_id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <tr key={student.student_profile_id} className="hover:bg-secondary/50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                         {index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {student.full_name}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                         {student.email}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                         {new Date(student.joined_at).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "short",
@@ -558,7 +558,7 @@ export default function BatchDetailPage() {
           ) : (
             <div className="text-center py-12">
               <svg
-                className="mx-auto h-12 w-12 text-gray-400"
+                className="mx-auto h-12 w-12 text-muted-foreground/70"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -570,15 +570,15 @@ export default function BatchDetailPage() {
                   d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
                 />
               </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No students enrolled</h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <h3 className="mt-2 text-sm font-medium text-foreground">No students enrolled</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
                 Get started by assigning students to this batch.
               </p>
               {batch.status === "ACTIVE" && (
                 <div className="mt-6">
                   <button
                     onClick={() => router.push(`/dashboards/admin/batches/${batchId}/assign-students`)}
-                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
                   >
                     <svg
                       className="-ml-1 mr-2 h-5 w-5"

@@ -92,13 +92,13 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-secondary/50 px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">
+        <div className="bg-card rounded-lg shadow-md p-8">
+          <h1 className="text-3xl font-bold text-center text-foreground mb-2">
             Welcome Back
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-muted-foreground mb-8">
             Login to your account
           </p>
 
@@ -114,7 +114,7 @@ export default function LoginForm() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Email
               </label>
@@ -124,8 +124,8 @@ export default function LoginForm() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
-                  errors.email ? "border-red-500 bg-red-50" : "border-gray-300"
+                className={`w-full px-4 py-2 border rounded-lg text-foreground placeholder-gray-400 focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition ${
+                  errors.email ? "border-red-500 bg-red-50" : "border-border"
                 }`}
                 placeholder="Enter your email"
               />
@@ -138,7 +138,7 @@ export default function LoginForm() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Password
               </label>
@@ -149,17 +149,17 @@ export default function LoginForm() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12 ${
+                  className={`w-full px-4 py-2 border rounded-lg text-foreground placeholder-gray-400 focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition pr-12 ${
                     errors.password
                       ? "border-red-500 bg-red-50"
-                      : "border-gray-300"
+                      : "border-border"
                   }`}
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground/80 focus:outline-none"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
@@ -208,18 +208,18 @@ export default function LoginForm() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="w-full bg-primary text-white py-2.5 px-4 rounded-lg font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               {isSubmitting ? "Logging in..." : "Login"}
             </button>
           </form>
 
           {/* Sign Up Link */}
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
             <Link
               href="/register"
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-primary hover:text-primary font-medium"
             >
               Sign up
             </Link>

@@ -27,7 +27,7 @@ export default function UploadMaterialPageWrapper() {
     <Suspense fallback={
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </DashboardLayout>
     }>
@@ -247,19 +247,19 @@ function UploadMaterialPage() {
     <DashboardLayout>
       <div className="max-w-4xl mx-auto">
         {/* Breadcrumb */}
-        <nav className="flex items-center text-sm text-gray-500 mb-6">
-          <Link href="/dashboards/faculty" className="hover:text-blue-600">
+        <nav className="flex items-center text-sm text-muted-foreground mb-6">
+          <Link href="/dashboards/faculty" className="hover:text-primary">
             Dashboard
           </Link>
           <span className="mx-2">/</span>
           <Link
             href="/dashboards/faculty/course-materials"
-            className="hover:text-blue-600"
+            className="hover:text-primary"
           >
             Course Materials
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-700 font-medium">
+          <span className="text-foreground/80 font-medium">
             {isEditMode ? "Edit Material" : "Upload Material"}
           </span>
         </nav>
@@ -276,28 +276,28 @@ function UploadMaterialPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">
+        <div className="bg-card rounded-lg shadow-md p-6">
+          <h1 className="text-2xl font-bold text-foreground mb-6">
             {isEditMode ? "Edit Course Material" : "Upload Course Material"}
           </h1>
 
           {loadingData ? (
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-3 text-gray-500">Loading...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-3 text-muted-foreground">Loading...</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground/80 mb-1">
                   Title <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground placeholder:text-muted-foreground/70 focus:ring-2 focus:ring-ring focus:border-transparent"
                   placeholder="e.g. Topic 1 - React Hooks Slides"
                   required
                 />
@@ -305,14 +305,14 @@ function UploadMaterialPage() {
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground/80 mb-1">
                   Description
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground placeholder:text-muted-foreground/70 focus:ring-2 focus:ring-ring focus:border-transparent"
                   placeholder="Optional description of the material"
                 />
               </div>
@@ -321,13 +321,13 @@ function UploadMaterialPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Module */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground/80 mb-1">
                     Module <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={moduleId}
                     onChange={(e) => setModuleId(Number(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                     disabled={isEditMode}
                   >
                     <option value={0}>-- Select Module --</option>
@@ -341,7 +341,7 @@ function UploadMaterialPage() {
 
                 {/* Material Type */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground/80 mb-1">
                     Material Type <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -351,7 +351,7 @@ function UploadMaterialPage() {
                       setFile(null);
                       setExternalUrl("");
                     }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                   >
                     {MATERIAL_TYPES.map((t) => (
                       <option key={t.value} value={t.value}>
@@ -365,20 +365,20 @@ function UploadMaterialPage() {
               {/* File upload (for PDF/PPT/DOC) */}
               {isFileType && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground/80 mb-1">
                     Upload File <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="file"
                     accept=".pdf,.ppt,.pptx,.doc,.docx"
                     onChange={handleFileChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/10"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Max 20 MB. Allowed: pdf, ppt, pptx, doc, docx
                   </p>
                   {isEditMode && existingFileUrl && !file && (
-                    <p className="text-xs text-blue-600 mt-1">
+                    <p className="text-xs text-primary mt-1">
                       Existing file attached.{" "}
                       <a
                         href={existingFileUrl}
@@ -396,14 +396,14 @@ function UploadMaterialPage() {
               {/* External URL (for VIDEO/LINK) */}
               {isLinkType && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground/80 mb-1">
                     External URL <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="url"
                     value={externalUrl}
                     onChange={(e) => setExternalUrl(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground placeholder:text-muted-foreground/70 focus:ring-2 focus:ring-ring focus:border-transparent"
                     placeholder="https://..."
                     required
                   />
@@ -412,11 +412,11 @@ function UploadMaterialPage() {
 
               {/* Batch Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground/80 mb-2">
                   Assign to Batches <span className="text-red-500">*</span>
                 </label>
                 {batches.length === 0 ? (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     No batches assigned to you.
                   </p>
                 ) : (
@@ -432,15 +432,15 @@ function UploadMaterialPage() {
                           onClick={() => toggleBatch(b.id)}
                           className={`flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all text-left ${
                             isSelected
-                              ? "border-blue-500 bg-blue-50"
-                              : "border-gray-200 bg-white hover:border-gray-300"
+                              ? "border-primary bg-primary/10"
+                              : "border-border bg-card hover:border-border"
                           }`}
                         >
                           <div
                             className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
                               isSelected
-                                ? "border-blue-500 bg-blue-500"
-                                : "border-gray-300"
+                                ? "border-primary bg-primary/80"
+                                : "border-border"
                             }`}
                           >
                             {isSelected && (
@@ -458,7 +458,7 @@ function UploadMaterialPage() {
                             )}
                           </div>
                           <div>
-                            <span className="font-medium text-sm text-gray-800">
+                            <span className="font-medium text-sm text-foreground">
                               {b.code}
                             </span>
                             <span
@@ -483,7 +483,7 @@ function UploadMaterialPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading
                     ? isEditMode
@@ -495,7 +495,7 @@ function UploadMaterialPage() {
                 </button>
                 <Link
                   href="/dashboards/faculty/course-materials"
-                  className="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-6 py-2 border border-border text-foreground/80 font-medium rounded-lg hover:bg-secondary/50 transition-colors"
                 >
                   Cancel
                 </Link>

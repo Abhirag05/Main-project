@@ -165,8 +165,8 @@ export default function FullPaymentStudentsPage() {
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
             />
           </svg>
-          <h1 className="mt-4 text-2xl font-bold text-gray-900">Access Denied</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="mt-4 text-2xl font-bold text-foreground">Access Denied</h1>
+          <p className="mt-2 text-muted-foreground">
             You do not have permission to access this page.
           </p>
         </div>
@@ -180,18 +180,18 @@ export default function FullPaymentStudentsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Full Payment Students</h1>
-            <p className="mt-1 text-sm text-gray-600">
+            <h1 className="text-3xl font-bold text-foreground">Full Payment Students</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               Students who opted for full payment method
             </p>
           </div>
           <button
             onClick={fetchAdmissions}
             disabled={isLoading}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className="inline-flex items-center px-4 py-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground/80 bg-card hover:bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50"
           >
             <svg
-              className={`-ml-1 mr-2 h-5 w-5 text-gray-500 ${
+              className={`-ml-1 mr-2 h-5 w-5 text-muted-foreground ${
                 isLoading ? "animate-spin" : ""
               }`}
               fill="none"
@@ -221,8 +221,8 @@ export default function FullPaymentStudentsPage() {
                 </div>
               </div>
               <div className="ml-5">
-                <h2 className="text-2xl font-bold text-gray-900">{admissions.length}</h2>
-                <p className="text-sm text-gray-600">Total Full Payment Students</p>
+                <h2 className="text-2xl font-bold text-foreground">{admissions.length}</h2>
+                <p className="text-sm text-muted-foreground">Total Full Payment Students</p>
               </div>
             </div>
           </div>
@@ -237,10 +237,10 @@ export default function FullPaymentStudentsPage() {
                 </div>
               </div>
               <div className="ml-5">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-foreground">
                   {admissions.filter((a) => a.admission_status === "FULL_PAYMENT_VERIFIED").length}
                 </h2>
-                <p className="text-sm text-gray-600">Verified</p>
+                <p className="text-sm text-muted-foreground">Verified</p>
               </div>
             </div>
           </div>
@@ -255,10 +255,10 @@ export default function FullPaymentStudentsPage() {
                 </div>
               </div>
               <div className="ml-5">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-foreground">
                   {admissions.filter((a) => a.admission_status === "PENDING" || a.admission_status === "APPROVED").length}
                 </h2>
-                <p className="text-sm text-gray-600">Pending Verification</p>
+                <p className="text-sm text-muted-foreground">Pending Verification</p>
               </div>
             </div>
           </div>

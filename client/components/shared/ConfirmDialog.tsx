@@ -45,9 +45,9 @@ export default function ConfirmDialog({
       ),
     },
     info: {
-      button: 'bg-blue-600 hover:bg-blue-700',
-      iconBg: 'bg-blue-100',
-      iconColor: 'text-blue-600',
+      button: 'bg-primary hover:bg-primary/90',
+      iconBg: 'bg-primary/10',
+      iconColor: 'text-primary',
       icon: (
         <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -60,26 +60,26 @@ export default function ConfirmDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+      <div className="bg-card rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
         <div className="p-6">
           <div className="flex items-start gap-4">
             <div className={`flex-shrink-0 w-12 h-12 ${config.iconBg} rounded-full flex items-center justify-center ${config.iconColor}`}>
               {config.icon}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-lg font-bold text-foreground">
                 {title}
               </h3>
-              <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                 {message}
               </p>
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-100">
+        <div className="flex justify-end gap-3 px-6 py-4 bg-secondary/50 border-t border-border">
           <button
             onClick={onCancel}
-            className="px-5 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+            className="px-5 py-2.5 border-2 border-border text-foreground/80 font-semibold rounded-lg hover:bg-secondary transition-colors"
           >
             {cancelText}
           </button>

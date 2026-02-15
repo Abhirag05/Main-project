@@ -47,12 +47,12 @@ export default function StudentProfileCard({
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="bg-card rounded-lg shadow-md p-6 mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">My Profile</h2>
+          <h2 className="text-2xl font-bold text-foreground">My Profile</h2>
           <button
             onClick={() => setIsEditOpen(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
           >
             Edit Profile
           </button>
@@ -62,59 +62,59 @@ export default function StudentProfileCard({
           {batch && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-600">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Course
                 </label>
-                <p className="text-gray-900 font-medium">{batch.course_name}</p>
+                <p className="text-foreground font-medium">{batch.course_name}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-600">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Batch
                 </label>
-                <p className="text-gray-900">{batch.batch_code}</p>
+                <p className="text-foreground">{batch.batch_code}</p>
               </div>
             </>
           )}
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-muted-foreground">
               Full Name
             </label>
-            <p className="text-gray-900 font-medium">{profile.full_name}</p>
+            <p className="text-foreground font-medium">{profile.full_name}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-muted-foreground">
               Email
             </label>
-            <p className="text-gray-900">{profile.email}</p>
+            <p className="text-foreground">{profile.email}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-muted-foreground">
               Phone
             </label>
-            <p className="text-gray-900">{profile.phone || "N/A"}</p>
+            <p className="text-foreground">{profile.phone || "N/A"}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-muted-foreground">
               Centre
             </label>
-            <p className="text-gray-900">{profile.centre?.name || "N/A"}</p>
+            <p className="text-foreground">{profile.centre?.name || "N/A"}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-muted-foreground">
               Joined
             </label>
-            <p className="text-gray-900">
+            <p className="text-foreground">
               {new Date(profile.created_at).toLocaleDateString()}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-muted-foreground">
               Status
             </label>
             <span
@@ -128,21 +128,21 @@ export default function StudentProfileCard({
 
       {isEditOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">
+          <div className="bg-card rounded-lg shadow-xl p-6 w-full max-w-md">
+            <h3 className="text-xl font-bold text-foreground mb-4">
               Edit Profile
             </h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground/80 mb-2">
                   Phone
                 </label>
                 <input
                   type="text"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring text-foreground bg-card"
                   placeholder="Enter phone number"
                 />
               </div>
@@ -152,14 +152,14 @@ export default function StudentProfileCard({
               <button
                 onClick={() => setIsEditOpen(false)}
                 disabled={isSaving}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="px-4 py-2 border border-border rounded-md text-foreground/80 hover:bg-secondary/50 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
                 {isSaving ? "Saving..." : "Save Changes"}
               </button>

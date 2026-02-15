@@ -70,7 +70,7 @@ function MaterialTypeIcon({ type }: { type: string }) {
       );
     case "LINK":
       return (
-        <span className="inline-flex items-center justify-center w-8 h-8 rounded bg-blue-100 text-blue-600">
+        <span className="inline-flex items-center justify-center w-8 h-8 rounded bg-primary/10 text-primary">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
           </svg>
@@ -78,7 +78,7 @@ function MaterialTypeIcon({ type }: { type: string }) {
       );
     default:
       return (
-        <span className="inline-flex items-center justify-center w-8 h-8 rounded bg-gray-100 text-gray-600 text-xs font-bold">
+        <span className="inline-flex items-center justify-center w-8 h-8 rounded bg-secondary text-muted-foreground text-xs font-bold">
           {type.slice(0, 3).toUpperCase()}
         </span>
       );
@@ -167,11 +167,11 @@ export default function StudentDashboardSummary() {
         {loading ? (
           <SkeletonWelcome />
         ) : dashboardData ? (
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-sm p-6 text-white">
+          <div className="bg-gradient-to-r from-primary to-primary/80 rounded-xl shadow-sm p-6 text-white">
             <h1 className="text-2xl sm:text-3xl font-bold">
               Welcome back, {dashboardData.student.name}!
             </h1>
-            <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-blue-100 text-sm">
+            <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-primary-foreground text-sm">
               <span className="flex items-center gap-1.5">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -185,7 +185,7 @@ export default function StudentDashboardSummary() {
                 <span className="font-medium text-white">{dashboardData.student.course}</span>
               </span>
               {dashboardData.student.batchType !== "N/A" && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-card/20 text-white">
                   {dashboardData.student.batchType === "ACTIVE" ? "Active" : dashboardData.student.batchType === "COMPLETED" ? "Completed" : dashboardData.student.batchType}
                 </span>
               )}
@@ -220,7 +220,7 @@ export default function StudentDashboardSummary() {
               value={`${dashboardData.assessments.completed} / ${dashboardData.assessments.total}`}
               subtitle={`${dashboardData.assessments.pending} pending`}
               icon={<AssessmentIcon />}
-              color="bg-blue-500"
+              color="bg-primary/80"
             />
             <StatCard
               label="Assignments"
@@ -260,10 +260,10 @@ export default function StudentDashboardSummary() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-3xl font-bold text-gray-900">
+                      <p className="text-3xl font-bold text-foreground">
                         {dashboardData.attendance.percentage}%
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         {dashboardData.attendance.attended} of{" "}
                         {dashboardData.attendance.total} sessions attended
                       </p>
@@ -293,7 +293,7 @@ export default function StudentDashboardSummary() {
                       regular attendance.
                     </div>
                   )}
-                  <div className="w-full bg-gray-100 rounded-full h-3">
+                  <div className="w-full bg-secondary rounded-full h-3">
                     <div
                       className={`h-3 rounded-full transition-all duration-500 ${
                         dashboardData.attendance.percentage >= 75
@@ -320,43 +320,43 @@ export default function StudentDashboardSummary() {
               ) : (
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-3 text-center">
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <p className="text-xl font-bold text-gray-900">
+                    <div className="bg-secondary/50 rounded-lg p-3">
+                      <p className="text-xl font-bold text-foreground">
                         {dashboardData.assessments.total}
                       </p>
-                      <p className="text-xs text-gray-500 mt-0.5">Total</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Total</p>
                     </div>
                     <div className="bg-green-50 rounded-lg p-3">
                       <p className="text-xl font-bold text-green-700">
                         {dashboardData.assessments.completed}
                       </p>
-                      <p className="text-xs text-gray-500 mt-0.5">Completed</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Completed</p>
                     </div>
                     <div className="bg-yellow-50 rounded-lg p-3">
                       <p className="text-xl font-bold text-yellow-700">
                         {dashboardData.assessments.pending}
                       </p>
-                      <p className="text-xs text-gray-500 mt-0.5">Pending</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Pending</p>
                     </div>
                   </div>
 
                   {dashboardData.assessments.recent.length > 0 && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                      <p className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider mb-2">
                         Recent
                       </p>
-                      <div className="divide-y divide-gray-100">
+                      <div className="divide-y divide-border">
                         {dashboardData.assessments.recent.map((a) => (
                           <div
                             key={a.id}
                             className="py-3 flex items-center justify-between"
                           >
                             <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium text-gray-900 truncate">
+                              <p className="text-sm font-medium text-foreground truncate">
                                 {a.title}
                               </p>
                               {a.percentage !== null && (
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-muted-foreground">
                                   Score: {a.percentage}%
                                 </p>
                               )}
@@ -382,51 +382,51 @@ export default function StudentDashboardSummary() {
               ) : (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
-                    <div className="bg-gray-50 rounded-lg p-2.5">
-                      <p className="text-lg font-bold text-gray-900">
+                    <div className="bg-secondary/50 rounded-lg p-2.5">
+                      <p className="text-lg font-bold text-foreground">
                         {dashboardData.assignments.total}
                       </p>
-                      <p className="text-xs text-gray-500">Total</p>
+                      <p className="text-xs text-muted-foreground">Total</p>
                     </div>
                     <div className="bg-green-50 rounded-lg p-2.5">
                       <p className="text-lg font-bold text-green-700">
                         {dashboardData.assignments.submitted}
                       </p>
-                      <p className="text-xs text-gray-500">Submitted</p>
+                      <p className="text-xs text-muted-foreground">Submitted</p>
                     </div>
                     <div className="bg-yellow-50 rounded-lg p-2.5">
                       <p className="text-lg font-bold text-yellow-700">
                         {dashboardData.assignments.pending}
                       </p>
-                      <p className="text-xs text-gray-500">Pending</p>
+                      <p className="text-xs text-muted-foreground">Pending</p>
                     </div>
-                    <div className="bg-blue-50 rounded-lg p-2.5">
-                      <p className="text-lg font-bold text-blue-700">
+                    <div className="bg-primary/10 rounded-lg p-2.5">
+                      <p className="text-lg font-bold text-primary">
                         {dashboardData.assignments.evaluated}
                       </p>
-                      <p className="text-xs text-gray-500">Evaluated</p>
+                      <p className="text-xs text-muted-foreground">Evaluated</p>
                     </div>
                   </div>
 
                   {dashboardData.assignments.recent.length > 0 && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                      <p className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider mb-2">
                         Recent
                       </p>
-                      <div className="divide-y divide-gray-100">
+                      <div className="divide-y divide-border">
                         {dashboardData.assignments.recent.map((a) => (
                           <div
                             key={a.id}
                             className="py-3 flex items-center justify-between gap-3"
                           >
                             <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium text-gray-900 truncate">
+                              <p className="text-sm font-medium text-foreground truncate">
                                 {a.title}
                               </p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-muted-foreground">
                                 Due: {formatDate(a.dueDate)}
                                 {a.isEvaluated && a.marks !== null && (
-                                  <span className="ml-2 text-blue-600 font-medium">
+                                  <span className="ml-2 text-primary font-medium">
                                     Marks: {a.marks}
                                   </span>
                                 )}
@@ -465,25 +465,25 @@ export default function StudentDashboardSummary() {
                 <EmptyState message="No recently uploaded materials" />
               ) : (
                 <div>
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                  <p className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider mb-3">
                     Recently Uploaded
                   </p>
                   <div className="space-y-3">
                     {dashboardData.materials.recent.map((m) => (
                       <div
                         key={m.id}
-                        className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                        className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
                       >
                         <MaterialTypeIcon type={m.type} />
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-gray-900 truncate">
+                          <p className="text-sm font-medium text-foreground truncate">
                             {m.title}
                           </p>
-                          <p className="text-xs text-gray-500 truncate">
+                          <p className="text-xs text-muted-foreground truncate">
                             {m.module} &middot; {m.type}
                           </p>
                         </div>
-                        <span className="text-xs text-gray-400 flex-shrink-0">
+                        <span className="text-xs text-muted-foreground/70 flex-shrink-0">
                           {formatDate(m.createdAt)}
                         </span>
                       </div>

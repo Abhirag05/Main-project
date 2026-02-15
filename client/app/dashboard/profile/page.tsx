@@ -66,10 +66,10 @@ export default function ProfilePage() {
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Profile</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-6">Profile</h1>
 
         {loading ? (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="bg-card rounded-lg shadow-md p-6 mb-6">
             Loading profile...
           </div>
         ) : profile ? (
@@ -83,7 +83,7 @@ export default function ProfilePage() {
             {batch && <CourseDetailsCard batch={batch} />}
           </>
         ) : (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-red-600">
+          <div className="bg-card rounded-lg shadow-md p-6 mb-6 text-red-600">
             Failed to load profile
           </div>
         )}

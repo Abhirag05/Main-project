@@ -247,8 +247,8 @@ export default function AdminAllStudentsPage() {
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
             />
           </svg>
-          <h1 className="mt-4 text-2xl font-bold text-gray-900">Access Denied</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="mt-4 text-2xl font-bold text-foreground">Access Denied</h1>
+          <p className="mt-2 text-muted-foreground">
             You do not have permission to access this page.
           </p>
         </div>
@@ -262,18 +262,18 @@ export default function AdminAllStudentsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">All Students</h1>
-            <p className="mt-1 text-sm text-gray-600">
+            <h1 className="text-3xl font-bold text-foreground">All Students</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               Manage student payments and access
             </p>
           </div>
           <button
             onClick={fetchAdmissions}
             disabled={isLoading}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className="inline-flex items-center px-4 py-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground/80 bg-card hover:bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50"
           >
             <svg
-              className={`-ml-1 mr-2 h-5 w-5 text-gray-500 ${
+              className={`-ml-1 mr-2 h-5 w-5 text-muted-foreground ${
                 isLoading ? "animate-spin" : ""
               }`}
               fill="none"
@@ -292,17 +292,17 @@ export default function AdminAllStudentsPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white shadow rounded-lg p-4">
+        <div className="bg-card shadow rounded-lg p-4">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
-              <label htmlFor="status-filter" className="text-sm font-medium text-gray-700">
+              <label htmlFor="status-filter" className="text-sm font-medium text-foreground/80">
                 Status:
               </label>
               <select
                 id="status-filter"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-2 px-3 border text-gray-700"
+                className="block rounded-md border-border shadow-sm focus:border-ring focus:ring-ring sm:text-sm py-2 px-3 border text-foreground/80"
               >
                 <option value="all">All Statuses</option>
                 <option value="PENDING">Pending</option>
@@ -314,14 +314,14 @@ export default function AdminAllStudentsPage() {
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <label htmlFor="payment-mode-filter" className="text-sm font-medium text-gray-700">
+              <label htmlFor="payment-mode-filter" className="text-sm font-medium text-foreground/80">
                 Payment Mode:
               </label>
               <select
                 id="payment-mode-filter"
                 value={paymentModeFilter}
                 onChange={(e) => setPaymentModeFilter(e.target.value)}
-                className="block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-2 px-3 border text-gray-700"
+                className="block rounded-md border-border shadow-sm focus:border-ring focus:ring-ring sm:text-sm py-2 px-3 border text-foreground/80"
               >
                 <option value="all">All Payment Modes</option>
                 <option value="FULL">Full Payment</option>
@@ -334,7 +334,7 @@ export default function AdminAllStudentsPage() {
                   setPaymentModeFilter("all");
                   setStatusFilter("all");
                 }}
-                className="text-sm text-blue-600 hover:text-blue-800"
+                className="text-sm text-primary hover:text-primary"
               >
                 Clear Filters
               </button>
@@ -345,7 +345,7 @@ export default function AdminAllStudentsPage() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {/* Pending */}
-          <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="bg-card overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -357,8 +357,8 @@ export default function AdminAllStudentsPage() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Pending</dt>
-                    <dd className="text-lg font-semibold text-gray-900">
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Pending</dt>
+                    <dd className="text-lg font-semibold text-foreground">
                       {admissions.filter((a) => a.admission_status === "PENDING" || a.admission_status === "APPROVED").length}
                     </dd>
                   </dl>
@@ -368,7 +368,7 @@ export default function AdminAllStudentsPage() {
           </div>
 
           {/* Verified */}
-          <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="bg-card overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -380,8 +380,8 @@ export default function AdminAllStudentsPage() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Verified</dt>
-                    <dd className="text-lg font-semibold text-gray-900">
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Verified</dt>
+                    <dd className="text-lg font-semibold text-foreground">
                       {admissions.filter((a) =>
                         a.admission_status === "FULL_PAYMENT_VERIFIED" ||
                         a.admission_status === "INSTALLMENT_VERIFIED"
@@ -394,7 +394,7 @@ export default function AdminAllStudentsPage() {
           </div>
 
           {/* Installment Pending */}
-          <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="bg-card overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -406,8 +406,8 @@ export default function AdminAllStudentsPage() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Installment Pending</dt>
-                    <dd className="text-lg font-semibold text-gray-900">
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Installment Pending</dt>
+                    <dd className="text-lg font-semibold text-foreground">
                       {admissions.filter((a) => a.admission_status === "INSTALLMENT_PENDING").length}
                     </dd>
                   </dl>
@@ -417,7 +417,7 @@ export default function AdminAllStudentsPage() {
           </div>
 
           {/* Course Completed */}
-          <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="bg-card overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -429,8 +429,8 @@ export default function AdminAllStudentsPage() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Course Completed</dt>
-                    <dd className="text-lg font-semibold text-gray-900">
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Course Completed</dt>
+                    <dd className="text-lg font-semibold text-foreground">
                       {admissions.filter((a) => a.admission_status === "COURSE_COMPLETED").length}
                     </dd>
                   </dl>
@@ -440,11 +440,11 @@ export default function AdminAllStudentsPage() {
           </div>
 
           {/* Disabled */}
-          <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="bg-card overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="rounded-md bg-gray-500 p-3">
+                  <div className="rounded-md bg-muted-foreground p-3">
                     <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                     </svg>
@@ -452,8 +452,8 @@ export default function AdminAllStudentsPage() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Disabled</dt>
-                    <dd className="text-lg font-semibold text-gray-900">
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Disabled</dt>
+                    <dd className="text-lg font-semibold text-foreground">
                       {admissions.filter((a) => a.admission_status === "DISABLED").length}
                     </dd>
                   </dl>
@@ -521,8 +521,8 @@ export default function AdminAllStudentsPage() {
       {completeCourseModal.isOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={() => setCompleteCourseModal({ isOpen: false, studentProfileId: null, studentName: "" })} />
-            <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+            <div className="fixed inset-0 bg-muted-foreground bg-opacity-75 transition-opacity" onClick={() => setCompleteCourseModal({ isOpen: false, studentProfileId: null, studentName: "" })} />
+            <div className="relative transform overflow-hidden rounded-lg bg-card px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
               <div className="sm:flex sm:items-start">
                 <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-purple-100 sm:mx-0 sm:h-10 sm:w-10">
                   <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -530,11 +530,11 @@ export default function AdminAllStudentsPage() {
                   </svg>
                 </div>
                 <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                  <h3 className="text-base font-semibold leading-6 text-gray-900">
+                  <h3 className="text-base font-semibold leading-6 text-foreground">
                     Mark Course as Completed
                   </h3>
                   <div className="mt-2">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       Are you sure you want to mark <strong>{completeCourseModal.studentName}</strong>&apos;s course as completed?
                       This will disable their access to the student dashboard.
                     </p>
@@ -553,7 +553,7 @@ export default function AdminAllStudentsPage() {
                 <button
                   type="button"
                   onClick={() => setCompleteCourseModal({ isOpen: false, studentProfileId: null, studentName: "" })}
-                  className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                  className="mt-3 inline-flex w-full justify-center rounded-md bg-card px-3 py-2 text-sm font-semibold text-foreground shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-secondary/50 sm:mt-0 sm:w-auto"
                 >
                   Cancel
                 </button>

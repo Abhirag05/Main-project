@@ -15,51 +15,51 @@ export default function FacultyModuleList({
   if (loading) {
     return (
       <FacultyCard className="p-6 mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <h2 className="text-xl font-semibold text-foreground mb-4">
           Assigned Modules
         </h2>
-        <p className="text-gray-600">Loading...</p>
+        <p className="text-muted-foreground">Loading...</p>
       </FacultyCard>
     );
   }
 
   return (
     <FacultyCard className="p-6 mb-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
+      <h2 className="text-xl font-semibold text-foreground mb-4">
         Assigned Modules
       </h2>
 
       {assignments.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-500 text-lg">No modules assigned yet</p>
-          <p className="text-gray-400 text-sm mt-2">
+          <p className="text-muted-foreground text-lg">No modules assigned yet</p>
+          <p className="text-muted-foreground/70 text-sm mt-2">
             You will see your assigned modules here once they are allocated by
             the admin
           </p>
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-secondary/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Module Code
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Module Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Status
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-card divide-y divide-border">
               {assignments.map((assignment) => (
-                <tr key={assignment.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <tr key={assignment.id} className="hover:bg-secondary/50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                     {assignment.module.code}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                     {assignment.module.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

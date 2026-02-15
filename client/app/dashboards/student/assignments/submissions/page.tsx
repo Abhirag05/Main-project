@@ -188,13 +188,13 @@ export default function MySubmissionsPage() {
     const statusClasses: Record<string, string> = {
       Evaluated: "bg-green-100 text-green-800",
       Pending: "bg-yellow-100 text-yellow-800",
-      Submitted: "bg-blue-100 text-blue-800",
+      Submitted: "bg-primary/10 text-primary",
     };
 
     return (
       <span
         className={`px-2 py-1 text-xs font-medium rounded ${
-          statusClasses[status] || "bg-gray-100 text-gray-800"
+          statusClasses[status] || "bg-secondary text-foreground"
         }`}
       >
         {status}
@@ -215,11 +215,11 @@ export default function MySubmissionsPage() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+        <div className="bg-card rounded-lg shadow-md p-6 animate-pulse">
+          <div className="h-8 bg-muted rounded w-1/4 mb-4"></div>
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-16 bg-gray-200 rounded"></div>
+              <div key={i} className="h-16 bg-muted rounded"></div>
             ))}
           </div>
         </div>
@@ -232,14 +232,14 @@ export default function MySubmissionsPage() {
       <div>
         {/* Header */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <Link href="/dashboards/student" className="hover:text-blue-600">Dashboard</Link>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            <Link href="/dashboards/student" className="hover:text-primary">Dashboard</Link>
             <span>/</span>
-            <Link href="/dashboards/student/assignments" className="hover:text-blue-600">Assignments</Link>
+            <Link href="/dashboards/student/assignments" className="hover:text-primary">Assignments</Link>
             <span>/</span>
-            <span className="text-gray-900">My Submissions</span>
+            <span className="text-foreground">My Submissions</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">My Submissions</h1>
+          <h1 className="text-3xl font-bold text-foreground">My Submissions</h1>
         </div>
 
         {/* Error Message */}
@@ -252,19 +252,19 @@ export default function MySubmissionsPage() {
         {/* Stats Summary */}
         {submissions.length > 0 && (
           <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white rounded-lg shadow-md p-4">
-              <div className="text-sm text-gray-600">Total Submissions</div>
-              <div className="text-2xl font-bold text-gray-900">{submissions.length}</div>
+            <div className="bg-card rounded-lg shadow-md p-4">
+              <div className="text-sm text-muted-foreground">Total Submissions</div>
+              <div className="text-2xl font-bold text-foreground">{submissions.length}</div>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-4">
-              <div className="text-sm text-gray-600">Evaluated</div>
+            <div className="bg-card rounded-lg shadow-md p-4">
+              <div className="text-sm text-muted-foreground">Evaluated</div>
               <div className="text-2xl font-bold text-green-600">
                 {submissions.filter((s) => s.is_evaluated).length}
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-4">
-              <div className="text-sm text-gray-600">Average Score</div>
-              <div className="text-2xl font-bold text-blue-600">
+            <div className="bg-card rounded-lg shadow-md p-4">
+              <div className="text-sm text-muted-foreground">Average Score</div>
+              <div className="text-2xl font-bold text-primary">
                 {getAverageScore()}
                 %
               </div>
@@ -273,14 +273,14 @@ export default function MySubmissionsPage() {
         )}
 
         {/* Filter Tabs */}
-        <div className="mb-6 bg-white rounded-lg shadow-md p-4">
+        <div className="mb-6 bg-card rounded-lg shadow-md p-4">
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => setFilterStatus("all")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filterStatus === "all"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  ? "bg-primary text-white"
+                  : "bg-secondary text-foreground/80 hover:bg-muted"
               }`}
             >
               All ({submissions.length})
@@ -289,8 +289,8 @@ export default function MySubmissionsPage() {
               onClick={() => setFilterStatus("evaluated")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filterStatus === "evaluated"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  ? "bg-primary text-white"
+                  : "bg-secondary text-foreground/80 hover:bg-muted"
               }`}
             >
               Evaluated ({submissions.filter((s) => s.is_evaluated).length})
@@ -299,8 +299,8 @@ export default function MySubmissionsPage() {
               onClick={() => setFilterStatus("pending")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filterStatus === "pending"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  ? "bg-primary text-white"
+                  : "bg-secondary text-foreground/80 hover:bg-muted"
               }`}
             >
               Pending ({submissions.filter((s) => !s.is_evaluated).length})
@@ -310,59 +310,59 @@ export default function MySubmissionsPage() {
 
         {/* Submissions Table */}
         {filteredSubmissions.length > 0 ? (
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-card rounded-lg shadow-md overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-secondary/50 border-b border-border">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Assignment
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Module
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Skills Evaluated
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Submitted
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Marks
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-border">
                   {filteredSubmissions.map((submission) => (
-                    <tr key={submission.id} className="hover:bg-gray-50">
+                    <tr key={submission.id} className="hover:bg-secondary/50">
                       <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {getAssignmentTitle(submission)}
                         </div>
                         {submission.is_late_submission && (
                           <div className="text-xs text-red-600 mt-1">Late Submission</div>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-700">
+                      <td className="px-6 py-4 text-sm text-foreground/80">
                         {getModuleName(submission)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-700">
+                      <td className="px-6 py-4 text-sm text-foreground/80">
                         {renderSkillSummary(submission)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-700">
+                      <td className="px-6 py-4 text-sm text-foreground/80">
                         {formatDate(submission.submitted_at)}
                       </td>
                       <td className="px-6 py-4">{getStatusBadge(submission)}</td>
                       <td className="px-6 py-4 text-sm">
                         {submission.is_evaluated ? (
                           <div>
-                            <div className="font-medium text-gray-900">
+                            <div className="font-medium text-foreground">
                               {submission.marks_obtained ?? "-"}
                               {toNumber(submission.assignment_max_marks) !== null && (
                                 <span> / {submission.assignment_max_marks}</span>
@@ -370,7 +370,7 @@ export default function MySubmissionsPage() {
                             </div>
                             {toNumber(submission.marks_obtained) !== null &&
                               toNumber(submission.assignment_max_marks) !== null && (
-                                <div className="text-xs text-gray-500">
+                                <div className="text-xs text-muted-foreground">
                                   {(
                                     (toNumber(submission.marks_obtained)! /
                                       toNumber(submission.assignment_max_marks)!) *
@@ -380,7 +380,7 @@ export default function MySubmissionsPage() {
                               )}
                           </div>
                         ) : (
-                          <span className="text-gray-400">Not evaluated</span>
+                          <span className="text-muted-foreground/70">Not evaluated</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-sm">
@@ -388,7 +388,7 @@ export default function MySubmissionsPage() {
                           <button
                             type="button"
                             onClick={() => openFeedback(submission)}
-                            className="text-gray-600 hover:underline"
+                            className="text-muted-foreground hover:underline"
                           >
                             View
                           </button>
@@ -401,14 +401,14 @@ export default function MySubmissionsPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md p-12 text-center">
-            <div className="text-gray-400 mb-4">
+          <div className="bg-card rounded-lg shadow-md p-12 text-center">
+            <div className="text-muted-foreground/70 mb-4">
               <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No Submissions Found</h3>
-            <p className="text-gray-600 mb-4">
+            <h3 className="text-lg font-medium text-foreground mb-2">No Submissions Found</h3>
+            <p className="text-muted-foreground mb-4">
               {filterStatus === "all"
                 ? "You haven't submitted any assignments yet."
                 : filterStatus === "evaluated"
@@ -417,7 +417,7 @@ export default function MySubmissionsPage() {
             </p>
             <Link
               href="/dashboards/student/assignments"
-              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
             >
               View Available Assignments
             </Link>
@@ -426,13 +426,13 @@ export default function MySubmissionsPage() {
 
         {isFeedbackOpen && selectedSubmission && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="w-full max-w-lg bg-white rounded-lg shadow-lg">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Submission Details</h2>
+            <div className="w-full max-w-lg bg-card rounded-lg shadow-lg">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                <h2 className="text-lg font-semibold text-foreground">Submission Details</h2>
                 <button
                   type="button"
                   onClick={closeFeedback}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-muted-foreground hover:text-foreground/80"
                 >
                   <span className="sr-only">Close</span>
                   <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
@@ -446,28 +446,28 @@ export default function MySubmissionsPage() {
               </div>
               <div className="px-6 py-4 space-y-3">
                 <div>
-                  <div className="text-sm text-gray-500">Assignment</div>
-                  <div className="text-base font-medium text-gray-900">
+                  <div className="text-sm text-muted-foreground">Assignment</div>
+                  <div className="text-base font-medium text-foreground">
                     {getAssignmentTitle(selectedSubmission)}
                   </div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-500">Module</div>
-                  <div className="text-base text-gray-900">{getModuleName(selectedSubmission)}</div>
+                  <div className="text-sm text-muted-foreground">Module</div>
+                  <div className="text-base text-foreground">{getModuleName(selectedSubmission)}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-500">Submitted</div>
-                  <div className="text-base text-gray-900">
+                  <div className="text-sm text-muted-foreground">Submitted</div>
+                  <div className="text-base text-foreground">
                     {formatDate(selectedSubmission.submitted_at)}
                   </div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-500">Status</div>
-                  <div className="text-base text-gray-900">{getStatusLabel(selectedSubmission)}</div>
+                  <div className="text-sm text-muted-foreground">Status</div>
+                  <div className="text-base text-foreground">{getStatusLabel(selectedSubmission)}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-500">Marks</div>
-                  <div className="text-base text-gray-900">
+                  <div className="text-sm text-muted-foreground">Marks</div>
+                  <div className="text-base text-foreground">
                     {selectedSubmission.is_evaluated
                       ? `${selectedSubmission.marks_obtained ?? "-"}${
                           toNumber(selectedSubmission.assignment_max_marks) !== null
@@ -480,8 +480,8 @@ export default function MySubmissionsPage() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-500">Skills</div>
-                  <div className="text-base text-gray-900">
+                  <div className="text-sm text-muted-foreground">Skills</div>
+                  <div className="text-base text-foreground">
                     {(() => {
                       const skills = getSkillsForSubmission(selectedSubmission);
                       if (skills.length === 0) return "No skills";
@@ -491,27 +491,27 @@ export default function MySubmissionsPage() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-500">Feedback</div>
-                  <div className="text-base text-gray-900">
+                  <div className="text-sm text-muted-foreground">Feedback</div>
+                  <div className="text-base text-foreground">
                     {selectedSubmission.is_evaluated
                       ? selectedSubmission.feedback || "No feedback provided."
                       : "Feedback will appear after evaluation."}
                   </div>
                 </div>
               </div>
-              <div className="px-6 py-4 border-t border-gray-200 flex flex-wrap gap-2 justify-end">
+              <div className="px-6 py-4 border-t border-border flex flex-wrap gap-2 justify-end">
                 <a
                   href={buildFileUrl(selectedSubmission.submission_file)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                  className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90"
                 >
                   Download Submission
                 </a>
                 <button
                   type="button"
                   onClick={closeFeedback}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                  className="px-4 py-2 text-sm font-medium text-foreground/80 bg-secondary rounded-lg hover:bg-muted"
                 >
                   Close
                 </button>

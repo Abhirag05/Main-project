@@ -45,24 +45,24 @@ export default function StudentResultsPage() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Results</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-foreground">My Results</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             View your assessment results and performance summary
           </p>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-red-700">
             {error}
           </div>
         ) : assessments.length === 0 ? (
-          <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+          <div className="bg-card rounded-lg border border-border p-8 text-center">
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="mx-auto h-12 w-12 text-muted-foreground/70"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -74,10 +74,10 @@ export default function StudentResultsPage() {
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <h3 className="mt-4 text-lg font-medium text-gray-900">
+            <h3 className="mt-4 text-lg font-medium text-foreground">
               No assessments yet
             </h3>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-muted-foreground">
               No assessments are available for your batch yet.
             </p>
           </div>
@@ -85,27 +85,27 @@ export default function StudentResultsPage() {
           <>
             {/* Summary Cards */}
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
-              <div className="bg-white overflow-hidden shadow rounded-lg p-5">
-                <p className="text-sm font-medium text-gray-500">Total Assessments</p>
-                <p className="mt-1 text-2xl font-bold text-gray-900">
+              <div className="bg-card overflow-hidden shadow rounded-lg p-5">
+                <p className="text-sm font-medium text-muted-foreground">Total Assessments</p>
+                <p className="mt-1 text-2xl font-bold text-foreground">
                   {assessments.length}
                 </p>
               </div>
-              <div className="bg-white overflow-hidden shadow rounded-lg p-5">
-                <p className="text-sm font-medium text-gray-500">Completed</p>
+              <div className="bg-card overflow-hidden shadow rounded-lg p-5">
+                <p className="text-sm font-medium text-muted-foreground">Completed</p>
                 <p className="mt-1 text-2xl font-bold text-green-600">
                   {completedAssessments.length}
                 </p>
               </div>
-              <div className="bg-white overflow-hidden shadow rounded-lg p-5">
-                <p className="text-sm font-medium text-gray-500">Pending</p>
+              <div className="bg-card overflow-hidden shadow rounded-lg p-5">
+                <p className="text-sm font-medium text-muted-foreground">Pending</p>
                 <p className="mt-1 text-2xl font-bold text-yellow-600">
                   {pendingAssessments.length}
                 </p>
               </div>
-              <div className="bg-white overflow-hidden shadow rounded-lg p-5">
-                <p className="text-sm font-medium text-gray-500">Overall Score</p>
-                <p className="mt-1 text-2xl font-bold text-blue-600">
+              <div className="bg-card overflow-hidden shadow rounded-lg p-5">
+                <p className="text-sm font-medium text-muted-foreground">Overall Score</p>
+                <p className="mt-1 text-2xl font-bold text-primary">
                   {overallPercentage}%
                 </p>
               </div>
@@ -113,49 +113,49 @@ export default function StudentResultsPage() {
 
             {/* Completed Results Table */}
             {completedAssessments.length > 0 && (
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <h2 className="text-lg font-semibold text-gray-900">
+              <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-border">
+                  <h2 className="text-lg font-semibold text-foreground">
                     Completed Assessments
                   </h2>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-border">
+                    <thead className="bg-secondary/50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Assessment
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Subject
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Score
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Percentage
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Status
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Submitted
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-card divide-y divide-border">
                       {completedAssessments.map((a) => {
                         const pct = a.attempt_info?.percentage ?? 0;
                         const passed = pct >= a.passing_percentage;
                         return (
-                          <tr key={a.id} className="hover:bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          <tr key={a.id} className="hover:bg-secondary/50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                               {a.title}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                               {a.subject.name}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                               {a.attempt_info?.total_marks_obtained ?? 0} / {a.total_marks}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -174,7 +174,7 @@ export default function StudentResultsPage() {
                                 {passed ? "Passed" : "Failed"}
                               </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                               {a.attempt_info?.submitted_at
                                 ? new Date(a.attempt_info.submitted_at).toLocaleDateString(
                                     "en-IN",
@@ -193,49 +193,49 @@ export default function StudentResultsPage() {
 
             {/* Pending Assessments */}
             {pendingAssessments.length > 0 && (
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <h2 className="text-lg font-semibold text-gray-900">
+              <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-border">
+                  <h2 className="text-lg font-semibold text-foreground">
                     Pending Assessments
                   </h2>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-border">
+                    <thead className="bg-secondary/50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Assessment
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Subject
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Total Marks
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Duration
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Available
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-card divide-y divide-border">
                       {pendingAssessments.map((a) => (
-                        <tr key={a.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <tr key={a.id} className="hover:bg-secondary/50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                             {a.title}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {a.subject.name}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                             {a.total_marks}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {a.duration_minutes} mins
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {new Date(a.start_datetime).toLocaleDateString("en-IN", {
                               day: "numeric",
                               month: "short",

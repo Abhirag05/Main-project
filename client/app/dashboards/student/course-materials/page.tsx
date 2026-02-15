@@ -11,14 +11,14 @@ import { apiClient, BatchModule } from "@/lib/api";
 
 // Color palette for module cards (cycles if more modules than colors)
 const MODULE_COLORS = [
-  { bg: "bg-blue-50", border: "border-blue-200", icon: "bg-blue-500", hover: "hover:border-blue-400" },
+  { bg: "bg-primary/10", border: "border-primary/20", icon: "bg-primary/80", hover: "hover:border-primary/70" },
   { bg: "bg-purple-50", border: "border-purple-200", icon: "bg-purple-500", hover: "hover:border-purple-400" },
   { bg: "bg-green-50", border: "border-green-200", icon: "bg-green-500", hover: "hover:border-green-400" },
   { bg: "bg-orange-50", border: "border-orange-200", icon: "bg-orange-500", hover: "hover:border-orange-400" },
   { bg: "bg-cyan-50", border: "border-cyan-200", icon: "bg-cyan-500", hover: "hover:border-cyan-400" },
   { bg: "bg-rose-50", border: "border-rose-200", icon: "bg-rose-500", hover: "hover:border-rose-400" },
   { bg: "bg-amber-50", border: "border-amber-200", icon: "bg-amber-500", hover: "hover:border-amber-400" },
-  { bg: "bg-blue-50", border: "border-blue-200", icon: "bg-blue-500", hover: "hover:border-blue-400" },
+  { bg: "bg-primary/10", border: "border-primary/20", icon: "bg-primary/80", hover: "hover:border-primary/70" },
 ];
 
 export default function StudentMaterialsPage() {
@@ -120,10 +120,10 @@ export default function StudentMaterialsPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="text-2xl font-bold text-foreground">
             Course Materials
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Select a module to view its learning materials.
           </p>
         </div>
@@ -138,13 +138,13 @@ export default function StudentMaterialsPage() {
         {/* Content */}
         {loading ? (
           <div className="text-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-3 text-gray-500">Loading modules...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-3 text-muted-foreground">Loading modules...</p>
           </div>
         ) : modules.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md text-center py-16">
+          <div className="bg-card rounded-lg shadow-md text-center py-16">
             <svg
-              className="w-16 h-16 mx-auto text-gray-300"
+              className="w-16 h-16 mx-auto text-muted-foreground/50"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -156,7 +156,7 @@ export default function StudentMaterialsPage() {
                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
               />
             </svg>
-            <p className="mt-4 text-gray-500 font-medium">
+            <p className="mt-4 text-muted-foreground font-medium">
               No materials available for your batch yet.
             </p>
           </div>
@@ -194,25 +194,25 @@ export default function StudentMaterialsPage() {
                   </div>
 
                   {/* Module code */}
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
                     {mod.code}
                   </p>
 
                   {/* Module name */}
-                  <h2 className="text-lg font-bold text-gray-800 mb-3 leading-tight">
+                  <h2 className="text-lg font-bold text-foreground mb-3 leading-tight">
                     {mod.name}
                   </h2>
 
                   {/* Stats row */}
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 font-medium">
+                    <span className="text-sm text-muted-foreground font-medium">
                       {mod.materialCount} material{mod.materialCount !== 1 ? "s" : ""}
                     </span>
                     <div className="flex gap-1.5">
                       {Array.from(mod.types).map((type) => (
                         <span
                           key={type}
-                          className="text-[10px] px-1.5 py-0.5 rounded bg-white/70 text-gray-600 font-medium"
+                          className="text-[10px] px-1.5 py-0.5 rounded bg-card/70 text-muted-foreground font-medium"
                         >
                           {type}
                         </span>
@@ -221,7 +221,7 @@ export default function StudentMaterialsPage() {
                   </div>
 
                   {/* Arrow hint */}
-                  <div className="mt-4 flex items-center text-sm text-gray-400 group-hover:text-gray-600 transition-colors">
+                  <div className="mt-4 flex items-center text-sm text-muted-foreground/70 group-hover:text-muted-foreground transition-colors">
                     <span>View materials</span>
                     <svg
                       className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"

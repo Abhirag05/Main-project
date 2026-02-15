@@ -94,14 +94,14 @@ export default function GenerateSessionsModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
+      <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <h2 className="text-xl font-semibold text-foreground">
             Generate Class Sessions
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-muted-foreground/70 hover:text-muted-foreground"
           >
             <svg
               className="w-6 h-6"
@@ -129,13 +129,13 @@ export default function GenerateSessionsModal({
             </div>
           )}
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 className="font-medium text-blue-900 mb-2">
+          <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+            <h4 className="font-medium text-primary mb-2">
               Selected Time Slots
             </h4>
             <div className="space-y-1 max-h-36 overflow-y-auto">
               {selectedSlots.map((slot) => (
-                <div key={slot.id} className="text-sm text-blue-700">
+                <div key={slot.id} className="text-sm text-primary">
                   <span className="font-medium">{slot.day_name}</span>
                   {" • "}
                   {slot.start_time.slice(0, 5)} - {slot.end_time.slice(0, 5)}
@@ -148,7 +148,7 @@ export default function GenerateSessionsModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 Start Date <span className="text-red-500">*</span>
               </label>
               <input
@@ -156,13 +156,13 @@ export default function GenerateSessionsModal({
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 min={today}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-ring focus:border-transparent text-foreground bg-card"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 End Date <span className="text-red-500">*</span>
               </label>
               <input
@@ -170,17 +170,17 @@ export default function GenerateSessionsModal({
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 min={startDate || today}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-ring focus:border-transparent text-foreground bg-card"
                 required
               />
             </div>
           </div>
 
           {estimatedCount > 0 && (
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <div className="bg-secondary/50 border border-border rounded-lg p-4">
               <div className="flex items-center">
                 <svg
-                  className="w-5 h-5 text-gray-400 mr-2"
+                  className="w-5 h-5 text-muted-foreground/70 mr-2"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -192,9 +192,9 @@ export default function GenerateSessionsModal({
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-muted-foreground">
                   Approximately{" "}
-                  <span className="font-semibold text-gray-900">
+                  <span className="font-semibold text-foreground">
                     {estimatedCount}
                   </span>{" "}
                   sessions will be created
@@ -234,18 +234,18 @@ export default function GenerateSessionsModal({
             </div>
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex justify-end space-x-3 pt-4 border-t border-border">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-sm font-medium text-foreground/80 bg-card border border-border rounded-lg hover:bg-secondary/50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || selectedSlots.length === 0}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading
                 ? "Generating..."

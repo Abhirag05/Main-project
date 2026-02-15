@@ -122,11 +122,11 @@ export default function AssessmentResultsOverviewPage() {
         <div className="max-w-7xl mx-auto">
           <FacultyCard className="p-6">
             <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+              <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
               <div className="space-y-4">
-                <div className="h-12 bg-gray-200 rounded"></div>
-                <div className="h-12 bg-gray-200 rounded"></div>
-                <div className="h-12 bg-gray-200 rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
               </div>
             </div>
           </FacultyCard>
@@ -153,16 +153,16 @@ export default function AssessmentResultsOverviewPage() {
         {/* Stats and Filter */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <FacultyCard className="inline-flex items-center gap-3 px-4 py-3">
-            <div className="text-2xl font-semibold text-gray-900">
+            <div className="text-2xl font-semibold text-foreground">
               {assessments.length}
             </div>
-            <div className="text-sm text-gray-500">Total Assessments</div>
+            <div className="text-sm text-muted-foreground">Total Assessments</div>
           </FacultyCard>
 
           <div className="flex items-center gap-2">
             <label
               htmlFor="batch-filter"
-              className="text-sm font-medium text-gray-700"
+              className="text-sm font-medium text-foreground/80"
             >
               Filter by Batch:
             </label>
@@ -170,7 +170,7 @@ export default function AssessmentResultsOverviewPage() {
               id="batch-filter"
               value={selectedBatch}
               onChange={(e) => setSelectedBatch(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="px-3 py-2 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-ring"
             >
               <option value="all">All Batches</option>
               {uniqueBatches.map((batch) => (
@@ -206,7 +206,7 @@ export default function AssessmentResultsOverviewPage() {
               action={
                 <Link
                   href="/dashboards/faculty/assessments/create"
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   Create Assessment
                 </Link>
@@ -219,17 +219,17 @@ export default function AssessmentResultsOverviewPage() {
               <Link
                 key={assessment.id}
                 href={`/dashboards/faculty/assessments/${assessment.id}/results`}
-                className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                className="bg-card rounded-lg border border-border shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
               >
                 <div className="p-5">
                   <div className="flex justify-between items-start mb-3">
-                    <h3 className="font-semibold text-gray-900 line-clamp-1">
+                    <h3 className="font-semibold text-foreground line-clamp-1">
                       {assessment.title}
                     </h3>
                     <span
                       className={`px-2 py-1 text-xs rounded-full ${
                         assessment.status === "COMPLETED"
-                          ? "bg-gray-100 text-gray-800"
+                          ? "bg-secondary text-foreground"
                           : assessment.status === "ACTIVE"
                             ? "bg-green-100 text-green-800"
                             : "bg-yellow-100 text-yellow-800"
@@ -239,7 +239,7 @@ export default function AssessmentResultsOverviewPage() {
                     </span>
                   </div>
 
-                  <div className="text-sm text-gray-500 mb-4">
+                  <div className="text-sm text-muted-foreground mb-4">
                     <div>
                       {assessment.batch.code} • {assessment.subject.name}
                     </div>
@@ -247,17 +247,17 @@ export default function AssessmentResultsOverviewPage() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-2 bg-gray-50 rounded">
-                      <div className="text-xl font-bold text-gray-900">
+                    <div className="text-center p-2 bg-secondary/50 rounded">
+                      <div className="text-xl font-bold text-foreground">
                         {assessment.results_count}
                       </div>
-                      <div className="text-xs text-gray-500">Submissions</div>
+                      <div className="text-xs text-muted-foreground">Submissions</div>
                     </div>
-                    <div className="text-center p-2 bg-gray-50 rounded">
-                      <div className="text-xl font-bold text-blue-600">
+                    <div className="text-center p-2 bg-secondary/50 rounded">
+                      <div className="text-xl font-bold text-primary">
                         {assessment.average_score.toFixed(1)}%
                       </div>
-                      <div className="text-xs text-gray-500">Average</div>
+                      <div className="text-xs text-muted-foreground">Average</div>
                     </div>
                   </div>
                 </div>

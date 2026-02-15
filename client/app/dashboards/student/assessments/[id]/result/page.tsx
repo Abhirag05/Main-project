@@ -76,7 +76,7 @@ export default function AssessmentResultPage() {
     return (
       <DashboardLayout>
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       </DashboardLayout>
     );
@@ -118,14 +118,14 @@ export default function AssessmentResultPage() {
         <div className="mb-8">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-foreground">
                 {attemptDetail.assessment_title}
               </h1>
-              <p className="text-gray-600 mt-2">Assessment Results</p>
+              <p className="text-muted-foreground mt-2">Assessment Results</p>
             </div>
             <button
               onClick={() => router.push("/dashboards/student/assessments")}
-              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              className="px-4 py-2 bg-foreground/60 text-white rounded-lg hover:bg-foreground/80 transition-colors"
             >
               Back to Assessments
             </button>
@@ -177,14 +177,14 @@ export default function AssessmentResultPage() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
               <div className="text-center">
-                <p className="text-gray-600">Score</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-muted-foreground">Score</p>
+                <p className="text-2xl font-bold text-foreground">
                   {attemptDetail.total_marks_obtained}/
                   {attemptDetail.assessment_total_marks}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-gray-600">Percentage</p>
+                <p className="text-muted-foreground">Percentage</p>
                 <p
                   className={`text-2xl font-bold ${getResultColor(pct ?? 0, passingPercentage)}`}
                 >
@@ -192,14 +192,14 @@ export default function AssessmentResultPage() {
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-gray-600">Correct</p>
+                <p className="text-muted-foreground">Correct</p>
                 <p className="text-2xl font-bold text-green-600">
                   {correctAnswers}/{totalQuestions}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-gray-600">Attempted</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-muted-foreground">Attempted</p>
+                <p className="text-2xl font-bold text-primary">
                   {
                     attemptDetail.answers.filter(
                       (a) => a.selected_option !== null,
@@ -213,33 +213,33 @@ export default function AssessmentResultPage() {
         </div>
 
         {/* Submission Details */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-card rounded-lg shadow-sm p-6 mb-8">
+          <h3 className="text-lg font-semibold text-foreground mb-4">
             Submission Details
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <p className="text-gray-600">Started At</p>
-              <p className="font-medium text-gray-900">
+              <p className="text-muted-foreground">Started At</p>
+              <p className="font-medium text-foreground">
                 {formatDate(attemptDetail.started_at)}
               </p>
             </div>
             <div>
-              <p className="text-gray-600">Submitted At</p>
-              <p className="font-medium text-gray-900">
+              <p className="text-muted-foreground">Submitted At</p>
+              <p className="font-medium text-foreground">
                 {attemptDetail.submitted_at
                   ? formatDate(attemptDetail.submitted_at)
                   : "Not submitted"}
               </p>
             </div>
             <div>
-              <p className="text-gray-600">Status</p>
-              <p className="font-medium text-gray-900">
+              <p className="text-muted-foreground">Status</p>
+              <p className="font-medium text-foreground">
                 {attemptDetail.status}
               </p>
             </div>
             <div>
-              <p className="text-gray-600">Result</p>
+              <p className="text-muted-foreground">Result</p>
               <p
                 className={`font-medium ${getResultColor(pct ?? 0, passingPercentage)}`}
               >
@@ -250,15 +250,15 @@ export default function AssessmentResultPage() {
         </div>
 
         {/* Detailed Answers */}
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="p-6 border-b border-gray-200">
+        <div className="bg-card rounded-lg shadow-sm">
+          <div className="p-6 border-b border-border">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-foreground">
                 Detailed Review
               </h3>
               <button
                 onClick={() => setShowAnswers(!showAnswers)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
                 {showAnswers ? "Hide" : "Show"} Detailed Answers
               </button>
@@ -271,10 +271,10 @@ export default function AssessmentResultPage() {
                 {attemptDetail.answers.map((answer, index) => (
                   <div
                     key={answer.id}
-                    className="border border-gray-200 rounded-lg p-6"
+                    className="border border-border rounded-lg p-6"
                   >
                     <div className="flex justify-between items-start mb-4">
-                      <h4 className="text-lg font-medium text-gray-900">
+                      <h4 className="text-lg font-medium text-foreground">
                         Question {index + 1}
                       </h4>
                       <div className="flex items-center gap-4">
@@ -287,21 +287,21 @@ export default function AssessmentResultPage() {
                         >
                           {answer.is_correct ? "Correct" : "Incorrect"}
                         </span>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-muted-foreground">
                           {answer.marks_obtained} marks
                         </span>
                       </div>
                     </div>
 
                     <div className="mb-4">
-                      <p className="text-gray-900 font-medium mb-3">
+                      <p className="text-foreground font-medium mb-3">
                         {answer.question_text}
                       </p>
                     </div>
 
                     <div className="space-y-2">
                       <div className="flex items-center gap-3">
-                        <span className="text-sm font-medium text-gray-600">
+                        <span className="text-sm font-medium text-muted-foreground">
                           Your Answer:
                         </span>
                         <span
@@ -317,7 +317,7 @@ export default function AssessmentResultPage() {
 
                       {!answer.is_correct && (
                         <div className="flex items-center gap-3">
-                          <span className="text-sm font-medium text-gray-600">
+                          <span className="text-sm font-medium text-muted-foreground">
                             Correct Answer:
                           </span>
                           <span className="px-2 py-1 rounded text-sm bg-green-100 text-green-800">
@@ -334,8 +334,8 @@ export default function AssessmentResultPage() {
         </div>
 
         {/* Performance Summary */}
-        <div className="mt-8 bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="mt-8 bg-card rounded-lg shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-4">
             Performance Summary
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -351,11 +351,11 @@ export default function AssessmentResultPage() {
               </p>
               <p className="text-red-700">Incorrect Answers</p>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-gray-600">
+            <div className="text-center p-4 bg-secondary/50 rounded-lg">
+              <p className="text-2xl font-bold text-muted-foreground">
                 {((correctAnswers / totalQuestions) * 100).toFixed(1)}%
               </p>
-              <p className="text-gray-700">Accuracy Rate</p>
+              <p className="text-foreground/80">Accuracy Rate</p>
             </div>
           </div>
         </div>

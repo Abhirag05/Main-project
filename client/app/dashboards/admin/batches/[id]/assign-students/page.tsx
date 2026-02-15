@@ -33,21 +33,21 @@ function WorkflowSteps({ currentStep }: { currentStep: number }) {
                 className="hidden sm:absolute sm:inset-0 sm:flex sm:items-center"
                 aria-hidden="true"
               >
-                <div className="h-0.5 w-full bg-gray-200" />
+                <div className="h-0.5 w-full bg-muted" />
               </div>
               <div
-                className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 bg-white ${
-                  isCurrent ? "border-blue-600" : "border-gray-300"
+                className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 bg-card ${
+                  isCurrent ? "border-primary" : "border-border"
                 }`}
               >
                 <span
                   className={`h-2.5 w-2.5 rounded-full ${
-                    isCurrent ? "bg-blue-600" : "bg-gray-300"
+                    isCurrent ? "bg-primary" : "bg-muted"
                   }`}
                 />
                 <span className="sr-only">{step.name}</span>
               </div>
-              <span className="mt-2 text-xs font-medium text-gray-500 sm:mt-0 sm:absolute sm:-bottom-7 sm:left-1/2 sm:-translate-x-1/2 sm:whitespace-nowrap">
+              <span className="mt-2 text-xs font-medium text-muted-foreground sm:mt-0 sm:absolute sm:-bottom-7 sm:left-1/2 sm:-translate-x-1/2 sm:whitespace-nowrap">
                 {step.name}
               </span>
             </li>
@@ -84,15 +84,15 @@ function ConfirmModal({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-screen items-center justify-center p-4">
         <div
-          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+          className="fixed inset-0 bg-muted-foreground bg-opacity-75 transition-opacity"
           onClick={onCancel}
         ></div>
-        <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-          <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+        <div className="relative transform overflow-hidden rounded-lg bg-card text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+          <div className="bg-card px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
-              <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+              <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 sm:mx-0 sm:h-10 sm:w-10">
                 <svg
-                  className="h-6 w-6 text-blue-600"
+                  className="h-6 w-6 text-primary"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -106,21 +106,21 @@ function ConfirmModal({
                 </svg>
               </div>
               <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                <h3 className="text-lg font-semibold leading-6 text-gray-900">
+                <h3 className="text-lg font-semibold leading-6 text-foreground">
                   {title}
                 </h3>
                 <div className="mt-2">
-                  <p className="text-sm text-gray-500">{message}</p>
+                  <p className="text-sm text-muted-foreground">{message}</p>
                 </div>
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+          <div className="bg-secondary/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
             <button
               type="button"
               onClick={onConfirm}
               disabled={isLoading}
-              className="inline-flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 sm:ml-3 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex w-full justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 sm:ml-3 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
@@ -153,7 +153,7 @@ function ConfirmModal({
               type="button"
               onClick={onCancel}
               disabled={isLoading}
-              className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto disabled:opacity-50"
+              className="mt-3 inline-flex w-full justify-center rounded-md bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-secondary/50 sm:mt-0 sm:w-auto disabled:opacity-50"
             >
               Cancel
             </button>
@@ -187,10 +187,10 @@ function StudentSelectionTable({
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow border border-gray-200 p-8">
+      <div className="bg-card rounded-lg shadow border border-border p-8">
         <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="ml-3 text-gray-600">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <span className="ml-3 text-muted-foreground">
             Loading eligible students...
           </span>
         </div>
@@ -200,9 +200,9 @@ function StudentSelectionTable({
 
   if (students.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow border border-gray-200 p-8 text-center">
+      <div className="bg-card rounded-lg shadow border border-border p-8 text-center">
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className="mx-auto h-12 w-12 text-muted-foreground/70"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -214,10 +214,10 @@ function StudentSelectionTable({
             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
           />
         </svg>
-        <h3 className="mt-4 text-lg font-medium text-gray-900">
+        <h3 className="mt-4 text-lg font-medium text-foreground">
           No Eligible Students
         </h3>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-muted-foreground">
           There are no approved students available for assignment.
           <br />
           All students might already be assigned to active batches.
@@ -227,10 +227,10 @@ function StudentSelectionTable({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-border text-sm">
+          <thead className="bg-secondary/50">
             <tr>
               <th scope="col" className="px-6 py-3 text-left w-12">
                 <input
@@ -240,37 +240,37 @@ function StudentSelectionTable({
                     if (el) el.indeterminate = someSelected;
                   }}
                   onChange={onToggleAll}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="h-4 w-4 rounded border-border text-primary focus:ring-ring"
                 />
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider"
               >
                 Student Name
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider"
               >
                 Email
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider"
               >
                 Registration Date
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-100">
+          <tbody className="bg-card divide-y divide-border">
             {students.map((student) => (
               <tr
                 key={student.student_profile_id}
                 className={`cursor-pointer transition ${
                   selectedIds.has(student.student_profile_id)
-                    ? "bg-blue-50"
-                    : "hover:bg-gray-50"
+                    ? "bg-primary/10"
+                    : "hover:bg-secondary/50"
                 }`}
                 onClick={() => onToggle(student.student_profile_id)}
               >
@@ -280,29 +280,29 @@ function StudentSelectionTable({
                     checked={selectedIds.has(student.student_profile_id)}
                     onChange={() => onToggle(student.student_profile_id)}
                     onClick={(e) => e.stopPropagation()}
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="h-4 w-4 rounded border-border text-primary focus:ring-ring"
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="h-8 w-8 flex-shrink-0">
-                      <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                        <span className="text-sm font-medium text-blue-600">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-sm font-medium text-primary">
                           {student.full_name.charAt(0).toUpperCase()}
                         </span>
                       </div>
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium text-foreground">
                         {student.full_name}
                       </p>
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">
                   {student.email}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">
                   {new Date(student.registration_date).toLocaleDateString()}
                 </td>
               </tr>
@@ -357,37 +357,37 @@ function AssignedStudentsPreview({
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">
+      <div className="bg-card rounded-lg shadow border border-border overflow-hidden">
+        <div className="px-6 py-4 border-b border-border">
+          <h3 className="text-lg font-medium text-foreground">
             Assigned Students Preview
           </h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-secondary/50">
               <tr>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                 >
                   Student Name
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                 >
                   Email
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                 >
                   Joined At
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-card divide-y divide-border">
               {students.map((student) => (
                 <tr key={student.student_profile_id}>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -400,16 +400,16 @@ function AssignedStudentsPreview({
                         </div>
                       </div>
                       <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-foreground">
                           {student.full_name}
                         </p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                     {student.email}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                     {new Date(student.joined_at).toLocaleString()}
                   </td>
                 </tr>
@@ -422,7 +422,7 @@ function AssignedStudentsPreview({
       <div className="flex justify-end">
         <button
           onClick={onContinue}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
         >
           Done
           <svg
@@ -626,10 +626,10 @@ export default function AssignStudentsPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">
+            <h2 className="mt-4 text-2xl font-bold text-foreground">
               Access Denied
             </h2>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-muted-foreground">
               You don't have permission to access this page.
             </p>
           </div>
@@ -644,8 +644,8 @@ export default function AssignStudentsPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Loading...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -659,10 +659,10 @@ export default function AssignStudentsPage() {
 
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-foreground">
             Step 2: Assign Students to Batch
           </h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <p className="mt-2 text-sm text-foreground/80">
             Select students to assign to batch{" "}
             <span className="font-semibold">{batchDetails?.code || "..."}</span>
           </p>
@@ -670,26 +670,26 @@ export default function AssignStudentsPage() {
 
         {/* Batch Info Card */}
         {batchDetails && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="bg-card rounded-lg shadow-sm border border-border p-6 mb-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
-                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                   Batch Code
                 </p>
-                <p className="mt-1 text-sm font-semibold text-gray-900">
+                <p className="mt-1 text-sm font-semibold text-foreground">
                   {batchDetails.code}
                 </p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                   Course
                 </p>
-                <p className="mt-1 text-sm font-semibold text-gray-900">
+                <p className="mt-1 text-sm font-semibold text-foreground">
                   {batchDetails.course_name}
                 </p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                   Mode
                 </p>
                 <span
@@ -703,13 +703,13 @@ export default function AssignStudentsPage() {
                 </span>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                   Capacity
                 </p>
-                <p className="mt-1 text-sm font-semibold text-gray-900">
+                <p className="mt-1 text-sm font-semibold text-foreground">
                   {batchDetails.current_student_count} /{" "}
                   {batchDetails.max_students}
-                  <span className="ml-2 text-xs font-normal text-gray-500">
+                  <span className="ml-2 text-xs font-normal text-muted-foreground">
                     {batchDetails.available_slots} available
                   </span>
                 </p>
@@ -728,15 +728,15 @@ export default function AssignStudentsPage() {
         ) : (
           <>
             {/* Selection Info Bar */}
-            <div className="mb-4 rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm">
+            <div className="mb-4 rounded-lg border border-border bg-card px-4 py-3 shadow-sm">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="text-sm text-gray-600">
-                  <span className="font-medium text-gray-900">
+                <div className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">
                     {eligibleStudents.length}
                   </span>{" "}
                   eligible student(s) found
                   {selectedStudentIds.size > 0 && (
-                    <span className="ml-2 text-blue-600 font-medium">
+                    <span className="ml-2 text-primary font-medium">
                       • {selectedStudentIds.size} selected
                     </span>
                   )}
@@ -744,7 +744,7 @@ export default function AssignStudentsPage() {
                 <button
                   onClick={handleAssignClick}
                   disabled={selectedStudentIds.size === 0 || assigning}
-                  className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Assign Selected Students
                   {selectedStudentIds.size > 0 &&

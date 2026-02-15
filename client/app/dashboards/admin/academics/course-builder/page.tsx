@@ -298,10 +298,10 @@ export default function CourseBuilderPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">
+            <h2 className="mt-4 text-2xl font-bold text-foreground">
               Access Denied
             </h2>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-muted-foreground">
               You don&apos;t have permission to access this page. Only Super
               Admins can manage course curriculum.
             </p>
@@ -317,8 +317,8 @@ export default function CourseBuilderPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Loading...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -330,29 +330,29 @@ export default function CourseBuilderPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Course Builder</h1>
-          <p className="mt-1 text-gray-500">
+          <h1 className="text-3xl font-bold text-foreground">Course Builder</h1>
+          <p className="mt-1 text-muted-foreground">
             Define which modules belong to each course and set their teaching
             order.
           </p>
         </div>
 
         {/* Course Selector Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+        <div className="bg-card rounded-xl shadow-sm border border-border p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground/80 mb-2">
                 Select Course
               </label>
               {loadingCourses ? (
                 <div className="flex items-center justify-center py-3">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                 </div>
               ) : (
                 <select
                   value={selectedCourseId || 0}
                   onChange={(e) => handleCourseSelect(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 hover:border-gray-400 transition-all"
+                  className="w-full px-4 py-2.5 border border-border text-foreground/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring hover:border-border transition-all"
                 >
                   <option value={0}>-- Select Course --</option>
                   {courses
@@ -367,17 +367,17 @@ export default function CourseBuilderPage() {
             </div>
 
             {selectedCourse && (
-              <div className="bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-4">
-                <h3 className="text-sm font-medium text-blue-900 mb-2">
+              <div className="bg-primary/10 border-l-4 border-primary/70 rounded-r-lg p-4">
+                <h3 className="text-sm font-medium text-primary mb-2">
                   Selected Course
                 </h3>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-primary">
                   <strong>Code:</strong> {selectedCourse.code}
                 </p>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-primary">
                   <strong>Name:</strong> {selectedCourse.name}
                 </p>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-primary">
                   <strong>Duration:</strong> {selectedCourse.duration_months}{" "}
                   months
                 </p>
@@ -391,7 +391,7 @@ export default function CourseBuilderPage() {
           <div className="mb-6 flex justify-end">
             <button
               onClick={handleAddSubject}
-              className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm"
+              className="px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-sm"
             >
               <svg
                 className="w-5 h-5"
@@ -414,21 +414,21 @@ export default function CourseBuilderPage() {
         {/* Course Modules List */}
         {selectedCourseId ? (
           loadingSubjects ? (
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="bg-card rounded-lg shadow overflow-hidden">
               <div className="animate-pulse">
-                <div className="h-12 bg-gray-200"></div>
+                <div className="h-12 bg-muted"></div>
                 {[...Array(5)].map((_, i) => (
                   <div
                     key={i}
-                    className="h-16 bg-gray-100 border-t border-gray-200"
+                    className="h-16 bg-secondary border-t border-border"
                   ></div>
                 ))}
               </div>
             </div>
           ) : courseSubjects.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-12 text-center">
+            <div className="bg-card rounded-lg shadow p-12 text-center">
               <svg
-                className="mx-auto h-12 w-12 text-gray-400"
+                className="mx-auto h-12 w-12 text-muted-foreground/70"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -440,64 +440,64 @@ export default function CourseBuilderPage() {
                   d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                 />
               </svg>
-              <h3 className="mt-2 text-lg font-medium text-gray-900">
+              <h3 className="mt-2 text-lg font-medium text-foreground">
                 No modules assigned
               </h3>
-              <p className="mt-1 text-gray-500">
+              <p className="mt-1 text-muted-foreground">
                 This course has no modules yet. Add modules to build the
                 curriculum.
               </p>
             </div>
           ) : (
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="bg-card rounded-lg shadow overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-border">
+                  <thead className="bg-secondary/50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Order
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Module Code
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Module Name
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Reorder
                       </th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-card divide-y divide-border">
                     {courseSubjects
                       .sort((a, b) => a.sequence_order - b.sequence_order)
                       .map((cs, index) => (
                         <tr
                           key={cs.id}
-                          className="hover:bg-gray-50 transition-colors"
+                          className="hover:bg-secondary/50 transition-colors"
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                            <span className="inline-flex items-center justify-center w-8 h-8 bg-primary/10 text-primary rounded-full text-sm font-medium">
                               {cs.sequence_order}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-foreground">
                               {cs.module_code}
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-foreground">
                               {cs.module_name}
                             </div>
                             {cs.module_description && (
-                              <div className="text-xs text-gray-500 truncate max-w-xs">
+                              <div className="text-xs text-muted-foreground truncate max-w-xs">
                                 {cs.module_description}
                               </div>
                             )}
@@ -507,7 +507,7 @@ export default function CourseBuilderPage() {
                               className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                                 cs.is_active
                                   ? "bg-green-100 text-green-800"
-                                  : "bg-gray-100 text-gray-800"
+                                  : "bg-secondary text-foreground"
                               }`}
                             >
                               {cs.is_active ? "Active" : "Inactive"}
@@ -520,8 +520,8 @@ export default function CourseBuilderPage() {
                                 disabled={index === 0}
                                 className={`p-1 rounded ${
                                   index === 0
-                                    ? "text-gray-300 cursor-not-allowed"
-                                    : "text-gray-600 hover:bg-gray-100"
+                                    ? "text-muted-foreground/50 cursor-not-allowed"
+                                    : "text-muted-foreground hover:bg-secondary"
                                 }`}
                                 title="Move up"
                               >
@@ -544,8 +544,8 @@ export default function CourseBuilderPage() {
                                 disabled={index === courseSubjects.length - 1}
                                 className={`p-1 rounded ${
                                   index === courseSubjects.length - 1
-                                    ? "text-gray-300 cursor-not-allowed"
-                                    : "text-gray-600 hover:bg-gray-100"
+                                    ? "text-muted-foreground/50 cursor-not-allowed"
+                                    : "text-muted-foreground hover:bg-secondary"
                                 }`}
                                 title="Move down"
                               >
@@ -602,9 +602,9 @@ export default function CourseBuilderPage() {
             </div>
           )
         ) : (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
+          <div className="bg-card rounded-lg shadow p-12 text-center">
             <svg
-              className="mx-auto h-16 w-16 text-gray-400"
+              className="mx-auto h-16 w-16 text-muted-foreground/70"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -616,10 +616,10 @@ export default function CourseBuilderPage() {
                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
               />
             </svg>
-            <h3 className="mt-4 text-lg font-medium text-gray-900">
+            <h3 className="mt-4 text-lg font-medium text-foreground">
               No Course Selected
             </h3>
-            <p className="mt-2 text-gray-500">
+            <p className="mt-2 text-muted-foreground">
               Please select a course from the dropdown above to view and manage
               its curriculum.
             </p>
@@ -629,7 +629,7 @@ export default function CourseBuilderPage() {
         {/* Add Module Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+            <div className="bg-card rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
               {/* Modal Header */}
               <div className="bg-gradient-to-r from-amber-600 to-amber-700 px-6 py-4 flex items-center justify-between">
                 <div>
@@ -665,7 +665,7 @@ export default function CourseBuilderPage() {
 
                 <form onSubmit={handleModalSubmit} className="space-y-5">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                       Module <span className="text-red-500">*</span>
                     </label>
                     <select
@@ -676,7 +676,7 @@ export default function CourseBuilderPage() {
                           subject_id: parseInt(e.target.value),
                         })
                       }
-                      className="w-full px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 hover:border-gray-400 transition-all"
+                      className="w-full px-4 py-2.5 border border-border text-foreground/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring hover:border-border transition-all"
                       required
                       disabled={modalLoading}
                     >
@@ -695,7 +695,7 @@ export default function CourseBuilderPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                       Sequence Order <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -708,20 +708,20 @@ export default function CourseBuilderPage() {
                           sequence_order: parseInt(e.target.value) || 1,
                         })
                       }
-                      className="w-full px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 hover:border-gray-400 transition-all"
+                      className="w-full px-4 py-2.5 border border-border text-foreground/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring hover:border-border transition-all"
                       required
                       disabled={modalLoading}
                     />
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       Position of this module in the curriculum
                     </p>
                   </div>
 
-                  <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                  <div className="flex justify-end gap-3 pt-4 border-t border-border">
                     <button
                       type="button"
                       onClick={() => setIsModalOpen(false)}
-                      className="px-5 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                      className="px-5 py-2.5 border-2 border-border text-foreground/80 font-semibold rounded-lg hover:bg-secondary/50 transition-colors"
                       disabled={modalLoading}
                     >
                       Cancel

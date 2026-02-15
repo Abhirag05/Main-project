@@ -76,11 +76,11 @@ export default function QuestionBanksPage() {
         <div className="max-w-7xl mx-auto">
           <FacultyCard className="p-6">
             <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+              <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
               <div className="space-y-4">
-                <div className="h-12 bg-gray-200 rounded"></div>
-                <div className="h-12 bg-gray-200 rounded"></div>
-                <div className="h-12 bg-gray-200 rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
               </div>
             </div>
           </FacultyCard>
@@ -99,7 +99,7 @@ export default function QuestionBanksPage() {
           action={
             <Link
               href="/dashboards/faculty/question-banks/upload"
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors"
             >
               <svg
                 className="w-5 h-5"
@@ -128,10 +128,10 @@ export default function QuestionBanksPage() {
         {/* Stats Card */}
         <div className="mb-6">
           <FacultyCard className="inline-flex items-center gap-3 px-4 py-3">
-            <div className="text-2xl font-semibold text-gray-900">
+            <div className="text-2xl font-semibold text-foreground">
               {questionBanks.length}
             </div>
-            <div className="text-sm text-gray-500">Total Question Banks</div>
+            <div className="text-sm text-muted-foreground">Total Question Banks</div>
           </FacultyCard>
         </div>
 
@@ -159,7 +159,7 @@ export default function QuestionBanksPage() {
               action={
                 <Link
                   href="/dashboards/faculty/question-banks/upload"
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   Upload Question Bank
                 </Link>
@@ -168,56 +168,56 @@ export default function QuestionBanksPage() {
           </FacultyCard>
         ) : (
           <FacultyCard className="overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-border">
+              <thead className="bg-secondary/50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Bank Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Module
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Total Questions
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Created Date
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-card divide-y divide-border">
                 {questionBanks.map((bank) => (
-                  <tr key={bank.id} className="hover:bg-gray-50">
+                  <tr key={bank.id} className="hover:bg-secondary/50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-foreground">
                         {bank.name}
                       </div>
                       {bank.description && (
-                        <div className="text-sm text-gray-500 truncate max-w-xs">
+                        <div className="text-sm text-muted-foreground truncate max-w-xs">
                           {bank.description}
                         </div>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
                         {bank.subject_name}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 font-medium">
+                      <div className="text-sm text-foreground font-medium">
                         {bank.questions_count}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {formatDate(bank.created_at)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <Link
                         href={`/dashboards/faculty/question-banks/${bank.id}`}
-                        className="text-blue-600 hover:text-blue-900 mr-4"
+                        className="text-primary hover:text-primary mr-4"
                       >
                         View
                       </Link>

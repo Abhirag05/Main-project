@@ -119,17 +119,17 @@ export default function PlacementListsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-foreground">
               Placement Lists
             </h1>
-            <p className="mt-1 text-gray-500">
+            <p className="mt-1 text-muted-foreground">
               Create placement drives, assign eligible students and share
               registration links.
             </p>
           </div>
           <button
             onClick={openCreateModal}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
           >
             <svg
               className="w-5 h-5"
@@ -154,18 +154,18 @@ export default function PlacementListsPage() {
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="animate-pulse bg-white rounded-xl border border-gray-200 p-6 space-y-4"
+                className="animate-pulse bg-card rounded-xl border border-border p-6 space-y-4"
               >
-                <div className="h-5 bg-gray-200 rounded w-2/3" />
-                <div className="h-4 bg-gray-100 rounded w-full" />
-                <div className="h-4 bg-gray-100 rounded w-1/2" />
+                <div className="h-5 bg-muted rounded w-2/3" />
+                <div className="h-4 bg-secondary rounded w-full" />
+                <div className="h-4 bg-secondary rounded w-1/2" />
               </div>
             ))}
           </div>
         ) : lists.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-12 text-center">
             <svg
-              className="mx-auto h-16 w-16 text-gray-300"
+              className="mx-auto h-16 w-16 text-muted-foreground/50"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -177,16 +177,16 @@ export default function PlacementListsPage() {
                 d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
               />
             </svg>
-            <h3 className="mt-4 text-lg font-semibold text-gray-900">
+            <h3 className="mt-4 text-lg font-semibold text-foreground">
               No placement lists yet
             </h3>
-            <p className="mt-1 text-gray-500">
+            <p className="mt-1 text-muted-foreground">
               Create a placement list to start organizing students for placement
               drives.
             </p>
             <button
               onClick={openCreateModal}
-              className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+              className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors"
             >
               <svg
                 className="w-5 h-5"
@@ -212,18 +212,18 @@ export default function PlacementListsPage() {
                 onClick={() =>
                   router.push(`/dashboards/admin/placement/lists/${list.id}`)
                 }
-                className="bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer overflow-hidden group"
+                className="bg-card rounded-xl border border-border hover:border-primary/40 hover:shadow-md transition-all cursor-pointer overflow-hidden group"
               >
                 {/* Card header accent */}
-                <div className="h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500" />
+                <div className="h-1.5 bg-gradient-to-r from-primary/90 to-indigo-500" />
 
                 <div className="p-6 space-y-4">
                   {/* Title + badge */}
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-700 transition-colors line-clamp-2">
+                    <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
                       {list.name}
                     </h3>
-                    <span className="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                    <span className="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
                       <svg
                         className="w-3.5 h-3.5"
                         fill="none"
@@ -243,7 +243,7 @@ export default function PlacementListsPage() {
 
                   {/* Description */}
                   {list.description && (
-                    <p className="text-sm text-gray-600 line-clamp-2">
+                    <p className="text-sm text-muted-foreground line-clamp-2">
                       {list.description}
                     </p>
                   )}
@@ -267,7 +267,7 @@ export default function PlacementListsPage() {
                       Registration link added
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-md px-2.5 py-1.5">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-secondary/50 border border-border rounded-md px-2.5 py-1.5">
                       <svg
                         className="w-3.5 h-3.5"
                         fill="none"
@@ -286,7 +286,7 @@ export default function PlacementListsPage() {
                   )}
 
                   {/* Footer meta */}
-                  <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs text-gray-500">
+                  <div className="flex items-center justify-between pt-3 border-t border-border text-xs text-muted-foreground">
                     <span>
                       Created{" "}
                       {new Date(list.created_at).toLocaleDateString("en-IN", {
@@ -328,12 +328,12 @@ export default function PlacementListsPage() {
       {/* ── Create Modal ── */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+          <div className="bg-card rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+            <div className="bg-gradient-to-r from-primary to-indigo-600 px-6 py-4">
               <h2 className="text-lg font-bold text-white">
                 Create Placement List
               </h2>
-              <p className="text-blue-100 text-sm">
+              <p className="text-primary-foreground text-sm">
                 Add a new placement drive for student assignment
               </p>
             </div>
@@ -341,15 +341,15 @@ export default function PlacementListsPage() {
             <form onSubmit={handleCreate} className="p-6 space-y-5">
               {/* Company / list name */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                   Company / List Name{" "}
                   <span className="text-red-500">*</span>
                 </label>
                 <input
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900 ${
+                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-foreground ${
                     formErrors.name
                       ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                      : "border-gray-300 focus:border-blue-500 focus:ring-blue-200 hover:border-gray-400"
+                      : "border-border focus:border-ring focus:ring-ring/30 hover:border-border"
                   }`}
                   value={form.name}
                   onChange={(e) => {
@@ -367,12 +367,12 @@ export default function PlacementListsPage() {
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                   Description
                 </label>
                 <textarea
                   rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 hover:border-gray-400 transition-all text-gray-900 resize-none"
+                  className="w-full px-4 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring hover:border-border transition-all text-foreground resize-none"
                   value={form.description}
                   onChange={(e) =>
                     setForm({ ...form, description: e.target.value })
@@ -383,15 +383,15 @@ export default function PlacementListsPage() {
 
               {/* Registration link */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                   Registration Link
                 </label>
                 <input
                   type="url"
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900 ${
+                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-foreground ${
                     formErrors.placement_link
                       ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                      : "border-gray-300 focus:border-blue-500 focus:ring-blue-200 hover:border-gray-400"
+                      : "border-border focus:border-ring focus:ring-ring/30 hover:border-border"
                   }`}
                   value={form.placement_link}
                   onChange={(e) => {
@@ -406,16 +406,16 @@ export default function PlacementListsPage() {
                     {formErrors.placement_link}
                   </p>
                 )}
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-muted-foreground">
                   You can add this later from the placement list detail page.
                 </p>
               </div>
 
               {/* Actions */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+              <div className="flex justify-end gap-3 pt-4 border-t border-border">
                 <button
                   type="button"
-                  className="px-5 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-5 py-2.5 border-2 border-border text-foreground/80 font-semibold rounded-lg hover:bg-secondary/50 transition-colors"
                   onClick={() => setIsModalOpen(false)}
                   disabled={isSaving}
                 >
@@ -423,7 +423,7 @@ export default function PlacementListsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                  className="px-5 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                   disabled={isSaving}
                 >
                   {isSaving && (
@@ -458,7 +458,7 @@ export default function PlacementListsPage() {
       {/* ── Delete Confirmation Modal ── */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+          <div className="bg-card rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
             <div className="p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -477,23 +477,23 @@ export default function PlacementListsPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">
+                  <h3 className="text-lg font-bold text-foreground">
                     Delete Placement List
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     This action cannot be undone
                   </p>
                 </div>
               </div>
-              <p className="text-gray-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Are you sure you want to permanently delete{" "}
-                <strong className="text-gray-900">{deleteTarget.name}</strong>?
+                <strong className="text-foreground">{deleteTarget.name}</strong>?
                 All assigned students will be removed from this list.
               </p>
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setDeleteTarget(null)}
-                  className="px-5 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-5 py-2.5 border-2 border-border text-foreground/80 font-semibold rounded-lg hover:bg-secondary/50 transition-colors"
                   disabled={isDeleting}
                 >
                   Cancel

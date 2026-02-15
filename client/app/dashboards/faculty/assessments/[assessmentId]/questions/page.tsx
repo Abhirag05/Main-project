@@ -412,12 +412,12 @@ export default function QuestionBuilderPage() {
     return (
       <DashboardLayout>
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-card rounded-lg shadow-md p-6">
             <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+              <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
               <div className="space-y-4">
-                <div className="h-32 bg-gray-200 rounded"></div>
-                <div className="h-32 bg-gray-200 rounded"></div>
+                <div className="h-32 bg-muted rounded"></div>
+                <div className="h-32 bg-muted rounded"></div>
               </div>
             </div>
           </div>
@@ -444,9 +444,9 @@ export default function QuestionBuilderPage() {
         {/* Header */}
         <div className="mb-6 flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Question Builder</h1>
-            <p className="text-gray-600 mt-1">{assessment.title}</p>
-            <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+            <h1 className="text-3xl font-bold text-foreground">Question Builder</h1>
+            <p className="text-muted-foreground mt-1">{assessment.title}</p>
+            <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
               <span>Batch: {assessment.batch.code}</span>
               <span>•</span>
               <span>Subject: {assessment.subject.name}</span>
@@ -460,10 +460,10 @@ export default function QuestionBuilderPage() {
                 assessment.status === "DRAFT"
                   ? "bg-yellow-100 text-yellow-800"
                   : assessment.status === "SCHEDULED"
-                  ? "bg-blue-100 text-blue-800"
+                  ? "bg-primary/10 text-primary"
                   : assessment.status === "ACTIVE"
                   ? "bg-green-100 text-green-800"
-                  : "bg-gray-100 text-gray-800"
+                  : "bg-secondary text-foreground"
               }`}
             >
               {assessment.status}
@@ -493,9 +493,9 @@ export default function QuestionBuilderPage() {
         )}
 
         {/* Marks Summary */}
-        <div className="mb-6 bg-blue-50 border border-blue-200 px-4 py-3 rounded-lg">
+        <div className="mb-6 bg-primary/10 border border-primary/20 px-4 py-3 rounded-lg">
           <div className="flex justify-between items-center">
-            <span className="text-blue-800">
+            <span className="text-primary">
               Question Marks: {getTotalQuestionMarks()} / {assessment.total_marks}
             </span>
             {getTotalQuestionMarks() !== assessment.total_marks && (
@@ -517,17 +517,17 @@ export default function QuestionBuilderPage() {
           {questions.map((question, index) => (
             <div
               key={index}
-              className={`bg-white rounded-lg shadow-md p-6 border-l-4 ${
+              className={`bg-card rounded-lg shadow-md p-6 border-l-4 ${
                 question.isSaved
                   ? "border-green-500"
                   : question.isNew
-                  ? "border-blue-500"
+                  ? "border-primary"
                   : "border-yellow-500"
               }`}
             >
               {/* Question Header */}
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">
+                <h3 className="text-lg font-semibold text-foreground">
                   Question {index + 1}
                   {!question.isSaved && (
                     <span className="ml-2 text-sm font-normal text-yellow-600">
@@ -549,7 +549,7 @@ export default function QuestionBuilderPage() {
 
               {/* Question Text */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground/80 mb-1">
                   Question Text
                 </label>
                 <textarea
@@ -557,7 +557,7 @@ export default function QuestionBuilderPage() {
                   onChange={(e) => handleQuestionTextChange(index, e.target.value)}
                   disabled={isReadOnly}
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground disabled:bg-secondary disabled:cursor-not-allowed"
                   placeholder="Enter your question here..."
                 />
               </div>
@@ -570,7 +570,7 @@ export default function QuestionBuilderPage() {
                     className={`p-3 border rounded-lg ${
                       option.is_correct
                         ? "border-green-500 bg-green-50"
-                        : "border-gray-300"
+                        : "border-border"
                     }`}
                   >
                     <div className="flex items-center mb-2">
@@ -584,7 +584,7 @@ export default function QuestionBuilderPage() {
                         disabled={isReadOnly}
                         className="mr-2 h-4 w-4 text-green-600 focus:ring-green-500"
                       />
-                      <span className="font-medium text-gray-700">
+                      <span className="font-medium text-foreground/80">
                         Option {option.option_label}
                       </span>
                       {option.is_correct && (
@@ -604,7 +604,7 @@ export default function QuestionBuilderPage() {
                         )
                       }
                       disabled={isReadOnly}
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="w-full px-3 py-2 border border-border rounded focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground disabled:bg-secondary disabled:cursor-not-allowed"
                       placeholder={`Enter option ${option.option_label}`}
                     />
                   </div>
@@ -614,7 +614,7 @@ export default function QuestionBuilderPage() {
               {/* Marks and Save */}
               <div className="flex justify-between items-center pt-4 border-t">
                 <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-foreground/80">
                     Marks:
                   </label>
                   <input
@@ -625,7 +625,7 @@ export default function QuestionBuilderPage() {
                     }
                     disabled={isReadOnly}
                     min="1"
-                    className="w-20 px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-20 px-3 py-1 border border-border rounded focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground disabled:bg-secondary disabled:cursor-not-allowed"
                   />
                 </div>
                 {!isReadOnly && (
@@ -634,8 +634,8 @@ export default function QuestionBuilderPage() {
                     disabled={saving || question.isSaved}
                     className={`px-4 py-2 rounded-lg transition-colors ${
                       question.isSaved
-                        ? "bg-gray-100 text-gray-500 cursor-not-allowed"
-                        : "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-400"
+                        ? "bg-secondary text-muted-foreground cursor-not-allowed"
+                        : "bg-primary text-white hover:bg-primary/90 disabled:bg-primary/50"
                     }`}
                   >
                     {saving ? "Saving..." : question.isSaved ? "Saved" : "Save Question"}
@@ -651,7 +651,7 @@ export default function QuestionBuilderPage() {
           <div className="mt-6">
             <button
               onClick={handleAddQuestion}
-              className="w-full py-3 border-2 border-dashed border-gray-300 text-gray-600 rounded-lg hover:border-blue-500 hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
+              className="w-full py-3 border-2 border-dashed border-border text-muted-foreground rounded-lg hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-2"
             >
               <svg
                 className="w-5 h-5"
@@ -675,7 +675,7 @@ export default function QuestionBuilderPage() {
         <div className="mt-6 flex justify-start">
           <button
             onClick={() => router.push("/dashboards/faculty/assessments")}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="px-4 py-2 text-muted-foreground hover:text-foreground flex items-center gap-2"
           >
             <svg
               className="w-5 h-5"
@@ -698,12 +698,12 @@ export default function QuestionBuilderPage() {
       {/* Question Source Modal */}
       {showSourceModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              <h2 className="text-2xl font-bold text-foreground mb-4">
                 How would you like to add questions?
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Choose how you want to add questions to this assessment
               </p>
 
@@ -711,12 +711,12 @@ export default function QuestionBuilderPage() {
                 {/* Manual Entry Option */}
                 <button
                   onClick={handleManualEntry}
-                  className="w-full text-left p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors"
+                  className="w-full text-left p-4 border-2 border-border rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-blue-600"
+                        className="w-6 h-6 text-primary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -730,10 +730,10 @@ export default function QuestionBuilderPage() {
                       </svg>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      <h3 className="text-lg font-semibold text-foreground mb-1">
                         Manual Entry
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         Add questions one by one with full control over each question and its options
                       </p>
                     </div>
@@ -741,7 +741,7 @@ export default function QuestionBuilderPage() {
                 </button>
 
                 {/* Import from Question Bank Option */}
-                <div className="border-2 border-gray-300 rounded-lg p-4">
+                <div className="border-2 border-border rounded-lg p-4">
                   <div className="flex items-start gap-4 mb-4">
                     <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                       <svg
@@ -759,10 +759,10 @@ export default function QuestionBuilderPage() {
                       </svg>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      <h3 className="text-lg font-semibold text-foreground mb-1">
                         Import from Question Bank
                       </h3>
-                      <p className="text-sm text-gray-600 mb-4">
+                      <p className="text-sm text-muted-foreground mb-4">
                         Select questions from an existing question bank to quickly populate your assessment
                       </p>
 
@@ -770,24 +770,24 @@ export default function QuestionBuilderPage() {
                       {!loadingBanks && questionBanks.length === 0 && (
                         <button
                           onClick={fetchQuestionBanks}
-                          className="text-blue-600 hover:underline text-sm"
+                          className="text-primary hover:underline text-sm"
                         >
                           Load question banks
                         </button>
                       )}
 
                       {loadingBanks ? (
-                        <div className="text-gray-500 text-sm">Loading question banks...</div>
+                        <div className="text-muted-foreground text-sm">Loading question banks...</div>
                       ) : questionBanks.length > 0 ? (
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-foreground/80 mb-1">
                               Select Question Bank
                             </label>
                             <select
                               value={selectedBankId || ""}
                               onChange={(e) => setSelectedBankId(e.target.value ? Number(e.target.value) : null)}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
+                              className="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground"
                             >
                               <option value="">-- Select a Question Bank --</option>
                               {questionBanks.map((bank) => (
@@ -802,7 +802,7 @@ export default function QuestionBuilderPage() {
                             <>
                               <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  <label className="block text-sm font-medium text-foreground/80 mb-1">
                                     Number of Questions
                                   </label>
                                   <input
@@ -814,11 +814,11 @@ export default function QuestionBuilderPage() {
                                     }}
                                     min="1"
                                     max={questionBanks.find(b => b.id === selectedBankId)?.questions_count || 100}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
+                                    className="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground"
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  <label className="block text-sm font-medium text-foreground/80 mb-1">
                                     Marks per Question
                                   </label>
                                   <input
@@ -826,7 +826,7 @@ export default function QuestionBuilderPage() {
                                     value={marksPerQuestion}
                                     onChange={(e) => setMarksPerQuestion(Math.max(1, Number(e.target.value)))}
                                     min="1"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
+                                    className="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground"
                                   />
                                 </div>
                               </div>
@@ -836,12 +836,12 @@ export default function QuestionBuilderPage() {
                                   type="checkbox"
                                   checked={randomize}
                                   onChange={(e) => setRandomize(e.target.checked)}
-                                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                  className="h-4 w-4 text-primary focus:ring-ring border-border rounded"
                                 />
-                                <span className="text-sm text-gray-700">Randomize question selection</span>
+                                <span className="text-sm text-foreground/80">Randomize question selection</span>
                               </label>
 
-                              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+                              <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-sm text-primary">
                                 <strong>Summary:</strong> {numQuestions} questions × {marksPerQuestion} marks = {numQuestions * marksPerQuestion} total marks
                               </div>
 
@@ -864,7 +864,7 @@ export default function QuestionBuilderPage() {
               <div className="flex justify-end">
                 <button
                   onClick={() => setShowSourceModal(false)}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                  className="px-4 py-2 text-muted-foreground hover:text-foreground"
                 >
                   Close
                 </button>

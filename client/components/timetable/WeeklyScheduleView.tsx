@@ -22,7 +22,7 @@ const DAYS = [
 
 const DAY_COLORS: Record<number, { bg: string; border: string; text: string }> =
   {
-    1: { bg: "bg-blue-50", border: "border-blue-200", text: "text-blue-800" },
+    1: { bg: "bg-primary/10", border: "border-primary/20", text: "text-primary" },
     2: {
       bg: "bg-green-50",
       border: "border-green-200",
@@ -94,12 +94,12 @@ export default function WeeklyScheduleView({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow p-8">
+      <div className="bg-card rounded-lg shadow p-8">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+          <div className="h-8 bg-muted rounded w-1/4"></div>
           <div className="grid grid-cols-7 gap-2">
             {[...Array(7)].map((_, i) => (
-              <div key={i} className="h-96 bg-gray-100 rounded"></div>
+              <div key={i} className="h-96 bg-secondary rounded"></div>
             ))}
           </div>
         </div>
@@ -108,10 +108,10 @@ export default function WeeklyScheduleView({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
+    <div className="bg-card rounded-lg shadow overflow-hidden">
       {title && (
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        <div className="px-6 py-4 border-b border-border">
+          <h3 className="text-lg font-semibold text-foreground">{title}</h3>
         </div>
       )}
 
@@ -120,7 +120,7 @@ export default function WeeklyScheduleView({
         <div className="min-w-[1200px] p-4">
           <div className="grid grid-cols-8 gap-1">
             {/* Time column header */}
-            <div className="text-center text-xs font-medium text-gray-500 py-2">
+            <div className="text-center text-xs font-medium text-muted-foreground py-2">
               Time
             </div>
             {/* Day headers */}
@@ -138,7 +138,7 @@ export default function WeeklyScheduleView({
             {/* Time rows */}
             {HOURS.map((hour) => (
               <div key={hour} className="contents">
-                <div className="text-xs text-gray-500 text-right pr-2 h-[60px] flex items-start justify-end pt-1">
+                <div className="text-xs text-muted-foreground text-right pr-2 h-[60px] flex items-start justify-end pt-1">
                   {hour.toString().padStart(2, "0")}:00
                 </div>
                 {DAYS.map((_, dayIndex) => {
@@ -154,7 +154,7 @@ export default function WeeklyScheduleView({
                   return (
                     <div
                       key={`${hour}-${dayIndex}`}
-                      className="relative h-[60px] border-t border-gray-100"
+                      className="relative h-[60px] border-t border-border"
                     >
                       {slotsInHour.map((slot) => {
                         const { height } = getSlotPosition(slot);
@@ -174,10 +174,10 @@ export default function WeeklyScheduleView({
                                 ? slot.batch_detail?.code
                                 : slot.faculty_detail?.full_name}
                             </div>
-                            <div className="text-xs text-gray-600 truncate">
+                            <div className="text-xs text-muted-foreground truncate">
                               {slot.module_detail?.code}
                             </div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-muted-foreground">
                               {slot.start_time.slice(0, 5)}-
                               {slot.end_time.slice(0, 5)}
                             </div>
@@ -201,37 +201,37 @@ export default function WeeklyScheduleView({
           const colors = DAY_COLORS[dayNumber];
 
           return (
-            <div key={day} className="border-b border-gray-200 last:border-b-0">
+            <div key={day} className="border-b border-border last:border-b-0">
               <div
                 className={`px-4 py-2 ${colors.bg} ${colors.text} font-medium`}
               >
                 {day}
               </div>
               {daySlots.length === 0 ? (
-                <div className="px-4 py-3 text-sm text-gray-500 italic">
+                <div className="px-4 py-3 text-sm text-muted-foreground italic">
                   No classes
                 </div>
               ) : (
-                <div className="divide-y divide-gray-100">
+                <div className="divide-y divide-border">
                   {daySlots.map((slot) => (
                     <div
                       key={slot.id}
                       onClick={() => onSlotClick?.(slot)}
-                      className="px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                      className="px-4 py-3 hover:bg-secondary/50 cursor-pointer"
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <div className="font-medium text-gray-900">
+                          <div className="font-medium text-foreground">
                             {slot.module_detail?.name}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-muted-foreground">
                             {viewMode === "faculty"
                               ? `Batch: ${slot.batch_detail?.code}`
                               : `Faculty: ${slot.faculty_detail?.full_name}`}
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-foreground">
                             {slot.start_time.slice(0, 5)} -{" "}
                             {slot.end_time.slice(0, 5)}
                           </div>
@@ -249,7 +249,7 @@ export default function WeeklyScheduleView({
       {safeSlots.length === 0 && (
         <div className="p-12 text-center">
           <svg
-            className="mx-auto h-12 w-12 text-gray-400"
+            className="mx-auto h-12 w-12 text-muted-foreground/70"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -261,10 +261,10 @@ export default function WeeklyScheduleView({
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
             />
           </svg>
-          <h3 className="mt-2 text-lg font-medium text-gray-900">
+          <h3 className="mt-2 text-lg font-medium text-foreground">
             No schedule found
           </h3>
-          <p className="mt-1 text-gray-500">
+          <p className="mt-1 text-muted-foreground">
             {viewMode === "faculty"
               ? "This faculty has no assigned classes yet."
               : "This batch has no classes scheduled yet."}

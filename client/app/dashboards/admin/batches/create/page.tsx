@@ -12,7 +12,6 @@ function WorkflowSteps({ currentStep }: { currentStep: number }) {
   const steps = [
     { id: 1, name: "Create Batch" },
     { id: 2, name: "Assign Students" },
-    { id: 3, name: "Assign Mentor" },
   ];
 
   return (
@@ -29,21 +28,21 @@ function WorkflowSteps({ currentStep }: { currentStep: number }) {
                 className="hidden sm:absolute sm:inset-0 sm:flex sm:items-center"
                 aria-hidden="true"
               >
-                <div className="h-0.5 w-full bg-gray-200" />
+                <div className="h-0.5 w-full bg-muted" />
               </div>
               <div
-                className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 bg-white ${
-                  isCurrent ? "border-blue-600" : "border-gray-300"
+                className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 bg-card ${
+                  isCurrent ? "border-primary" : "border-border"
                 }`}
               >
                 <span
                   className={`h-2.5 w-2.5 rounded-full ${
-                    isCurrent ? "bg-blue-600" : "bg-gray-300"
+                    isCurrent ? "bg-primary" : "bg-muted"
                   }`}
                 />
                 <span className="sr-only">{step.name}</span>
               </div>
-              <span className="mt-2 text-xs font-medium text-gray-500 sm:mt-0 sm:absolute sm:-bottom-7 sm:left-1/2 sm:-translate-x-1/2 sm:whitespace-nowrap">
+              <span className="mt-2 text-xs font-medium text-muted-foreground sm:mt-0 sm:absolute sm:-bottom-7 sm:left-1/2 sm:-translate-x-1/2 sm:whitespace-nowrap">
                 {step.name}
               </span>
             </li>
@@ -201,10 +200,10 @@ export default function CreateBatchPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">
+            <h2 className="mt-4 text-2xl font-bold text-foreground">
               Access Denied
             </h2>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-muted-foreground">
               You don't have permission to access this page. Only Centre Admins
               can create batches.
             </p>
@@ -220,8 +219,8 @@ export default function CreateBatchPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Loading...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -235,23 +234,23 @@ export default function CreateBatchPage() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-foreground">
             Step 1: Create Batch
           </h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <p className="mt-2 text-sm text-foreground/80">
             Create a new batch from an existing template
           </p>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-3 text-gray-600">Loading templates...</span>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-3 text-muted-foreground">Loading templates...</span>
           </div>
         ) : templates.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg border border-gray-200 shadow-sm">
+          <div className="text-center py-12 bg-card rounded-lg border border-border shadow-sm">
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="mx-auto h-12 w-12 text-muted-foreground/70"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -263,24 +262,24 @@ export default function CreateBatchPage() {
                 d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
               />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
+            <h3 className="mt-2 text-sm font-medium text-foreground">
               No active templates available
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Contact your Super Admin to create batch templates.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Template Selection */}
-            <div className="bg-white px-6 py-6 rounded-lg border border-gray-200 shadow-sm">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
+            <div className="bg-card px-6 py-6 rounded-lg border border-border shadow-sm">
+              <h2 className="text-lg font-medium text-foreground mb-4">
                 1. Select Batch Template
               </h2>
               <div>
                 <label
                   htmlFor="template"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-foreground/80"
                 >
                   Template
                 </label>
@@ -288,10 +287,10 @@ export default function CreateBatchPage() {
                   id="template"
                   value={selectedTemplate?.id || ""}
                   onChange={(e) => handleTemplateChange(e.target.value)}
-                  className={`mt-1 block w-full rounded-md text-gray-700 shadow-sm sm:text-sm ${
+                  className={`mt-1 block w-full rounded-md text-foreground/80 shadow-sm sm:text-sm ${
                     errors.template
                       ? "border-red-300 focus:border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                      : "border-border focus:border-ring focus:ring-ring"
                   }`}
                 >
                   <option value="">-- Select a template --</option>
@@ -309,15 +308,15 @@ export default function CreateBatchPage() {
             </div>
 
             {/* Date Selection */}
-            <div className="bg-white px-6 py-6 rounded-lg border border-gray-200 shadow-sm">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
+            <div className="bg-card px-6 py-6 rounded-lg border border-border shadow-sm">
+              <h2 className="text-lg font-medium text-foreground mb-4">
                 2. Select Dates
               </h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label
                     htmlFor="startDate"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-foreground/80"
                   >
                     Start Date
                   </label>
@@ -344,10 +343,10 @@ export default function CreateBatchPage() {
                         setErrors({ ...errors, startDate: "" });
                       }
                     }}
-                    className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm text-gray-700 ${
+                    className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm text-foreground/80 ${
                       errors.startDate
                         ? "border-red-300 focus:border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                        : "border-border focus:border-ring focus:ring-ring"
                     }`}
                   />
                   {errors.startDate && (
@@ -360,7 +359,7 @@ export default function CreateBatchPage() {
                 <div>
                   <label
                     htmlFor="endDate"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-foreground/80"
                   >
                     End Date
                   </label>
@@ -374,10 +373,10 @@ export default function CreateBatchPage() {
                         setErrors({ ...errors, endDate: "" });
                       }
                     }}
-                    className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm text-gray-700 ${
+                    className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm text-foreground/80 ${
                       errors.endDate
                         ? "border-red-300 focus:border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                        : "border-border focus:border-ring focus:ring-ring"
                     }`}
                   />
                   {errors.endDate && (
@@ -391,23 +390,23 @@ export default function CreateBatchPage() {
 
             {/* Preview */}
             {selectedTemplate && (
-              <div className="bg-blue-50 px-6 py-6 rounded-lg border border-blue-200 shadow-sm">
-                <h2 className="text-lg font-medium text-gray-900 mb-4">
+              <div className="bg-primary/10 px-6 py-6 rounded-lg border border-primary/20 shadow-sm">
+                <h2 className="text-lg font-medium text-foreground mb-4">
                   3. Preview
                 </h2>
                 <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">
+                    <dt className="text-sm font-medium text-muted-foreground">
                       Course
                     </dt>
-                    <dd className="mt-1 text-sm text-gray-900">
+                    <dd className="mt-1 text-sm text-foreground">
                       {selectedTemplate.course_detail.name} (
                       {selectedTemplate.course_detail.code})
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Mode</dt>
-                    <dd className="mt-1 text-sm text-gray-900">
+                    <dt className="text-sm font-medium text-muted-foreground">Mode</dt>
+                    <dd className="mt-1 text-sm text-foreground">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           selectedTemplate.mode === "LIVE"
@@ -420,18 +419,18 @@ export default function CreateBatchPage() {
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">
+                    <dt className="text-sm font-medium text-muted-foreground">
                       Maximum Students
                     </dt>
-                    <dd className="mt-1 text-sm text-gray-900">
+                    <dd className="mt-1 text-sm text-foreground">
                       {selectedTemplate.max_students}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">
+                    <dt className="text-sm font-medium text-muted-foreground">
                       Duration
                     </dt>
-                    <dd className="mt-1 text-sm text-gray-900">
+                    <dd className="mt-1 text-sm text-foreground">
                       {selectedTemplate.course_detail.duration_months} months
                     </dd>
                   </div>
@@ -444,14 +443,14 @@ export default function CreateBatchPage() {
               <button
                 type="button"
                 onClick={() => router.push("/dashboards/admin/batches")}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="px-4 py-2 text-sm font-medium text-foreground/80 bg-card border border-border rounded-md shadow-sm hover:bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? "Creating..." : "Create Batch"}
               </button>

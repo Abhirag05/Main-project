@@ -32,7 +32,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "Disabled",
           href: "/dashboards/admin/students/disabled",
-          icon: "user",
+          icon: "user-ban",
         },
         {
           name: "Full Payment",
@@ -48,7 +48,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
     },
     {
       name: "Batch Management",
-      icon: "calendar",
+      icon: "layers",
       subsections: [
         {
           name: "View Batches",
@@ -69,7 +69,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
     },
     {
       name: "Faculty Management",
-      icon: "users-cog",
+      icon: "chalkboard",
       subsections: [
         {
           name: "Add Faculty",
@@ -79,17 +79,17 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "List Faculty",
           href: "/dashboards/admin/users",
-          icon: "users",
+          icon: "user-group",
         },
         {
           name: "Faculty Modules",
           href: "/dashboards/admin/faculty/subject-assignments",
-          icon: "clipboard",
+          icon: "folder-open",
         },
         {
           name: "Faculty Batches",
           href: "/dashboards/admin/faculty/batch-assignments",
-          icon: "calendar",
+          icon: "table-cells",
         },
       ],
     },
@@ -100,7 +100,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "Courses",
           href: "/dashboards/admin/academics/courses",
-          icon: "book-open",
+          icon: "academic-cap",
         },
         {
           name: "Modules",
@@ -116,7 +116,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
     },
     {
       name: "Academics",
-      icon: "academic-cap",
+      icon: "calendar",
       subsections: [
         {
           name: "Timetable",
@@ -137,25 +137,25 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "Placement Lists",
           href: "/dashboards/admin/placement/lists",
-          icon: "view-list",
+          icon: "clipboard-list",
         },
         {
           name: "Student Skills",
           href: "/dashboards/admin/placement/students",
-          icon: "users",
+          icon: "sparkles",
         },
       ],
     },
     {
       name: "Referral",
-      icon: "link",
+      icon: "share",
       href: "/dashboards/admin/referral",
     },
   ],
   FACULTY: [
     {
       name: "Teaching",
-      icon: "academic-cap",
+      icon: "chalkboard",
       subsections: [
         {
           name: "My Schedule",
@@ -165,7 +165,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "My Batches",
           href: "/dashboards/faculty/batches",
-          icon: "users",
+          icon: "layers",
         },
         {
           name: "Batch Timetable",
@@ -181,12 +181,12 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "Create Assessment",
           href: "/dashboards/faculty/assessments/create",
-          icon: "plus",
+          icon: "pencil-square",
         },
         {
           name: "My Assessments",
           href: "/dashboards/faculty/assessments",
-          icon: "view-list",
+          icon: "clipboard-list",
         },
         {
           name: "Question Banks",
@@ -207,7 +207,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "Create Assignment",
           href: "/dashboards/faculty/assignments/create",
-          icon: "plus",
+          icon: "pencil-square",
         },
         {
           name: "My Assignments",
@@ -228,12 +228,12 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "Upload Material",
           href: "/dashboards/faculty/course-materials/upload",
-          icon: "plus",
+          icon: "upload",
         },
         {
           name: "My Materials",
           href: "/dashboards/faculty/course-materials",
-          icon: "view-list",
+          icon: "folder-open",
         },
       ],
     },
@@ -251,7 +251,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "My Batch",
           href: "/dashboards/student/my-batch",
-          icon: "book",
+          icon: "layers",
         },
         {
           name: "My Attendance",
@@ -261,28 +261,28 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "Course Materials",
           href: "/dashboards/student/course-materials",
-          icon: "book-open",
+          icon: "folder-open",
         },
         {
           name: "My Skills",
           href: "/dashboards/student/skills",
-          icon: "star",
+          icon: "sparkles",
         },
       ],
     },
     {
       name: "Assessments",
-      icon: "clipboard",
+      icon: "clipboard-check",
       subsections: [
         {
           name: "My Assessments",
           href: "/dashboards/student/assessments",
-          icon: "view-list",
+          icon: "clipboard-list",
         },
         {
           name: "My Results",
           href: "/dashboards/student/results",
-          icon: "chart-bar",
+          icon: "award",
         },
       ],
     },
@@ -293,7 +293,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         {
           name: "My Assignments",
           href: "/dashboards/student/assignments",
-          icon: "view-list",
+          icon: "pencil-square",
         },
         {
           name: "My Submissions",
@@ -315,7 +315,7 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
     },
     {
       name: "Referral",
-      icon: "user-group",
+      icon: "share",
       subsections: [
         {
           name: "My Referral",

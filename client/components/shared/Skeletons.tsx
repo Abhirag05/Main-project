@@ -15,7 +15,7 @@ export function ShimmerBar({
 }: {
   className?: string;
 }) {
-  return <div className={`bg-gray-200 rounded ${className}`} />;
+  return <div className={`bg-muted rounded ${className}`} />;
 }
 
 // ─── Table skeleton ──────────────────────────────────────────
@@ -35,12 +35,12 @@ export function TableSkeleton({
   showHeader = true,
 }: TableSkeletonProps) {
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden animate-pulse">
-      {showHeader && <div className="h-12 bg-gray-200" />}
+    <div className="bg-card rounded-lg shadow overflow-hidden animate-pulse">
+      {showHeader && <div className="h-12 bg-muted" />}
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="flex gap-4 px-4 items-center h-14 border-t border-gray-100"
+          className="flex gap-4 px-4 items-center h-14 border-t border-border"
         >
           {Array.from({ length: cols }).map((_, j) => (
             <ShimmerBar
@@ -65,10 +65,10 @@ interface CardSkeletonProps {
 
 export function CardSkeleton({ showIcon = true, lines = 2 }: CardSkeletonProps) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 animate-pulse">
+    <div className="bg-card rounded-xl shadow-sm border border-border p-5 animate-pulse">
       <div className="flex items-start gap-4">
         {showIcon && (
-          <div className="w-12 h-12 bg-gray-200 rounded-lg flex-shrink-0" />
+          <div className="w-12 h-12 bg-muted rounded-lg flex-shrink-0" />
         )}
         <div className="flex-1 space-y-2">
           <ShimmerBar className="h-4 w-24" />
@@ -120,7 +120,7 @@ export function PageSkeleton({ showTitle = true, blocks = 3 }: PageSkeletonProps
       {Array.from({ length: blocks }).map((_, i) => (
         <div
           key={i}
-          className="bg-white rounded-lg shadow-md p-6 space-y-4"
+          className="bg-card rounded-lg shadow-md p-6 space-y-4"
         >
           <ShimmerBar className="h-5 w-1/4" />
           <ShimmerBar className="h-4 w-full" />
@@ -135,8 +135,8 @@ export function PageSkeleton({ showTitle = true, blocks = 3 }: PageSkeletonProps
 
 export function SectionSkeleton() {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
-      <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+    <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden animate-pulse">
+      <div className="px-6 py-4 border-b border-border flex items-center justify-between">
         <div className="space-y-1.5">
           <ShimmerBar className="h-5 w-36" />
           <ShimmerBar className="h-3 w-24" />
@@ -158,8 +158,8 @@ export function FullPageSpinner({ message = "Loading..." }: { message?: string }
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
-        <p className="mt-4 text-gray-600">{message}</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
+        <p className="mt-4 text-muted-foreground">{message}</p>
       </div>
     </div>
   );

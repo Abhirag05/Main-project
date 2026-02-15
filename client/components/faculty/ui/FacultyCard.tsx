@@ -8,7 +8,7 @@ interface FacultyCardProps {
 export default function FacultyCard({ children, className }: FacultyCardProps) {
   return (
     <div
-      className={`bg-white border border-gray-200 rounded-xl shadow-sm ${
+      className={`bg-card border border-border rounded-xl shadow-sm ${
         className || ""
       }`}
     >

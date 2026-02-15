@@ -85,7 +85,7 @@ export default function FacultyDashboard() {
         {/* Profile Card */}
         {loading ? (
           <FacultyCard className="p-6 mb-6">
-            <p className="text-gray-600">Loading profile...</p>
+            <p className="text-muted-foreground">Loading profile...</p>
           </FacultyCard>
         ) : profile ? (
           <FacultyProfileCard
@@ -101,7 +101,7 @@ export default function FacultyDashboard() {
 
         {/* Quick Actions */}
         <FacultyCard className="p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             Quick Actions
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

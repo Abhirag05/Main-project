@@ -11,7 +11,7 @@ import {
 const TYPE_BADGES: Record<string, { bg: string; text: string }> = {
   PDF: { bg: "bg-red-100", text: "text-red-700" },
   PPT: { bg: "bg-orange-100", text: "text-orange-700" },
-  DOC: { bg: "bg-blue-100", text: "text-blue-700" },
+  DOC: { bg: "bg-primary/10", text: "text-primary" },
   VIDEO: { bg: "bg-purple-100", text: "text-purple-700" },
   LINK: { bg: "bg-cyan-100", text: "text-cyan-700" },
 };
@@ -21,7 +21,7 @@ export default function ModuleMaterialsPageWrapper() {
     <Suspense fallback={
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </DashboardLayout>
     }>
@@ -83,7 +83,7 @@ function ModuleMaterialsPage() {
         <div className="mb-6">
           <button
             onClick={() => router.push("/dashboards/student/course-materials")}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors mb-3"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-3"
           >
             <svg
               className="w-4 h-4"
@@ -101,11 +101,11 @@ function ModuleMaterialsPage() {
             Back to Modules
           </button>
 
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="text-2xl font-bold text-foreground">
             {moduleName}
           </h1>
           {moduleCode && (
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {moduleCode} &mdash; {materials.length} material{materials.length !== 1 ? "s" : ""}
             </p>
           )}
@@ -119,15 +119,15 @@ function ModuleMaterialsPage() {
         )}
 
         {/* Filter */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6 flex flex-wrap gap-4 items-end">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-4 mb-6 flex flex-wrap gap-4 items-end">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
               Material Type
             </label>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-border rounded-lg text-sm bg-card text-foreground focus:ring-2 focus:ring-ring"
             >
               <option value="">All Types</option>
               <option value="PDF">PDF</option>
@@ -142,13 +142,13 @@ function ModuleMaterialsPage() {
         {/* Content */}
         {loading ? (
           <div className="text-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-3 text-gray-500">Loading materials...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-3 text-muted-foreground">Loading materials...</p>
           </div>
         ) : materials.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md text-center py-16">
+          <div className="bg-card rounded-lg shadow-md text-center py-16">
             <svg
-              className="w-16 h-16 mx-auto text-gray-300"
+              className="w-16 h-16 mx-auto text-muted-foreground/50"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -160,7 +160,7 @@ function ModuleMaterialsPage() {
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <p className="mt-4 text-gray-500 font-medium">
+            <p className="mt-4 text-muted-foreground font-medium">
               No materials found for this module.
             </p>
           </div>
@@ -168,8 +168,8 @@ function ModuleMaterialsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {materials.map((mat) => {
               const badge = TYPE_BADGES[mat.material_type] || {
-                bg: "bg-gray-100",
-                text: "text-gray-700",
+                bg: "bg-secondary",
+                text: "text-foreground/80",
               };
               const hasFile = !!mat.file_url;
               const hasLink = !!mat.external_url;
@@ -177,11 +177,11 @@ function ModuleMaterialsPage() {
               return (
                 <div
                   key={mat.id}
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow"
+                  className="bg-card rounded-lg shadow-sm border border-border p-5 hover:shadow-md transition-shadow"
                 >
                   {/* Title & badge */}
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="text-sm font-semibold text-gray-800 leading-tight">
+                    <h3 className="text-sm font-semibold text-foreground leading-tight">
                       {mat.title}
                     </h3>
                     <span
@@ -193,16 +193,16 @@ function ModuleMaterialsPage() {
 
                   {/* Description */}
                   {mat.description && (
-                    <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+                    <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
                       {mat.description}
                     </p>
                   )}
 
                   {/* Meta */}
-                  <div className="text-xs text-gray-400 mb-4 space-y-0.5">
+                  <div className="text-xs text-muted-foreground/70 mb-4 space-y-0.5">
                     <p>
                       Uploaded by{" "}
-                      <span className="text-gray-600">
+                      <span className="text-muted-foreground">
                         {mat.faculty_name}
                       </span>
                     </p>
@@ -217,7 +217,7 @@ function ModuleMaterialsPage() {
                       href={mat.file_url!}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
                     >
                       <svg
                         className="w-4 h-4"
@@ -240,7 +240,7 @@ function ModuleMaterialsPage() {
                       href={mat.external_url!}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
                     >
                       <svg
                         className="w-4 h-4"

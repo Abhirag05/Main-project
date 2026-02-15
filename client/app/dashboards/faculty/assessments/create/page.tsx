@@ -28,7 +28,7 @@ export default function CreateAssessmentPageWrapper() {
     <Suspense fallback={
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </DashboardLayout>
     }>
@@ -316,13 +316,13 @@ function CreateAssessmentPage() {
     return (
       <DashboardLayout>
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-card rounded-lg shadow-md p-6">
             <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+              <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
               <div className="space-y-4">
-                <div className="h-10 bg-gray-200 rounded"></div>
-                <div className="h-10 bg-gray-200 rounded"></div>
-                <div className="h-10 bg-gray-200 rounded"></div>
+                <div className="h-10 bg-muted rounded"></div>
+                <div className="h-10 bg-muted rounded"></div>
+                <div className="h-10 bg-muted rounded"></div>
               </div>
             </div>
           </div>
@@ -335,10 +335,10 @@ function CreateAssessmentPage() {
     <DashboardLayout>
       <div className="max-w-3xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-foreground">
             {isEditMode ? "Edit Assessment" : "Create Assessment"}
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted-foreground mt-2">
             {isEditMode
               ? "Update your assessment details"
               : "Create a new MCQ-based assessment for your students"}
@@ -351,13 +351,13 @@ function CreateAssessmentPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-card rounded-lg shadow-md p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Assessment Title */}
             <div>
               <label
                 htmlFor="title"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-foreground/80 mb-1"
               >
                 Assessment Title <span className="text-red-500">*</span>
               </label>
@@ -367,8 +367,8 @@ function CreateAssessmentPage() {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 ${
-                  formErrors.title ? "border-red-500" : "border-gray-300"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground ${
+                  formErrors.title ? "border-red-500" : "border-border"
                 }`}
                 placeholder="e.g., Python Fundamentals Quiz"
               />
@@ -381,7 +381,7 @@ function CreateAssessmentPage() {
             <div>
               <label
                 htmlFor="batch_id"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-foreground/80 mb-1"
               >
                 Batch <span className="text-red-500">*</span>
               </label>
@@ -397,8 +397,8 @@ function CreateAssessmentPage() {
                     skill_names: [],
                   }))
                 }
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 ${
-                  formErrors.batch_id ? "border-red-500" : "border-gray-300"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground ${
+                  formErrors.batch_id ? "border-red-500" : "border-border"
                 }`}
               >
                 <option value="">Select a batch</option>
@@ -417,7 +417,7 @@ function CreateAssessmentPage() {
                 </p>
               )}
               {formData.batch_id && (
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Course: {batches.find((b) => b.id === formData.batch_id)?.course_name}
                 </p>
               )}
@@ -427,7 +427,7 @@ function CreateAssessmentPage() {
             <div>
               <label
                 htmlFor="module_id"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-foreground/80 mb-1"
               >
                 Module <span className="text-red-500">*</span>
               </label>
@@ -442,8 +442,8 @@ function CreateAssessmentPage() {
                   }))
                 }
                 disabled={!formData.batch_id || loadingModules}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                  formErrors.module_id ? "border-red-500" : "border-gray-300"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground disabled:bg-secondary disabled:cursor-not-allowed ${
+                  formErrors.module_id ? "border-red-500" : "border-border"
                 }`}
               >
                 <option value="">
@@ -469,7 +469,7 @@ function CreateAssessmentPage() {
               <div>
                 <label
                   htmlFor="total_marks"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   Total Marks <span className="text-red-500">*</span>
                 </label>
@@ -480,8 +480,8 @@ function CreateAssessmentPage() {
                   value={formData.total_marks}
                   onChange={handleInputChange}
                   min="1"
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 ${
-                    formErrors.total_marks ? "border-red-500" : "border-gray-300"
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground ${
+                    formErrors.total_marks ? "border-red-500" : "border-border"
                   }`}
                 />
                 {formErrors.total_marks && (
@@ -492,7 +492,7 @@ function CreateAssessmentPage() {
               <div>
                 <label
                   htmlFor="duration_minutes"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   Duration (minutes) <span className="text-red-500">*</span>
                 </label>
@@ -503,8 +503,8 @@ function CreateAssessmentPage() {
                   value={formData.duration_minutes}
                   onChange={handleInputChange}
                   min="1"
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 ${
-                    formErrors.duration_minutes ? "border-red-500" : "border-gray-300"
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground ${
+                    formErrors.duration_minutes ? "border-red-500" : "border-border"
                   }`}
                 />
                 {formErrors.duration_minutes && (
@@ -517,39 +517,39 @@ function CreateAssessmentPage() {
 
             {/* Skills Multi-select */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground/80 mb-2">
                 Skills Evaluated
               </label>
               {loadingSkills ? (
-                <div className="text-gray-500 text-sm">Loading skills...</div>
+                <div className="text-muted-foreground text-sm">Loading skills...</div>
               ) : skills.length > 0 ? (
-                <div className="border border-gray-300 rounded-lg p-4 max-h-40 overflow-y-auto">
+                <div className="border border-border rounded-lg p-4 max-h-40 overflow-y-auto">
                   <div className="grid grid-cols-2 gap-2">
                     {skills.map((skill) => (
                       <label
                         key={skill.id}
-                        className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center space-x-2 cursor-pointer hover:bg-secondary/50 p-2 rounded"
                       >
                         <input
                           type="checkbox"
                           checked={formData.skill_ids.includes(skill.id)}
                           onChange={() => handleSkillToggle(skill.id)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-primary focus:ring-ring border-border rounded"
                         />
-                        <span className="text-sm text-gray-700">{skill.name}</span>
+                        <span className="text-sm text-foreground/80">{skill.name}</span>
                       </label>
                     ))}
                   </div>
                 </div>
               ) : (
-                <div className="text-gray-500 text-sm border border-gray-200 rounded-lg p-4">
+                <div className="text-muted-foreground text-sm border border-border rounded-lg p-4">
                   {formData.batch_id
                     ? "No skills available for this course"
                     : "Select a batch to see available skills"}
                 </div>
               )}
               {formData.skill_ids.length > 0 && (
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-sm text-muted-foreground">
                   {formData.skill_ids.length} skill(s) selected
                 </p>
               )}
@@ -562,7 +562,7 @@ function CreateAssessmentPage() {
               <div>
                 <label
                   htmlFor="start_datetime"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   Start Date & Time <span className="text-red-500">*</span>
                 </label>
@@ -572,8 +572,8 @@ function CreateAssessmentPage() {
                   name="start_datetime"
                   value={formData.start_datetime}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 ${
-                    formErrors.start_datetime ? "border-red-500" : "border-gray-300"
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground ${
+                    formErrors.start_datetime ? "border-red-500" : "border-border"
                   }`}
                 />
                 {formErrors.start_datetime && (
@@ -586,7 +586,7 @@ function CreateAssessmentPage() {
               <div>
                 <label
                   htmlFor="end_datetime"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-foreground/80 mb-1"
                 >
                   End Date & Time <span className="text-red-500">*</span>
                 </label>
@@ -596,8 +596,8 @@ function CreateAssessmentPage() {
                   name="end_datetime"
                   value={formData.end_datetime}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 ${
-                    formErrors.end_datetime ? "border-red-500" : "border-gray-300"
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground ${
+                    formErrors.end_datetime ? "border-red-500" : "border-border"
                   }`}
                 />
                 {formErrors.end_datetime && (
@@ -613,14 +613,14 @@ function CreateAssessmentPage() {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-6 py-2 border border-border text-foreground/80 rounded-lg hover:bg-secondary/50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-colors flex items-center"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:bg-primary/50 disabled:cursor-not-allowed transition-colors flex items-center"
               >
                 {submitting ? (
                   <>

@@ -175,15 +175,15 @@ export default function MarkAttendanceModal({
         />
 
         {/* Modal */}
-        <div className="relative w-full max-w-4xl bg-white rounded-lg shadow-xl">
+        <div className="relative w-full max-w-4xl bg-card rounded-lg shadow-xl">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b bg-gray-50 rounded-t-lg">
+          <div className="flex items-center justify-between p-4 border-b bg-secondary/50 rounded-t-lg">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-xl font-semibold text-foreground">
                 Mark Attendance
               </h2>
               {(sessionData || sessionInfo) && (
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   {sessionData?.batch_code || sessionInfo?.batch_code} •{" "}
                   {sessionData?.module_name || sessionInfo?.module_name} •{" "}
                   {sessionData?.session_date || sessionInfo?.session_date}
@@ -192,7 +192,7 @@ export default function MarkAttendanceModal({
             </div>
             <button
               onClick={handleClose}
-              className="text-gray-400 hover:text-gray-500 transition-colors"
+              className="text-muted-foreground/70 hover:text-muted-foreground transition-colors"
             >
               <svg
                 className="h-6 w-6"
@@ -214,8 +214,8 @@ export default function MarkAttendanceModal({
           <div className="p-4 max-h-[70vh] overflow-y-auto">
             {loading ? (
               <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <span className="ml-2 text-gray-600">Loading students...</span>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <span className="ml-2 text-muted-foreground">Loading students...</span>
               </div>
             ) : error ? (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
@@ -238,29 +238,29 @@ export default function MarkAttendanceModal({
 
                 {/* Stats Bar */}
                 <div className="mb-4 grid grid-cols-4 gap-4">
-                  <div className="bg-gray-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-gray-900">
+                  <div className="bg-secondary/50 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-foreground">
                       {sessionData.stats.total_enrolled}
                     </div>
-                    <div className="text-xs text-gray-500">Total Enrolled</div>
+                    <div className="text-xs text-muted-foreground">Total Enrolled</div>
                   </div>
                   <div className="bg-green-50 rounded-lg p-3 text-center">
                     <div className="text-2xl font-bold text-green-600">
                       {presentCount}
                     </div>
-                    <div className="text-xs text-gray-500">Present</div>
+                    <div className="text-xs text-muted-foreground">Present</div>
                   </div>
                   <div className="bg-red-50 rounded-lg p-3 text-center">
                     <div className="text-2xl font-bold text-red-600">
                       {absentCount}
                     </div>
-                    <div className="text-xs text-gray-500">Absent</div>
+                    <div className="text-xs text-muted-foreground">Absent</div>
                   </div>
-                  <div className="bg-blue-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-blue-600">
+                  <div className="bg-primary/10 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-primary">
                       {attendancePercentage}%
                     </div>
-                    <div className="text-xs text-gray-500">Attendance</div>
+                    <div className="text-xs text-muted-foreground">Attendance</div>
                   </div>
                 </div>
 
@@ -284,24 +284,24 @@ export default function MarkAttendanceModal({
 
                 {/* Student List */}
                 <div className="border rounded-lg overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-border">
+                    <thead className="bg-secondary/50">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Roll No
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Student Name
                         </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Status
                         </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Present
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-card divide-y divide-border">
                       {sessionData.students.map((student) => {
                         const isPresent =
                           attendance.get(student.student_id) === "PRESENT";
@@ -309,17 +309,17 @@ export default function MarkAttendanceModal({
                           <tr
                             key={student.student_id}
                             className={`${
-                              isPresent ? "bg-white" : "bg-red-50"
-                            } hover:bg-gray-50 transition-colors`}
+                              isPresent ? "bg-card" : "bg-red-50"
+                            } hover:bg-secondary/50 transition-colors`}
                           >
-                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-muted-foreground">
                               {student.roll_no || "-"}
                             </td>
                             <td className="px-4 py-3 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900">
+                              <div className="text-sm font-medium text-foreground">
                                 {student.full_name}
                               </div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm text-muted-foreground">
                                 {student.email}
                               </div>
                             </td>
@@ -345,10 +345,10 @@ export default function MarkAttendanceModal({
                                     }
                                     className="sr-only peer"
                                   />
-                                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                                  <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ring/40 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
                                 </label>
                               ) : (
-                                <span className="text-gray-400">-</span>
+                                <span className="text-muted-foreground/70">-</span>
                               )}
                             </td>
                           </tr>
@@ -359,7 +359,7 @@ export default function MarkAttendanceModal({
                 </div>
 
                 {sessionData.students.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-muted-foreground">
                     No students enrolled in this batch.
                   </div>
                 )}
@@ -368,8 +368,8 @@ export default function MarkAttendanceModal({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between p-4 border-t bg-gray-50 rounded-b-lg">
-            <div className="text-sm text-gray-500">
+          <div className="flex items-center justify-between p-4 border-t bg-secondary/50 rounded-b-lg">
+            <div className="text-sm text-muted-foreground">
               {hasChanges && (
                 <span className="text-amber-600">You have unsaved changes</span>
               )}
@@ -377,7 +377,7 @@ export default function MarkAttendanceModal({
             <div className="flex gap-3">
               <button
                 onClick={handleClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-foreground/80 bg-card border border-border rounded-md hover:bg-secondary/50 transition-colors"
               >
                 Cancel
               </button>
@@ -385,7 +385,7 @@ export default function MarkAttendanceModal({
                 <button
                   onClick={handleSave}
                   disabled={saving || !hasChanges}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed transition-colors flex items-center"
+                  className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary/90 disabled:bg-primary/30 disabled:cursor-not-allowed transition-colors flex items-center"
                 >
                   {saving ? (
                     <>

@@ -12,7 +12,7 @@ export default function CreateAssignmentPageWrapper() {
     <Suspense fallback={
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </DashboardLayout>
     }>
@@ -334,10 +334,10 @@ function CreateAssignmentPage() {
     return (
       <DashboardLayout>
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-card rounded-lg shadow-md p-6">
             <div className="animate-pulse space-y-4">
-              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-              <div className="h-32 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-muted rounded w-1/3"></div>
+              <div className="h-32 bg-muted rounded"></div>
             </div>
           </div>
         </div>
@@ -350,19 +350,19 @@ function CreateAssignmentPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <Link href="/dashboards/faculty" className="hover:text-blue-600">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            <Link href="/dashboards/faculty" className="hover:text-primary">
               Dashboard
             </Link>
             <span>/</span>
-            <Link href="/dashboards/faculty/assignments" className="hover:text-blue-600">
+            <Link href="/dashboards/faculty/assignments" className="hover:text-primary">
               Assignments
             </Link>
             <span>/</span>
-            <span className="text-gray-900">{isEditMode ? 'Edit' : 'Create'}</span>
+            <span className="text-foreground">{isEditMode ? 'Edit' : 'Create'}</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">{isEditMode ? 'Edit Assignment' : 'Create Assignment'}</h1>
-          <p className="text-gray-600 mt-1">{isEditMode ? 'Update assignment details' : 'Create a new assignment for your students'}</p>
+          <h1 className="text-3xl font-bold text-foreground">{isEditMode ? 'Edit Assignment' : 'Create Assignment'}</h1>
+          <p className="text-muted-foreground mt-1">{isEditMode ? 'Update assignment details' : 'Create a new assignment for your students'}</p>
         </div>
 
         {/* Success Message */}
@@ -380,11 +380,11 @@ function CreateAssignmentPage() {
         )}
 
         {/* Form */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-card rounded-lg shadow-md p-6">
           <div className="space-y-6">
             {/* Title */}
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="title" className="block text-sm font-medium text-foreground/80 mb-2">
                 Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -393,7 +393,7 @@ function CreateAssignmentPage() {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 text-foreground border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
                 placeholder="e.g., Python Programming Assignment 1"
                 required
               />
@@ -402,7 +402,7 @@ function CreateAssignmentPage() {
             {/* Batch and Module */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="batch" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="batch" className="block text-sm font-medium text-foreground/80 mb-2">
                   Batch <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -410,7 +410,7 @@ function CreateAssignmentPage() {
                   name="batch"
                   value={formData.batch}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                  className="w-full px-4 py-2 text-foreground border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-card"
                   required
                 >
                   <option value={0} style={{ color: '#111827' }}>Select Batch</option>
@@ -423,7 +423,7 @@ function CreateAssignmentPage() {
               </div>
 
               <div>
-                <label htmlFor="module" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="module" className="block text-sm font-medium text-foreground/80 mb-2">
                   Module <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -431,7 +431,7 @@ function CreateAssignmentPage() {
                   name="module"
                   value={formData.module}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                  className="w-full px-4 py-2 text-foreground border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-card"
                   required
                   disabled={!formData.batch}
                 >
@@ -443,14 +443,14 @@ function CreateAssignmentPage() {
                   ))}
                 </select>
                 {!formData.batch && (
-                  <p className="text-xs text-gray-500 mt-1">Select a batch first</p>
+                  <p className="text-xs text-muted-foreground mt-1">Select a batch first</p>
                 )}
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="description" className="block text-sm font-medium text-foreground/80 mb-2">
                 Description <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -459,28 +459,28 @@ function CreateAssignmentPage() {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={6}
-                className="w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 text-foreground border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
                 placeholder="Provide detailed instructions for the assignment..."
                 required
               ></textarea>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Describe the assignment requirements, submission format, and evaluation criteria
               </p>
             </div>
 
             {/* Assignment File (Optional) */}
             <div>
-              <label htmlFor="attachment" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="attachment" className="block text-sm font-medium text-foreground/80 mb-2">
                 Assignment File (Optional)
               </label>
               {existingFileUrl && !attachmentFile && (
-                <div className="mb-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-800 mb-2">Current file attached:</p>
+                <div className="mb-2 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                  <p className="text-sm text-primary mb-2">Current file attached:</p>
                   <a
                     href={`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/api$/, "")}${existingFileUrl}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800"
+                    className="inline-flex items-center text-sm text-primary hover:text-primary"
                   >
                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -494,10 +494,10 @@ function CreateAssignmentPage() {
                 type="file"
                 id="attachment"
                 onChange={handleFileChange}
-                className="w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-white file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+                className="w-full text-sm text-foreground border border-border rounded-lg bg-card file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:bg-primary/10 file:text-primary hover:file:bg-primary/10 focus:ring-2 focus:ring-ring focus:border-transparent cursor-pointer"
                 accept=".pdf,.doc,.docx,.zip,.rar"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {existingFileUrl ? 'Upload a new file to replace the current one (PDF, DOC, ZIP - Max 10MB)' : 'Upload reference materials (PDF, DOC, ZIP - Max 10MB)'}
               </p>
               {attachmentFile && (
@@ -509,43 +509,43 @@ function CreateAssignmentPage() {
 
             {/* Skills Multi-select */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Skills Evaluated <span className="text-gray-500 text-xs font-normal">(Optional)</span>
+              <label className="block text-sm font-medium text-foreground/80 mb-2">
+                Skills Evaluated <span className="text-muted-foreground text-xs font-normal">(Optional)</span>
               </label>
               {loadingSkills ? (
-                <div className="text-gray-500 text-sm border border-gray-200 rounded-lg p-4">
+                <div className="text-muted-foreground text-sm border border-border rounded-lg p-4">
                   Loading skills...
                 </div>
               ) : !formData.batch ? (
-                <div className="text-gray-500 text-sm border border-gray-200 rounded-lg p-4">
+                <div className="text-muted-foreground text-sm border border-border rounded-lg p-4">
                   Select a batch first to see available skills
                 </div>
               ) : availableSkills.length > 0 ? (
-                <div className="border border-gray-300 rounded-lg p-4 max-h-60 overflow-y-auto">
+                <div className="border border-border rounded-lg p-4 max-h-60 overflow-y-auto">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {availableSkills.map((skill) => (
                       <label
                         key={skill.id}
-                        className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center space-x-2 cursor-pointer hover:bg-secondary/50 p-2 rounded"
                       >
                         <input
                           type="checkbox"
                           checked={(formData.skill_ids || []).includes(skill.id)}
                           onChange={() => handleSkillToggle(skill.id)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-primary focus:ring-ring border-border rounded"
                         />
-                        <span className="text-sm text-gray-700">{skill.name}</span>
+                        <span className="text-sm text-foreground/80">{skill.name}</span>
                       </label>
                     ))}
                   </div>
                 </div>
               ) : (
-                <div className="text-gray-500 text-sm border border-gray-200 rounded-lg p-4">
+                <div className="text-muted-foreground text-sm border border-border rounded-lg p-4">
                   No skills available for this batch's course
                 </div>
               )}
               {(formData.skill_ids || []).length > 0 && (
-                <p className="mt-2 text-sm text-gray-600">
+                <p className="mt-2 text-sm text-muted-foreground">
                   {formData.skill_ids?.length} skill(s) selected
                 </p>
               )}
@@ -554,7 +554,7 @@ function CreateAssignmentPage() {
             {/* Max Marks, Start Date and Due Date */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label htmlFor="max_marks" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="max_marks" className="block text-sm font-medium text-foreground/80 mb-2">
                   Max Marks <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -564,13 +564,13 @@ function CreateAssignmentPage() {
                   value={formData.max_marks}
                   onChange={handleInputChange}
                   min="1"
-                  className="w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 text-foreground border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="start_date" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="start_date" className="block text-sm font-medium text-foreground/80 mb-2">
                   Start Date & Time <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -579,13 +579,13 @@ function CreateAssignmentPage() {
                   name="start_date"
                   value={formData.start_date}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 text-foreground border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="due_date" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="due_date" className="block text-sm font-medium text-foreground/80 mb-2">
                   Due Date & Time <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -594,7 +594,7 @@ function CreateAssignmentPage() {
                   name="due_date"
                   value={formData.due_date}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 text-foreground border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
                   required
                 />
               </div>
@@ -605,14 +605,14 @@ function CreateAssignmentPage() {
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (isEditMode ? "Updating..." : "Scheduling...") : (isEditMode ? "Update Assignment" : "Schedule Assignment")}
               </button>
 
               <Link
                 href="/dashboards/faculty/assignments"
-                className="flex-1 px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-center"
+                className="flex-1 px-6 py-3 bg-card border border-border text-foreground/80 rounded-lg hover:bg-secondary/50 transition-colors font-medium text-center"
               >
                 Cancel
               </Link>

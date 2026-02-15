@@ -144,13 +144,13 @@ export default function UploadQuestionBankPage() {
     return (
       <DashboardLayout>
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-card rounded-lg shadow-md p-6">
             <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+              <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
               <div className="space-y-4">
-                <div className="h-12 bg-gray-200 rounded"></div>
-                <div className="h-12 bg-gray-200 rounded"></div>
-                <div className="h-32 bg-gray-200 rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
+                <div className="h-12 bg-muted rounded"></div>
+                <div className="h-32 bg-muted rounded"></div>
               </div>
             </div>
           </div>
@@ -166,15 +166,15 @@ export default function UploadQuestionBankPage() {
         <div className="mb-6">
           <Link
             href="/dashboards/faculty/question-banks"
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4"
+            className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4"
           >
             <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back to Question Banks
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Upload Question Bank</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Upload Question Bank</h1>
+          <p className="text-muted-foreground mt-1">
             Import questions from an AIKEN format file
           </p>
         </div>
@@ -182,7 +182,7 @@ export default function UploadQuestionBankPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Upload Form */}
           <div className="lg:col-span-2">
-            <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
+            <form onSubmit={handleSubmit} className="bg-card rounded-lg shadow-md p-6">
               {error && (
                 <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                   {error}
@@ -207,7 +207,7 @@ export default function UploadQuestionBankPage() {
 
               {/* Bank Name */}
               <div className="mb-4">
-                <label htmlFor="bankName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="bankName" className="block text-sm font-medium text-foreground/80 mb-1">
                   Bank Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -216,20 +216,20 @@ export default function UploadQuestionBankPage() {
                   value={bankName}
                   onChange={(e) => setBankName(e.target.value)}
                   placeholder="e.g., Python Basics - Chapter 1"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-ring"
                 />
               </div>
 
               {/* Batch Selection */}
               <div className="mb-4">
-                <label htmlFor="batch" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="batch" className="block text-sm font-medium text-foreground/80 mb-1">
                   Select Batch <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="batch"
                   value={selectedBatch || ""}
                   onChange={(e) => setSelectedBatch(e.target.value ? Number(e.target.value) : null)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-ring"
                 >
                   <option value="">-- Select Batch --</option>
                   {batches.map((batch) => (
@@ -242,7 +242,7 @@ export default function UploadQuestionBankPage() {
 
               {/* Subject/Module Selection */}
               <div className="mb-4">
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="subject" className="block text-sm font-medium text-foreground/80 mb-1">
                   Select Module <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -250,7 +250,7 @@ export default function UploadQuestionBankPage() {
                   value={selectedSubject || ""}
                   onChange={(e) => setSelectedSubject(e.target.value ? Number(e.target.value) : null)}
                   disabled={!selectedBatch}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-ring disabled:bg-secondary disabled:cursor-not-allowed"
                 >
                   <option value="">
                     {selectedBatch ? "-- Select Module --" : "-- Select Batch First --"}
@@ -265,7 +265,7 @@ export default function UploadQuestionBankPage() {
 
               {/* Description */}
               <div className="mb-4">
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="description" className="block text-sm font-medium text-foreground/80 mb-1">
                   Description (Optional)
                 </label>
                 <textarea
@@ -274,19 +274,19 @@ export default function UploadQuestionBankPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Brief description of this question bank..."
                   rows={2}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-ring"
                 />
               </div>
 
               {/* File Upload */}
               <div className="mb-6">
-                <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="file" className="block text-sm font-medium text-foreground/80 mb-1">
                   AIKEN File (.txt) <span className="text-red-500">*</span>
                 </label>
-                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-lg hover:border-primary/70 transition-colors">
                   <div className="space-y-1 text-center">
                     <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
+                      className="mx-auto h-12 w-12 text-muted-foreground/70"
                       stroke="currentColor"
                       fill="none"
                       viewBox="0 0 48 48"
@@ -298,10 +298,10 @@ export default function UploadQuestionBankPage() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <div className="flex text-sm text-gray-600">
+                    <div className="flex text-sm text-muted-foreground">
                       <label
                         htmlFor="file"
-                        className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none"
+                        className="relative cursor-pointer bg-card rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none"
                       >
                         <span>Upload a file</span>
                         <input
@@ -315,7 +315,7 @@ export default function UploadQuestionBankPage() {
                       </label>
                       <p className="pl-1">or drag and drop</p>
                     </div>
-                    <p className="text-xs text-gray-500">TXT file up to 5MB</p>
+                    <p className="text-xs text-muted-foreground">TXT file up to 5MB</p>
                     {file && (
                       <p className="text-sm text-green-600 font-medium mt-2">
                         ✓ {file.name} selected
@@ -329,14 +329,14 @@ export default function UploadQuestionBankPage() {
               <div className="flex justify-end gap-3">
                 <Link
                   href="/dashboards/faculty/question-banks"
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-foreground/80 bg-secondary rounded-lg hover:bg-muted transition-colors"
                 >
                   Cancel
                 </Link>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                 >
                   {loading ? (
                     <>
@@ -361,16 +361,16 @@ export default function UploadQuestionBankPage() {
 
           {/* AIKEN Format Instructions */}
           <div className="lg:col-span-1">
-            <div className="bg-blue-50 rounded-lg shadow-md p-6 sticky top-6">
-              <h3 className="text-lg font-semibold text-blue-900 mb-3">
+            <div className="bg-primary/10 rounded-lg shadow-md p-6 sticky top-6">
+              <h3 className="text-lg font-semibold text-primary mb-3">
                 AIKEN Format Guide
               </h3>
-              <p className="text-sm text-blue-800 mb-4">
+              <p className="text-sm text-primary mb-4">
                 AIKEN is a simple format for multiple choice questions. Each question
                 follows this structure:
               </p>
 
-              <div className="bg-white rounded-lg p-4 mb-4 font-mono text-xs text-gray-800 whitespace-pre-wrap">
+              <div className="bg-card rounded-lg p-4 mb-4 font-mono text-xs text-foreground whitespace-pre-wrap">
 {`What is the capital of India?
 A. Mumbai
 B. Delhi
@@ -386,8 +386,8 @@ D. 6
 ANSWER: B`}
               </div>
 
-              <h4 className="text-sm font-semibold text-blue-900 mb-2">Rules:</h4>
-              <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
+              <h4 className="text-sm font-semibold text-primary mb-2">Rules:</h4>
+              <ul className="text-sm text-primary space-y-1 list-disc list-inside">
                 <li>First line is the question text</li>
                 <li>Options start with A., B., C., D.</li>
                 <li>Exactly 4 options required</li>

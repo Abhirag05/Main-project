@@ -414,14 +414,14 @@ export default function TimeSlotForm({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
+      <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <h2 className="text-xl font-semibold text-foreground">
             {editingSlot ? "Edit Time Slot" : "Create Time Slot"}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-muted-foreground/70 hover:text-muted-foreground"
           >
             <svg
               className="w-6 h-6"
@@ -486,23 +486,23 @@ export default function TimeSlotForm({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 Batch <span className="text-red-500">*</span>
               </label>
               <select
                 value={formData.batch}
                 onChange={(e) => handleBatchChange(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                 required
               >
-                <option value="" className="text-gray-500">
+                <option value="" className="text-muted-foreground">
                   Select Batch
                 </option>
                 {batches.map((batch) => (
                   <option
                     key={batch.id}
                     value={batch.id}
-                    className="text-gray-900"
+                    className="text-foreground"
                   >
                     {batch.code}{" "}
                     {batch.course_name ? `- ${batch.course_name}` : ""}
@@ -512,17 +512,17 @@ export default function TimeSlotForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 Module <span className="text-red-500">*</span>
               </label>
               <select
                 value={formData.module}
                 onChange={(e) => handleModuleChange(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                 required
                 disabled={!formData.batch || loadingModules}
               >
-                <option value="" className="text-gray-500">
+                <option value="" className="text-muted-foreground">
                   {loadingModules
                     ? "Loading modules..."
                     : !formData.batch
@@ -533,7 +533,7 @@ export default function TimeSlotForm({
                   <option
                     key={module.id}
                     value={module.id}
-                    className="text-gray-900"
+                    className="text-foreground"
                   >
                     {module.code} - {module.name}
                   </option>
@@ -549,7 +549,7 @@ export default function TimeSlotForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 Faculty <span className="text-red-500">*</span>
               </label>
               <select
@@ -557,11 +557,11 @@ export default function TimeSlotForm({
                 onChange={(e) =>
                   setFormData({ ...formData, faculty: e.target.value })
                 }
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                 required
                 disabled={!formData.batch || loadingFaculties}
               >
-                <option value="" className="text-gray-500">
+                <option value="" className="text-muted-foreground">
                   {loadingFaculties
                     ? "Loading faculty..."
                     : !formData.batch
@@ -581,21 +581,21 @@ export default function TimeSlotForm({
                   <option
                     key={faculty.id}
                     value={faculty.id}
-                    className="text-gray-900"
+                    className="text-foreground"
                   >
                     {faculty.employee_code} - {faculty.full_name}
                   </option>
                 ))}
               </select>
               {checkingConflict && (
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   Checking for conflicts...
                 </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 Day of Week <span className="text-red-500">*</span>
               </label>
               <select
@@ -603,14 +603,14 @@ export default function TimeSlotForm({
                 onChange={(e) =>
                   setFormData({ ...formData, day_of_week: e.target.value })
                 }
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                 required
               >
                 {DAYS_OF_WEEK.map((day) => (
                   <option
                     key={day.value}
                     value={day.value}
-                    className="text-gray-900"
+                    className="text-foreground"
                   >
                     {day.label}
                   </option>
@@ -619,7 +619,7 @@ export default function TimeSlotForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 Start Time <span className="text-red-500">*</span>
               </label>
               <input
@@ -628,13 +628,13 @@ export default function TimeSlotForm({
                 onChange={(e) =>
                   setFormData({ ...formData, start_time: e.target.value })
                 }
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 End Time <span className="text-red-500">*</span>
               </label>
               <input
@@ -643,7 +643,7 @@ export default function TimeSlotForm({
                 onChange={(e) =>
                   setFormData({ ...formData, end_time: e.target.value })
                 }
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                 required
               />
             </div>
@@ -655,25 +655,25 @@ export default function TimeSlotForm({
                   onChange={(e) =>
                     setFormData({ ...formData, is_active: e.target.checked })
                   }
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-primary focus:ring-ring border-border rounded"
                 />
-                <span className="text-sm text-gray-700">Active</span>
+                <span className="text-sm text-foreground/80">Active</span>
               </label>
             </div>
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex justify-end space-x-3 pt-4 border-t border-border">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="px-4 py-2 text-sm font-medium text-foreground/80 bg-card border border-border rounded-lg hover:bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !!conflictWarning}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Saving..." : editingSlot ? "Update" : "Create"}
             </button>

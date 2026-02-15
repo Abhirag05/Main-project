@@ -14,7 +14,7 @@ import { courseMaterialAPI, CourseMaterial } from "@/lib/courseMaterialAPI";
 const TYPE_BADGES: Record<string, { bg: string; text: string }> = {
   PDF: { bg: "bg-red-100", text: "text-red-700" },
   PPT: { bg: "bg-orange-100", text: "text-orange-700" },
-  DOC: { bg: "bg-blue-100", text: "text-blue-700" },
+  DOC: { bg: "bg-primary/10", text: "text-primary" },
   VIDEO: { bg: "bg-purple-100", text: "text-purple-700" },
   LINK: { bg: "bg-cyan-100", text: "text-cyan-700" },
 };
@@ -111,7 +111,7 @@ export default function FacultyMaterialsPage() {
           action={
             <Link
               href="/dashboards/faculty/course-materials/upload"
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 transition-colors"
             >
               <svg
                 className="w-5 h-5"
@@ -146,13 +146,13 @@ export default function FacultyMaterialsPage() {
         {/* Filters */}
         <FacultyCard className="p-4 mb-6 flex flex-wrap gap-4 items-end">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
               Material Type
             </label>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-border rounded-lg text-sm bg-card text-foreground focus:ring-2 focus:ring-ring"
             >
               <option value="">All Types</option>
               <option value="PDF">PDF</option>
@@ -163,13 +163,13 @@ export default function FacultyMaterialsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
               Status
             </label>
             <select
               value={filterActive}
               onChange={(e) => setFilterActive(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-border rounded-lg text-sm bg-card text-foreground focus:ring-2 focus:ring-ring"
             >
               <option value="">All</option>
               <option value="true">Active</option>
@@ -182,8 +182,8 @@ export default function FacultyMaterialsPage() {
         <FacultyCard className="overflow-hidden">
           {loading ? (
             <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-3 text-gray-500">Loading materials...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-3 text-muted-foreground">Loading materials...</p>
             </div>
           ) : materials.length === 0 ? (
             <FacultyEmptyState
@@ -207,7 +207,7 @@ export default function FacultyMaterialsPage() {
               action={
                 <Link
                   href="/dashboards/faculty/course-materials/upload"
-                  className="inline-flex items-center text-blue-600 hover:underline text-sm"
+                  className="inline-flex items-center text-primary hover:underline text-sm"
                 >
                   Upload your first material
                 </Link>
@@ -215,53 +215,53 @@ export default function FacultyMaterialsPage() {
             />
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-secondary/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Title
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Module
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Batches
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Type
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Created
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-border">
                   {materials.map((mat) => {
                     const badge = TYPE_BADGES[mat.material_type] || {
-                      bg: "bg-gray-100",
-                      text: "text-gray-700",
+                      bg: "bg-secondary",
+                      text: "text-foreground/80",
                     };
                     return (
                       <tr
                         key={mat.id}
-                        className={`hover:bg-gray-50 ${
+                        className={`hover:bg-secondary/50 ${
                           !mat.is_active ? "opacity-50" : ""
                         }`}
                       >
                         <td className="px-6 py-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-foreground">
                             {mat.title}
                           </div>
                           {mat.description && (
-                            <div className="text-xs text-gray-500 truncate max-w-xs">
+                            <div className="text-xs text-muted-foreground truncate max-w-xs">
                               {mat.description}
                             </div>
                           )}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-700">
+                        <td className="px-6 py-4 text-sm text-foreground/80">
                           {mat.module.code}
                         </td>
                         <td className="px-6 py-4">
@@ -289,14 +289,14 @@ export default function FacultyMaterialsPage() {
                             {mat.material_type}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-muted-foreground">
                           {new Date(mat.created_at).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
                             <Link
                               href={`/dashboards/faculty/course-materials/upload?id=${mat.id}`}
-                              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                              className="text-primary hover:text-primary text-sm font-medium"
                             >
                               Edit
                             </Link>
@@ -316,7 +316,7 @@ export default function FacultyMaterialsPage() {
                                 })
                               }
                               disabled={deletingId === mat.id}
-                              className="text-gray-600 hover:text-gray-800 text-sm font-medium disabled:opacity-50"
+                              className="text-muted-foreground hover:text-foreground text-sm font-medium disabled:opacity-50"
                             >
                               {deletingId === mat.id ? "Deleting..." : "Delete"}
                             </button>
@@ -325,7 +325,7 @@ export default function FacultyMaterialsPage() {
                                 href={mat.file_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-gray-500 hover:text-gray-700 text-sm"
+                                className="text-muted-foreground hover:text-foreground/80 text-sm"
                               >
                                 Download
                               </a>
@@ -335,7 +335,7 @@ export default function FacultyMaterialsPage() {
                                 href={mat.external_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-gray-500 hover:text-gray-700 text-sm"
+                                className="text-muted-foreground hover:text-foreground/80 text-sm"
                               >
                                 Open
                               </a>

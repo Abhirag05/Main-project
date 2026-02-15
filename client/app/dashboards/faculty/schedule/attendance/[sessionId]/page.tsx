@@ -167,8 +167,8 @@ export default function MarkAttendancePage({ params }: PageProps) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="ml-2 text-gray-600">Loading...</span>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <span className="ml-2 text-muted-foreground">Loading...</span>
         </div>
       </DashboardLayout>
     );
@@ -179,7 +179,7 @@ export default function MarkAttendancePage({ params }: PageProps) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center py-12">
-          <div className="text-gray-600">Redirecting...</div>
+          <div className="text-muted-foreground">Redirecting...</div>
         </div>
       </DashboardLayout>
     );
@@ -192,7 +192,7 @@ export default function MarkAttendancePage({ params }: PageProps) {
         <div className="mb-6">
           <button
             onClick={handleBack}
-            className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
+            className="flex items-center text-muted-foreground hover:text-foreground mb-4"
           >
             <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -200,9 +200,9 @@ export default function MarkAttendancePage({ params }: PageProps) {
             Back to Schedule
           </button>
           
-          <h1 className="text-2xl font-bold text-gray-900">Mark Attendance</h1>
+          <h1 className="text-2xl font-bold text-foreground">Mark Attendance</h1>
           {session && (
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-1 text-sm text-muted-foreground">
               {session.batch_code} • {session.module_name} • {session.session_date}
             </p>
           )}
@@ -210,8 +210,8 @@ export default function MarkAttendancePage({ params }: PageProps) {
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-2 text-gray-600">Loading session...</span>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-2 text-muted-foreground">Loading session...</span>
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
@@ -224,7 +224,7 @@ export default function MarkAttendancePage({ params }: PageProps) {
             </button>
           </div>
         ) : sessionData ? (
-          <div className="bg-white rounded-lg shadow">
+          <div className="bg-card rounded-lg shadow">
             {/* Status Messages */}
             {!sessionData.is_marking_allowed && (
               <div className="m-4 bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg">
@@ -240,29 +240,29 @@ export default function MarkAttendancePage({ params }: PageProps) {
 
             {/* Stats Bar */}
             <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-gray-50 rounded-lg p-3 text-center">
-                <div className="text-2xl font-bold text-gray-900">
+              <div className="bg-secondary/50 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-foreground">
                   {sessionData.stats.total_enrolled}
                 </div>
-                <div className="text-xs text-gray-500">Total Enrolled</div>
+                <div className="text-xs text-muted-foreground">Total Enrolled</div>
               </div>
               <div className="bg-green-50 rounded-lg p-3 text-center">
                 <div className="text-2xl font-bold text-green-600">
                   {presentCount}
                 </div>
-                <div className="text-xs text-gray-500">Present</div>
+                <div className="text-xs text-muted-foreground">Present</div>
               </div>
               <div className="bg-red-50 rounded-lg p-3 text-center">
                 <div className="text-2xl font-bold text-red-600">
                   {absentCount}
                 </div>
-                <div className="text-xs text-gray-500">Absent</div>
+                <div className="text-xs text-muted-foreground">Absent</div>
               </div>
-              <div className="bg-blue-50 rounded-lg p-3 text-center">
-                <div className="text-2xl font-bold text-blue-600">
+              <div className="bg-primary/10 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-primary">
                   {attendancePercentage}%
                 </div>
-                <div className="text-xs text-gray-500">Attendance</div>
+                <div className="text-xs text-muted-foreground">Attendance</div>
               </div>
             </div>
 
@@ -286,39 +286,39 @@ export default function MarkAttendancePage({ params }: PageProps) {
 
             {/* Student List */}
             <div className="border-t">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-secondary/50">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Roll No
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Student Name
                     </th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Present
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-border">
                   {sessionData.students.map((student) => {
                     const isPresent = attendance.get(student.student_id) === "PRESENT";
                     return (
                       <tr
                         key={student.student_id}
-                        className={`${isPresent ? "bg-white" : "bg-red-50"} hover:bg-gray-50 transition-colors`}
+                        className={`${isPresent ? "bg-card" : "bg-red-50"} hover:bg-secondary/50 transition-colors`}
                       >
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-muted-foreground">
                           {student.roll_no || "-"}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-foreground">
                             {student.full_name}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             {student.email}
                           </div>
                         </td>
@@ -342,10 +342,10 @@ export default function MarkAttendancePage({ params }: PageProps) {
                                 onChange={() => toggleStatus(student.student_id)}
                                 className="sr-only peer"
                               />
-                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                              <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ring/40 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
                             </label>
                           ) : (
-                            <span className="text-gray-400">-</span>
+                            <span className="text-muted-foreground/70">-</span>
                           )}
                         </td>
                       </tr>
@@ -356,14 +356,14 @@ export default function MarkAttendancePage({ params }: PageProps) {
             </div>
 
             {sessionData.students.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-muted-foreground">
                 No students enrolled in this batch.
               </div>
             )}
 
             {/* Footer */}
-            <div className="flex items-center justify-between p-4 border-t bg-gray-50">
-              <div className="text-sm text-gray-500">
+            <div className="flex items-center justify-between p-4 border-t bg-secondary/50">
+              <div className="text-sm text-muted-foreground">
                 {hasChanges && (
                   <span className="text-amber-600">You have unsaved changes</span>
                 )}
@@ -371,7 +371,7 @@ export default function MarkAttendancePage({ params }: PageProps) {
               <div className="flex gap-3">
                 <button
                   onClick={handleBack}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-foreground/80 bg-card border border-border rounded-md hover:bg-secondary/50 transition-colors"
                 >
                   Cancel
                 </button>
@@ -379,7 +379,7 @@ export default function MarkAttendancePage({ params }: PageProps) {
                   <button
                     onClick={handleSave}
                     disabled={saving || !hasChanges}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed transition-colors flex items-center"
+                    className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary/90 disabled:bg-primary/30 disabled:cursor-not-allowed transition-colors flex items-center"
                   >
                     {saving ? (
                       <>

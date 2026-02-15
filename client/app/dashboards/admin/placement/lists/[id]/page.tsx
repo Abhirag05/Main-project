@@ -23,11 +23,11 @@ function getMasteryColor(level: string) {
     case "ADVANCED":
       return "bg-green-100 text-green-800 border-green-200";
     case "INTERMEDIATE":
-      return "bg-blue-100 text-blue-800 border-blue-200";
+      return "bg-primary/10 text-primary border-primary/20";
     case "BEGINNER":
       return "bg-yellow-100 text-yellow-800 border-yellow-200";
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200";
+      return "bg-secondary text-foreground border-border";
   }
 }
 
@@ -284,9 +284,9 @@ export default function PlacementListDetailPage() {
       <DashboardLayout>
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-200 rounded w-1/3" />
-            <div className="h-4 bg-gray-100 rounded w-1/2" />
-            <div className="h-64 bg-gray-50 rounded-xl" />
+            <div className="h-8 bg-muted rounded w-1/3" />
+            <div className="h-4 bg-secondary rounded w-1/2" />
+            <div className="h-64 bg-secondary/50 rounded-xl" />
           </div>
         </div>
       </DashboardLayout>
@@ -297,12 +297,12 @@ export default function PlacementListDetailPage() {
     return (
       <DashboardLayout>
         <div className="max-w-7xl mx-auto text-center py-20">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-foreground">
             Placement list not found
           </h2>
           <button
             onClick={() => router.push("/dashboards/admin/placement/lists")}
-            className="mt-4 text-blue-600 hover:underline"
+            className="mt-4 text-primary hover:underline"
           >
             Back to lists
           </button>
@@ -319,7 +319,7 @@ export default function PlacementListDetailPage() {
         {/* Breadcrumb + back */}
         <button
           onClick={() => router.push("/dashboards/admin/placement/lists")}
-          className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
         >
           <svg
             className="w-4 h-4"
@@ -338,16 +338,16 @@ export default function PlacementListDetailPage() {
         </button>
 
         {/* Header */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-card rounded-xl border border-border p-6">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-foreground">
                 {detail.name}
               </h1>
               {detail.description && (
-                <p className="text-gray-600">{detail.description}</p>
+                <p className="text-muted-foreground">{detail.description}</p>
               )}
-              <div className="flex items-center gap-4 text-sm text-gray-500">
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <span>
                   Created by {detail.created_by_name} on{" "}
                   {new Date(detail.created_at).toLocaleDateString("en-IN", {
@@ -356,7 +356,7 @@ export default function PlacementListDetailPage() {
                     year: "numeric",
                   })}
                 </span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
                   {activeStudents.length} student
                   {activeStudents.length !== 1 ? "s" : ""}
                 </span>
@@ -366,7 +366,7 @@ export default function PlacementListDetailPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={openAssignModal}
-                className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors text-sm"
               >
                 <svg
                   className="w-4 h-4"
@@ -385,7 +385,7 @@ export default function PlacementListDetailPage() {
               </button>
               <button
                 onClick={openEditLink}
-                className="inline-flex items-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                className="inline-flex items-center gap-2 px-4 py-2.5 border-2 border-border text-foreground/80 font-semibold rounded-lg hover:bg-secondary/50 transition-colors text-sm"
               >
                 <svg
                   className="w-4 h-4"
@@ -481,9 +481,9 @@ export default function PlacementListDetailPage() {
         </div>
 
         {/* Assigned Students Table */}
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
+          <div className="px-6 py-4 border-b border-border">
+            <h2 className="text-lg font-semibold text-foreground">
               Assigned Students
             </h2>
           </div>
@@ -491,7 +491,7 @@ export default function PlacementListDetailPage() {
           {activeStudents.length === 0 ? (
             <div className="text-center py-12">
               <svg
-                className="mx-auto h-12 w-12 text-gray-300"
+                className="mx-auto h-12 w-12 text-muted-foreground/50"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -503,61 +503,61 @@ export default function PlacementListDetailPage() {
                   d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
                 />
               </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">
+              <h3 className="mt-2 text-sm font-medium text-foreground">
                 No students assigned yet
               </h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Click &quot;Assign Students&quot; to add students to this
                 placement list.
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-secondary/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Student
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Email
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Phone
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Skills
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Added
                     </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-border">
                   {activeStudents.map((entry) => {
                     const s = entry.student_details;
                     return (
                       <tr
                         key={entry.id}
-                        className="hover:bg-gray-50 transition-colors"
+                        className="hover:bg-secondary/50 transition-colors"
                       >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-sm">
+                            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary font-semibold text-sm">
                               {s?.full_name?.charAt(0)?.toUpperCase() || "?"}
                             </div>
-                            <span className="text-sm font-medium text-gray-900">
+                            <span className="text-sm font-medium text-foreground">
                               {s?.full_name || "—"}
                             </span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                           {s?.email || "—"}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                           {s?.phone || "—"}
                         </td>
                         <td className="px-6 py-4">
@@ -580,12 +580,12 @@ export default function PlacementListDetailPage() {
                               })}
                             </div>
                           ) : (
-                            <span className="text-xs text-gray-400 italic">
+                            <span className="text-xs text-muted-foreground/70 italic">
                               No skills
                             </span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                           {new Date(entry.added_at).toLocaleDateString(
                             "en-IN",
                             {
@@ -660,23 +660,23 @@ export default function PlacementListDetailPage() {
       {/* ── Assign Students Modal ── */}
       {isAssignOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col overflow-hidden">
+          <div className="bg-card rounded-xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col overflow-hidden">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex-shrink-0">
+            <div className="bg-gradient-to-r from-primary to-indigo-600 px-6 py-4 flex-shrink-0">
               <h2 className="text-lg font-bold text-white">
                 Assign Students to {detail.name}
               </h2>
-              <p className="text-blue-100 text-sm">
+              <p className="text-primary-foreground text-sm">
                 Filter students by skill and select to add
               </p>
             </div>
 
             {/* Filters */}
-            <div className="px-6 py-4 border-b border-gray-200 space-y-3 flex-shrink-0">
+            <div className="px-6 py-4 border-b border-border space-y-3 flex-shrink-0">
               {/* Search */}
               <div className="relative">
                 <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -693,20 +693,20 @@ export default function PlacementListDetailPage() {
                   placeholder="Search by name, email, or course…"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+                  className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring"
                 />
               </div>
 
               {/* Skill + level filters */}
               <div className="flex gap-3 items-end">
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
                     Filter by Skill
                   </label>
                   <select
                     value={filterSkill}
                     onChange={(e) => setFilterSkill(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring"
                   >
                     <option value="">All Skills</option>
                     {availableSkills.map((s) => (
@@ -717,7 +717,7 @@ export default function PlacementListDetailPage() {
                   </select>
                 </div>
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1">
                     Minimum Level
                   </label>
                   <select
@@ -725,7 +725,7 @@ export default function PlacementListDetailPage() {
                     onChange={(e) =>
                       setFilterLevel(e.target.value as SkillLevel | "")
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring"
                   >
                     <option value="">Any Level</option>
                     <option value="BEGINNER">Beginner</option>
@@ -735,7 +735,7 @@ export default function PlacementListDetailPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <span>
                   {filteredStudents.length} student
                   {filteredStudents.length !== 1 ? "s" : ""} available ·{" "}
@@ -744,7 +744,7 @@ export default function PlacementListDetailPage() {
                 {filteredStudents.length > 0 && (
                   <button
                     onClick={toggleAll}
-                    className="text-blue-600 hover:underline text-xs"
+                    className="text-primary hover:underline text-xs"
                   >
                     {selectedStudentIds.size === filteredStudents.length
                       ? "Deselect all"
@@ -758,13 +758,13 @@ export default function PlacementListDetailPage() {
             <div className="flex-1 overflow-y-auto px-6 py-2">
               {loadingStudents ? (
                 <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto" />
-                  <p className="mt-3 text-sm text-gray-500">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
+                  <p className="mt-3 text-sm text-muted-foreground">
                     Loading students…
                   </p>
                 </div>
               ) : filteredStudents.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
+                <div className="text-center py-12 text-muted-foreground">
                   <p className="text-sm">
                     No available students match the current filters.
                   </p>
@@ -776,8 +776,8 @@ export default function PlacementListDetailPage() {
                       key={student.student_profile_id}
                       className={`flex items-center gap-4 px-4 py-3 rounded-lg cursor-pointer transition-colors ${
                         selectedStudentIds.has(student.student_profile_id)
-                          ? "bg-blue-50 border border-blue-200"
-                          : "hover:bg-gray-50 border border-transparent"
+                          ? "bg-primary/10 border border-primary/20"
+                          : "hover:bg-secondary/50 border border-transparent"
                       }`}
                     >
                       <input
@@ -788,20 +788,20 @@ export default function PlacementListDetailPage() {
                         onChange={() =>
                           toggleStudent(student.student_profile_id)
                         }
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        className="w-4 h-4 text-primary border-border rounded focus:ring-ring"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-foreground">
                             {student.full_name}
                           </span>
                           {student.course_name && (
-                            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                            <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded">
                               {student.course_name}
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-muted-foreground">
                           {student.email}
                         </div>
                         {student.skills.length > 0 && (
@@ -831,11 +831,11 @@ export default function PlacementListDetailPage() {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3 flex-shrink-0">
+            <div className="px-6 py-4 border-t border-border flex justify-end gap-3 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setIsAssignOpen(false)}
-                className="px-5 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-5 py-2.5 border-2 border-border text-foreground/80 font-semibold rounded-lg hover:bg-secondary/50 transition-colors"
                 disabled={isAdding}
               >
                 Cancel
@@ -843,7 +843,7 @@ export default function PlacementListDetailPage() {
               <button
                 onClick={handleAddStudents}
                 disabled={selectedStudentIds.size === 0 || isAdding}
-                className="px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                className="px-5 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
               >
                 {isAdding && (
                   <svg
@@ -878,7 +878,7 @@ export default function PlacementListDetailPage() {
       {/* ── Edit Link Modal ── */}
       {isEditLinkOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+          <div className="bg-card rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4">
               <h2 className="text-lg font-bold text-white">
                 Registration Link
@@ -889,26 +889,26 @@ export default function PlacementListDetailPage() {
             </div>
             <form onSubmit={handleSaveLink} className="p-6 space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                   Registration URL
                 </label>
                 <input
                   type="url"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-500 hover:border-gray-400 transition-all text-gray-900"
+                  className="w-full px-4 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-500 hover:border-border transition-all text-foreground"
                   value={linkValue}
                   onChange={(e) => setLinkValue(e.target.value)}
                   placeholder="https://..."
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-muted-foreground">
                   This link will be shared with all students when you click
                   &quot;Send Link to All&quot;.
                 </p>
               </div>
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+              <div className="flex justify-end gap-3 pt-4 border-t border-border">
                 <button
                   type="button"
                   onClick={() => setIsEditLinkOpen(false)}
-                  className="px-5 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-5 py-2.5 border-2 border-border text-foreground/80 font-semibold rounded-lg hover:bg-secondary/50 transition-colors"
                   disabled={isSavingLink}
                 >
                   Cancel

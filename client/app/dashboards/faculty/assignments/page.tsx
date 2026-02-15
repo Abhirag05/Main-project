@@ -105,7 +105,7 @@ export default function MyAssignmentsPage() {
   const getStatusBadge = (assignment: Assignment) => {
     if (!assignment.is_active) {
       return (
-        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-secondary text-foreground">
           Draft
         </span>
       );
@@ -134,10 +134,10 @@ export default function MyAssignmentsPage() {
         <div className="max-w-7xl mx-auto">
           <FacultyCard className="p-6">
             <div className="animate-pulse space-y-4">
-              <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
-              <div className="h-12 bg-gray-200 rounded"></div>
-              <div className="h-12 bg-gray-200 rounded"></div>
-              <div className="h-12 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
+              <div className="h-12 bg-muted rounded"></div>
+              <div className="h-12 bg-muted rounded"></div>
+              <div className="h-12 bg-muted rounded"></div>
             </div>
           </FacultyCard>
         </div>
@@ -155,7 +155,7 @@ export default function MyAssignmentsPage() {
           action={
             <Link
               href="/dashboards/faculty/assignments/create"
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors"
             >
               <svg
                 className="w-5 h-5"
@@ -213,7 +213,7 @@ export default function MyAssignmentsPage() {
               action={
                 <Link
                   href="/dashboards/faculty/assignments/create"
-                  className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors"
                 >
                   <svg
                     className="w-5 h-5"
@@ -234,53 +234,53 @@ export default function MyAssignmentsPage() {
             />
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-secondary/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Assignment
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Batch
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Module
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Skills Evaluated
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Due Date
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Submissions
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-border">
                   {assignments.map((assignment) => (
-                    <tr key={assignment.id} className="hover:bg-gray-50">
+                    <tr key={assignment.id} className="hover:bg-secondary/50">
                       <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {assignment.title}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted-foreground">
                           Max: {assignment.max_marks} marks
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-foreground">
                           {assignment.batch_name}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-foreground">
                           {assignment.module_name}
                         </div>
                       </td>
@@ -297,11 +297,11 @@ export default function MyAssignmentsPage() {
                             ))}
                           </div>
                         ) : (
-                          <span className="text-sm text-gray-500">—</span>
+                          <span className="text-sm text-muted-foreground">—</span>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-foreground">
                           {formatDate(assignment.due_date)}
                         </div>
                       </td>
@@ -309,10 +309,10 @@ export default function MyAssignmentsPage() {
                         {getStatusBadge(assignment)}
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">
+                        <div className="text-sm text-foreground">
                           {assignment.total_submissions || 0} submitted
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted-foreground">
                           {assignment.evaluated_submissions || 0} evaluated
                           {(assignment.pending_evaluations || 0) > 0 && (
                             <span className="ml-1 text-orange-600 font-medium">
@@ -326,7 +326,7 @@ export default function MyAssignmentsPage() {
                           onClick={() =>
                             setViewModal({ isOpen: true, assignment })
                           }
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-primary hover:text-primary"
                         >
                           View
                         </button>
@@ -361,16 +361,16 @@ export default function MyAssignmentsPage() {
       {/* View Details Modal */}
       {viewModal.isOpen && viewModal.assignment && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-              <h3 className="text-xl font-bold text-gray-900">
+          <div className="bg-card rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-card border-b px-6 py-4 flex justify-between items-center">
+              <h3 className="text-xl font-bold text-foreground">
                 Assignment Details
               </h3>
               <button
                 onClick={() =>
                   setViewModal({ isOpen: false, assignment: null })
                 }
-                className="text-gray-400 hover:text-gray-600"
+                className="text-muted-foreground/70 hover:text-muted-foreground"
               >
                 <svg
                   className="w-6 h-6"
@@ -392,7 +392,7 @@ export default function MyAssignmentsPage() {
               {/* Title and Status */}
               <div>
                 <div className="flex items-start justify-between mb-2">
-                  <h4 className="text-2xl font-semibold text-gray-900">
+                  <h4 className="text-2xl font-semibold text-foreground">
                     {viewModal.assignment.title}
                   </h4>
                   {getStatusBadge(viewModal.assignment)}
@@ -400,48 +400,48 @@ export default function MyAssignmentsPage() {
               </div>
 
               {/* Info Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-secondary/50 p-4 rounded-lg">
                 <div>
-                  <p className="text-sm text-gray-500">Batch</p>
-                  <p className="text-base font-medium text-gray-900">
+                  <p className="text-sm text-muted-foreground">Batch</p>
+                  <p className="text-base font-medium text-foreground">
                     {viewModal.assignment.batch_name}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Module</p>
-                  <p className="text-base font-medium text-gray-900">
+                  <p className="text-sm text-muted-foreground">Module</p>
+                  <p className="text-base font-medium text-foreground">
                     {viewModal.assignment.module_name}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Maximum Marks</p>
-                  <p className="text-base font-medium text-gray-900">
+                  <p className="text-sm text-muted-foreground">Maximum Marks</p>
+                  <p className="text-base font-medium text-foreground">
                     {viewModal.assignment.max_marks}
                   </p>
                 </div>
                 {viewModal.assignment.start_date && (
                   <div>
-                    <p className="text-sm text-gray-500">Start Date</p>
-                    <p className="text-base font-medium text-gray-900">
+                    <p className="text-sm text-muted-foreground">Start Date</p>
+                    <p className="text-base font-medium text-foreground">
                       {formatDate(viewModal.assignment.start_date)}
                     </p>
                   </div>
                 )}
                 <div>
-                  <p className="text-sm text-gray-500">Due Date</p>
-                  <p className="text-base font-medium text-gray-900">
+                  <p className="text-sm text-muted-foreground">Due Date</p>
+                  <p className="text-base font-medium text-foreground">
                     {formatDate(viewModal.assignment.due_date)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Created On</p>
-                  <p className="text-base font-medium text-gray-900">
+                  <p className="text-sm text-muted-foreground">Created On</p>
+                  <p className="text-base font-medium text-foreground">
                     {formatDate(viewModal.assignment.created_at)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Last Updated</p>
-                  <p className="text-base font-medium text-gray-900">
+                  <p className="text-sm text-muted-foreground">Last Updated</p>
+                  <p className="text-base font-medium text-foreground">
                     {formatDate(viewModal.assignment.updated_at)}
                   </p>
                 </div>
@@ -451,7 +451,7 @@ export default function MyAssignmentsPage() {
               {viewModal.assignment.skills &&
                 viewModal.assignment.skills.length > 0 && (
                   <div>
-                    <h5 className="text-sm font-medium text-gray-700 mb-2">
+                    <h5 className="text-sm font-medium text-foreground/80 mb-2">
                       Skills Evaluated
                     </h5>
                     <div className="flex flex-wrap gap-2">
@@ -469,11 +469,11 @@ export default function MyAssignmentsPage() {
 
               {/* Description */}
               <div>
-                <h5 className="text-sm font-medium text-gray-700 mb-2">
+                <h5 className="text-sm font-medium text-foreground/80 mb-2">
                   Description
                 </h5>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-gray-900 whitespace-pre-wrap">
+                <div className="bg-secondary/50 p-4 rounded-lg">
+                  <p className="text-foreground whitespace-pre-wrap">
                     {viewModal.assignment.description}
                   </p>
                 </div>
@@ -483,14 +483,14 @@ export default function MyAssignmentsPage() {
               {(viewModal.assignment.assignment_file_url ||
                 viewModal.assignment.assignment_file) && (
                 <div>
-                  <h5 className="text-sm font-medium text-gray-700 mb-2">
+                  <h5 className="text-sm font-medium text-foreground/80 mb-2">
                     Attached File
                   </h5>
                   <a
                     href={`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/api$/, "")}${viewModal.assignment.assignment_file_url || viewModal.assignment.assignment_file}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                    className="inline-flex items-center px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/10 transition-colors"
                   >
                     <svg
                       className="w-5 h-5 mr-2"
@@ -525,7 +525,7 @@ export default function MyAssignmentsPage() {
                         `/dashboards/faculty/assignments/create?id=${viewModal.assignment?.id}`,
                       );
                     }}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                   >
                     Edit Assignment
                   </button>
@@ -534,7 +534,7 @@ export default function MyAssignmentsPage() {
                   onClick={() =>
                     setViewModal({ isOpen: false, assignment: null })
                   }
-                  className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                  className="flex-1 px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted transition-colors"
                 >
                   Close
                 </button>
@@ -547,11 +547,11 @@ export default function MyAssignmentsPage() {
       {/* Delete Confirmation Modal */}
       {deleteConfirm.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">
+          <div className="bg-card rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-bold text-foreground mb-2">
               Delete Assignment
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               Are you sure you want to delete "{deleteConfirm.assignment?.title}
               "? This action cannot be undone.
             </p>
@@ -568,7 +568,7 @@ export default function MyAssignmentsPage() {
                   setDeleteConfirm({ isOpen: false, assignment: null })
                 }
                 disabled={deleting}
-                className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>

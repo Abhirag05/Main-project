@@ -281,13 +281,13 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-secondary/50 px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">
+        <div className="bg-card rounded-lg shadow-md p-8">
+          <h1 className="text-3xl font-bold text-center text-foreground mb-2">
             Create Account
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-muted-foreground mb-8">
             Sign up to get started
           </p>
 
@@ -315,7 +315,7 @@ export default function RegistrationForm() {
             <div>
               <label
                 htmlFor="firstName"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 First Name
               </label>
@@ -325,10 +325,10 @@ export default function RegistrationForm() {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900 ${
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition text-foreground ${
                   errors.firstName
                     ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
+                    : "border-border"
                 }`}
                 placeholder="Enter your first name"
                 disabled={isSubmitting || success}
@@ -342,7 +342,7 @@ export default function RegistrationForm() {
             <div>
               <label
                 htmlFor="lastName"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Last Name
               </label>
@@ -352,10 +352,10 @@ export default function RegistrationForm() {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900 ${
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition text-foreground ${
                   errors.lastName
                     ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
+                    : "border-border"
                 }`}
                 placeholder="Enter your last name"
                 disabled={isSubmitting || success}
@@ -369,7 +369,7 @@ export default function RegistrationForm() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Email
               </label>
@@ -379,8 +379,8 @@ export default function RegistrationForm() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900 ${
-                  errors.email ? "border-red-500 bg-red-50" : "border-gray-300"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition text-foreground ${
+                  errors.email ? "border-red-500 bg-red-50" : "border-border"
                 }`}
                 placeholder="Enter your email"
                 disabled={isSubmitting || success}
@@ -394,7 +394,7 @@ export default function RegistrationForm() {
             <div>
               <label
                 htmlFor="phoneNumber"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Phone Number <span className="text-red-500">*</span>
               </label>
@@ -404,10 +404,10 @@ export default function RegistrationForm() {
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900 ${
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition text-foreground ${
                   errors.phoneNumber
                     ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
+                    : "border-border"
                 }`}
                 placeholder="Enter your phone number"
                 disabled={isSubmitting || success}
@@ -423,7 +423,7 @@ export default function RegistrationForm() {
             <div>
               <label
                 htmlFor="interestedCourse"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Interested Course
               </label>
@@ -432,10 +432,10 @@ export default function RegistrationForm() {
                 name="interestedCourse"
                 value={formData.interestedCourse}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900 ${
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition text-foreground ${
                   errors.interestedCourse
                     ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
+                    : "border-border"
                 }`}
                 disabled={isSubmitting || success || loadingCourses}
               >
@@ -459,7 +459,7 @@ export default function RegistrationForm() {
             <div>
               <label
                 htmlFor="studyMode"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Study Mode <span className="text-red-500">*</span>
               </label>
@@ -468,10 +468,10 @@ export default function RegistrationForm() {
                 name="studyMode"
                 value={formData.studyMode}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900 ${
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition text-foreground ${
                   errors.studyMode
                     ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
+                    : "border-border"
                 }`}
                 disabled={isSubmitting || success}
                 required
@@ -489,7 +489,7 @@ export default function RegistrationForm() {
             <div>
               <label
                 htmlFor="paymentMethod"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Payment Method
               </label>
@@ -498,10 +498,10 @@ export default function RegistrationForm() {
                 name="paymentMethod"
                 value={formData.paymentMethod}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900 ${
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition text-foreground ${
                   errors.paymentMethod
                     ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
+                    : "border-border"
                 }`}
                 disabled={isSubmitting || success}
               >
@@ -518,11 +518,11 @@ export default function RegistrationForm() {
 
             {/* Referral Section */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-foreground/80">
                 Do you have a referral code?
               </label>
               <div className="flex items-center gap-6">
-                <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                <label className="inline-flex items-center gap-2 text-sm text-foreground/80">
                   <input
                     type="radio"
                     name="hasReferral"
@@ -533,7 +533,7 @@ export default function RegistrationForm() {
                   />
                   Yes
                 </label>
-                <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                <label className="inline-flex items-center gap-2 text-sm text-foreground/80">
                   <input
                     type="radio"
                     name="hasReferral"
@@ -550,7 +550,7 @@ export default function RegistrationForm() {
                 <div>
                   <label
                     htmlFor="referralCode"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-foreground/80 mb-2"
                   >
                     Referral Code
                   </label>
@@ -560,12 +560,12 @@ export default function RegistrationForm() {
                     name="referralCode"
                     value={formData.referralCode}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900 ${
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition text-foreground ${
                       errors.referralCode || referralStatus === "invalid"
                         ? "border-red-500 bg-red-50"
                         : referralStatus === "valid"
                           ? "border-green-500 bg-green-50"
-                          : "border-gray-300"
+                          : "border-border"
                     }`}
                     placeholder="Enter referral code"
                     disabled={isSubmitting || success}
@@ -581,7 +581,7 @@ export default function RegistrationForm() {
                         referralStatus === "valid"
                           ? "text-green-600"
                           : referralStatus === "checking"
-                            ? "text-gray-500"
+                            ? "text-muted-foreground"
                             : "text-red-600"
                       }`}
                     >
@@ -594,15 +594,15 @@ export default function RegistrationForm() {
               )}
 
               {formData.hasReferral === "no" && (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                  <p className="text-sm font-medium text-gray-700 mb-3">
+                <div className="bg-secondary/50 border border-border rounded-lg p-4">
+                  <p className="text-sm font-medium text-foreground/80 mb-3">
                     How did you hear about us?
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {discoveryOptions.map((option) => (
                       <label
                         key={option}
-                        className="inline-flex items-center gap-2 text-sm text-gray-700"
+                        className="inline-flex items-center gap-2 text-sm text-foreground/80"
                       >
                         <input
                           type="checkbox"
@@ -622,7 +622,7 @@ export default function RegistrationForm() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-foreground/80 mb-2"
               >
                 Password
               </label>
@@ -633,10 +633,10 @@ export default function RegistrationForm() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12 text-gray-900 ${
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition pr-12 text-foreground ${
                     errors.password
                       ? "border-red-500 bg-red-50"
-                      : "border-gray-300"
+                      : "border-border"
                   }`}
                   placeholder="Enter your password"
                   disabled={isSubmitting || success}
@@ -644,7 +644,7 @@ export default function RegistrationForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground/80 focus:outline-none"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   disabled={isSubmitting || success}
                 >
@@ -694,7 +694,7 @@ export default function RegistrationForm() {
             <button
               type="submit"
               disabled={isSubmitting || success}
-              className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="w-full bg-primary text-white py-2.5 px-4 rounded-lg font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               {isSubmitting
                 ? "Registering..."
@@ -705,11 +705,11 @@ export default function RegistrationForm() {
           </form>
 
           {/* Login Link */}
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link
               href="/"
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-primary hover:text-primary font-medium"
             >
               Login
             </Link>

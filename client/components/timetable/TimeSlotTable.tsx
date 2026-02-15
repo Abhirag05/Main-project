@@ -11,7 +11,7 @@ interface TimeSlotTableProps {
 }
 
 const DAY_COLORS: Record<number, string> = {
-  1: "bg-blue-100 text-blue-800",
+  1: "bg-primary/10 text-primary",
   2: "bg-green-100 text-green-800",
   3: "bg-yellow-100 text-yellow-800",
   4: "bg-purple-100 text-purple-800",
@@ -31,13 +31,13 @@ export default function TimeSlotTable({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-card rounded-lg shadow overflow-hidden">
         <div className="animate-pulse">
-          <div className="h-12 bg-gray-200"></div>
+          <div className="h-12 bg-muted"></div>
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="h-16 bg-gray-100 border-t border-gray-200"
+              className="h-16 bg-secondary border-t border-border"
             ></div>
           ))}
         </div>
@@ -47,9 +47,9 @@ export default function TimeSlotTable({
 
   if (safeSlots.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-12 text-center">
+      <div className="bg-card rounded-lg shadow p-12 text-center">
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className="mx-auto h-12 w-12 text-muted-foreground/70"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -61,10 +61,10 @@ export default function TimeSlotTable({
             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
           />
         </svg>
-        <h3 className="mt-2 text-lg font-medium text-gray-900">
+        <h3 className="mt-2 text-lg font-medium text-foreground">
           No time slots found
         </h3>
-        <p className="mt-1 text-gray-500">
+        <p className="mt-1 text-muted-foreground">
           Create a time slot to set up the weekly schedule.
         </p>
       </div>
@@ -72,37 +72,37 @@ export default function TimeSlotTable({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
+    <div className="bg-card rounded-lg shadow overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-border">
+          <thead className="bg-secondary/50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Day
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Time
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Batch
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Module
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Faculty
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-card divide-y divide-border">
             {safeSlots.map((slot) => (
-              <tr key={slot.id} className="hover:bg-gray-50 transition-colors">
+              <tr key={slot.id} className="hover:bg-secondary/50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -113,31 +113,31 @@ export default function TimeSlotTable({
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {slot.start_time.slice(0, 5)} - {slot.end_time.slice(0, 5)}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {slot.batch_detail?.code}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     {slot.batch_detail?.course_name}
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {slot.module_detail?.name}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     {slot.module_detail?.code}
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {slot.faculty_detail?.full_name}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     {slot.faculty_detail?.employee_code}
                   </div>
                 </td>
@@ -146,7 +146,7 @@ export default function TimeSlotTable({
                     className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       slot.is_active
                         ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-800"
+                        : "bg-secondary text-foreground"
                     }`}
                   >
                     {slot.is_active ? "Active" : "Inactive"}
@@ -157,7 +157,7 @@ export default function TimeSlotTable({
                     {onGenerateSessions && (
                       <button
                         onClick={() => onGenerateSessions(slot)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-primary hover:text-primary"
                         title="Generate Sessions"
                       >
                         <svg
@@ -177,7 +177,7 @@ export default function TimeSlotTable({
                     )}
                     <button
                       onClick={() => onEdit(slot)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-primary hover:text-primary"
                       title="Edit"
                     >
                       <svg

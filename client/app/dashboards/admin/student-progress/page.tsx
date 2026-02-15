@@ -17,11 +17,11 @@ function getMasteryColor(level: string) {
     case "ADVANCED":
       return "bg-green-100 text-green-800 border-green-200";
     case "INTERMEDIATE":
-      return "bg-blue-100 text-blue-800 border-blue-200";
+      return "bg-primary/10 text-primary border-primary/20";
     case "BEGINNER":
       return "bg-yellow-100 text-yellow-800 border-yellow-200";
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200";
+      return "bg-secondary text-foreground border-border";
   }
 }
 
@@ -47,13 +47,13 @@ function SkillProgressBar({
     level === "ADVANCED"
       ? "bg-green-500"
       : level === "INTERMEDIATE"
-        ? "bg-blue-500"
+        ? "bg-primary/80"
         : level === "BEGINNER"
           ? "bg-yellow-500"
-          : "bg-gray-300";
+          : "bg-muted";
 
   return (
-    <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+    <div className="w-full bg-muted rounded-full h-2 mt-1">
       <div
         className={`${barColor} h-2 rounded-full transition-all`}
         style={{ width: `${Math.min(percentage, 100)}%` }}
@@ -72,18 +72,18 @@ function StudentProgressTable({
 }) {
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow p-8 text-center">
+      <div className="bg-card rounded-lg shadow p-8 text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto" />
-        <p className="mt-4 text-gray-600">Loading students…</p>
+        <p className="mt-4 text-muted-foreground">Loading students…</p>
       </div>
     );
   }
 
   if (students.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-8 text-center">
+      <div className="bg-card rounded-lg shadow p-8 text-center">
         <svg
-          className="h-12 w-12 text-gray-400 mx-auto mb-4"
+          className="h-12 w-12 text-muted-foreground/70 mx-auto mb-4"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -95,57 +95,57 @@ function StudentProgressTable({
             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
           />
         </svg>
-        <p className="text-gray-600">No students found</p>
+        <p className="text-muted-foreground">No students found</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-card rounded-lg shadow-md overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-border">
+          <thead className="bg-secondary/50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Student
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Contact
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Centre
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Course
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Skills &amp; Progress
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-card divide-y divide-border">
             {students.map((student) => (
               <tr
                 key={student.student_profile_id}
-                className="hover:bg-gray-50"
+                className="hover:bg-secondary/50"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {student.full_name || "-"}
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-sm text-gray-900">
+                  <div className="text-sm text-foreground">
                     {student.email || "-"}
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-muted-foreground">
                     {student.phone_number || "-"}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   {student.centre_name || "-"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   {student.course_name || "-"}
                 </td>
                 <td className="px-6 py-4">
@@ -158,7 +158,7 @@ function StudentProgressTable({
                         return (
                           <div key={idx}>
                             <div className="flex items-center justify-between text-xs">
-                              <span className="font-medium text-gray-700">
+                              <span className="font-medium text-foreground/80">
                                 {skill.skill_name}
                               </span>
                               <span
@@ -173,7 +173,7 @@ function StudentProgressTable({
                       })}
                     </div>
                   ) : (
-                    <span className="text-sm text-gray-400 italic">
+                    <span className="text-sm text-muted-foreground/70 italic">
                       No skills assessed
                     </span>
                   )}
@@ -263,7 +263,7 @@ export default function StudentProgressPage() {
       <DashboardLayout>
         <div className="text-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto" />
-          <p className="mt-4 text-gray-600">Loading student progress…</p>
+          <p className="mt-4 text-muted-foreground">Loading student progress…</p>
         </div>
       </DashboardLayout>
     );
@@ -274,29 +274,29 @@ export default function StudentProgressPage() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-foreground">
             Student Progress
           </h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-muted-foreground">
             View students and track their skill levels and progress
           </p>
         </div>
 
         {/* Skill Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-card rounded-lg shadow-md p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             Filter by Skill
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground/80 mb-2">
                 Select Skill
               </label>
               <div className="flex gap-2">
                 <select
                   value={filterSkill}
                   onChange={(e) => setFilterSkill(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900"
+                  className="w-full px-4 py-2 border border-border rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-card text-foreground"
                 >
                   <option value="">Select Skill</option>
                   {availableSkills.map((s) => (
@@ -335,7 +335,7 @@ export default function StudentProgressPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground/80 mb-2">
                 Mastery Level
               </label>
               <select
@@ -343,7 +343,7 @@ export default function StudentProgressPage() {
                 onChange={(e) =>
                   setFilterLevel(e.target.value as SkillLevel | "")
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900"
+                className="w-full px-4 py-2 border border-border rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-card text-foreground"
               >
                 <option value="">Any Level</option>
                 <option value="BEGINNER">Beginner</option>
@@ -355,7 +355,7 @@ export default function StudentProgressPage() {
 
           {skillFilters.length > 0 && (
             <div className="mt-4 flex items-center gap-2 flex-wrap">
-              <span className="text-sm text-gray-600">Active filters:</span>
+              <span className="text-sm text-muted-foreground">Active filters:</span>
               {skillFilters.map((f) => (
                 <span
                   key={`${f.skill}-${f.level}`}
@@ -387,11 +387,11 @@ export default function StudentProgressPage() {
         </div>
 
         {/* Search */}
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-card rounded-lg shadow p-4">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg
-                className="h-5 w-5 text-gray-400"
+                className="h-5 w-5 text-muted-foreground/70"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -409,13 +409,13 @@ export default function StudentProgressPage() {
               placeholder="Search by name, email, phone, centre, or course…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-500 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full pl-10 pr-3 py-2 border border-border rounded-md bg-card text-foreground placeholder-gray-500 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
         </div>
 
         {/* Results count */}
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-muted-foreground">
           Showing {filtered.length} of {students.length} students
         </div>
 

@@ -205,13 +205,13 @@ export default function FacultySchedulePage() {
           title="My Schedule"
           description="View your weekly schedule and manage sessions"
           action={
-            <div className="flex rounded-lg border border-gray-300 overflow-hidden">
+            <div className="flex rounded-lg border border-border overflow-hidden">
               <button
                 onClick={() => setViewMode("today")}
                 className={`px-4 py-2 text-sm font-medium ${
                   viewMode === "today"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-primary text-white"
+                    : "bg-card text-foreground/80 hover:bg-secondary/50"
                 }`}
               >
                 Today
@@ -220,8 +220,8 @@ export default function FacultySchedulePage() {
                 onClick={() => setViewMode("upcoming")}
                 className={`px-4 py-2 text-sm font-medium ${
                   viewMode === "upcoming"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-primary text-white"
+                    : "bg-card text-foreground/80 hover:bg-secondary/50"
                 }`}
               >
                 Upcoming
@@ -230,8 +230,8 @@ export default function FacultySchedulePage() {
                 onClick={() => setViewMode("schedule")}
                 className={`px-4 py-2 text-sm font-medium ${
                   viewMode === "schedule"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-primary text-white"
+                    : "bg-card text-foreground/80 hover:bg-secondary/50"
                 }`}
               >
                 Weekly
@@ -243,23 +243,23 @@ export default function FacultySchedulePage() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <FacultyCard className="p-4">
-            <div className="text-sm font-medium text-gray-500">
+            <div className="text-sm font-medium text-muted-foreground">
               Weekly Slots
             </div>
-            <div className="mt-1 text-2xl font-semibold text-gray-900">
+            <div className="mt-1 text-2xl font-semibold text-foreground">
               {stats.totalSlots}
             </div>
           </FacultyCard>
           <FacultyCard className="p-4">
-            <div className="text-sm font-medium text-gray-500">
+            <div className="text-sm font-medium text-muted-foreground">
               Today&apos;s Sessions
             </div>
-            <div className="mt-1 text-2xl font-semibold text-blue-600">
+            <div className="mt-1 text-2xl font-semibold text-primary">
               {stats.todaySessions}
             </div>
           </FacultyCard>
           <FacultyCard className="p-4">
-            <div className="text-sm font-medium text-gray-500">
+            <div className="text-sm font-medium text-muted-foreground">
               Completed Today
             </div>
             <div className="mt-1 text-2xl font-semibold text-green-600">
@@ -267,7 +267,7 @@ export default function FacultySchedulePage() {
             </div>
           </FacultyCard>
           <FacultyCard className="p-4">
-            <div className="text-sm font-medium text-gray-500">
+            <div className="text-sm font-medium text-muted-foreground">
               Upcoming (7 days)
             </div>
             <div className="mt-1 text-2xl font-semibold text-purple-600">
@@ -282,7 +282,7 @@ export default function FacultySchedulePage() {
         {/* Content */}
         {viewMode === "today" && (
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               Today&apos;s Sessions
             </h2>
             <ClassSessionList
@@ -300,7 +300,7 @@ export default function FacultySchedulePage() {
 
         {viewMode === "upcoming" && (
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               Upcoming Sessions (Next 7 Days)
             </h2>
             <ClassSessionList

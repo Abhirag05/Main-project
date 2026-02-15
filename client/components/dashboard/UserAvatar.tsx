@@ -24,7 +24,7 @@ const sizeClasses = {
 export default function UserAvatar({ name, size = "md", className = "" }: UserAvatarProps) {
   return (
     <div
-      className={`${sizeClasses[size]} bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold ${className}`}
+      className={`${sizeClasses[size]} bg-primary rounded-full flex items-center justify-center text-white font-semibold ${className}`}
     >
       {getInitials(name)}
     </div>

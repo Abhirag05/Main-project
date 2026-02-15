@@ -33,7 +33,7 @@ export default function MyBatchCard() {
         label: "Active",
       },
       COMPLETED: {
-        className: "bg-blue-100 text-blue-800 border-blue-200",
+        className: "bg-primary/10 text-primary border-primary/20",
         label: "Completed",
       },
       CANCELLED: {
@@ -64,13 +64,13 @@ export default function MyBatchCard() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-card rounded-lg shadow-md p-6">
         <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
+          <div className="h-6 bg-muted rounded w-1/3 mb-4"></div>
           <div className="space-y-3">
-            <div className="h-4 bg-gray-200 rounded"></div>
-            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-            <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+            <div className="h-4 bg-muted rounded"></div>
+            <div className="h-4 bg-muted rounded w-5/6"></div>
+            <div className="h-4 bg-muted rounded w-4/6"></div>
           </div>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default function MyBatchCard() {
 
   if (error) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-card rounded-lg shadow-md p-6">
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <p className="font-medium text-red-800">Error Loading Batch</p>
           <p className="text-sm text-red-600 mt-1">{error}</p>
@@ -90,17 +90,17 @@ export default function MyBatchCard() {
 
   if (!batch) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-8">
+      <div className="bg-card rounded-lg shadow-md p-8">
         <div className="text-center">
-          <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-secondary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-muted-foreground/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-foreground mb-2">
             No Batch Assigned
           </h3>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             You are not assigned to any batch yet. Please contact your
             administrator.
           </p>
@@ -110,13 +110,13 @@ export default function MyBatchCard() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-card rounded-lg shadow-md overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+      <div className="bg-gradient-to-r from-primary to-primary/80 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-white mb-1">My Batch</h2>
-            <p className="text-blue-100 text-sm">Your current batch details</p>
+            <p className="text-primary-foreground text-sm">Your current batch details</p>
           </div>
           {getStatusBadge(batch.batch_status)}
         </div>
@@ -126,41 +126,41 @@ export default function MyBatchCard() {
       <div className="p-6">
         {/* Batch Code and Course */}
         <div className="mb-6">
-          <p className="text-gray-500 text-sm font-medium mb-2">Batch Code</p>
-          <h3 className="text-3xl font-bold text-gray-900 mb-3">
+          <p className="text-muted-foreground text-sm font-medium mb-2">Batch Code</p>
+          <h3 className="text-3xl font-bold text-foreground mb-3">
             {batch.batch_code}
           </h3>
-          <p className="text-lg text-gray-700">{batch.course_name}</p>
+          <p className="text-lg text-foreground/80">{batch.course_name}</p>
         </div>
 
         {/* Dates */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <p className="text-gray-600 text-sm font-medium mb-2">Start Date</p>
-            <p className="text-lg font-semibold text-gray-900">
+          <div className="bg-secondary/50 rounded-lg p-4 border border-border">
+            <p className="text-muted-foreground text-sm font-medium mb-2">Start Date</p>
+            <p className="text-lg font-semibold text-foreground">
               {formatDate(batch.start_date)}
             </p>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <p className="text-gray-600 text-sm font-medium mb-2">End Date</p>
-            <p className="text-lg font-semibold text-gray-900">
+          <div className="bg-secondary/50 rounded-lg p-4 border border-border">
+            <p className="text-muted-foreground text-sm font-medium mb-2">End Date</p>
+            <p className="text-lg font-semibold text-foreground">
               {formatDate(batch.end_date)}
             </p>
           </div>
         </div>
 
         {/* Students Count */}
-        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+        <div className="bg-primary/10 rounded-lg p-4 border border-primary/20">
           <div className="flex items-center gap-3">
-            <div className="bg-blue-600 rounded-lg p-3">
+            <div className="bg-primary rounded-lg p-3">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-gray-600 font-medium">Total Students</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm text-muted-foreground font-medium">Total Students</p>
+              <p className="text-2xl font-bold text-foreground">
                 {batch.total_students}
               </p>
             </div>

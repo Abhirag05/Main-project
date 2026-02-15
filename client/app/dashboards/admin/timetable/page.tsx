@@ -165,21 +165,21 @@ export default function TimetableManagementPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-foreground">
               Timetable Management
             </h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Manage weekly class schedules
             </p>
           </div>
           <div className="mt-4 sm:mt-0 flex items-center space-x-3">
-            <div className="flex rounded-lg border border-gray-300 overflow-hidden">
+            <div className="flex rounded-lg border border-border overflow-hidden">
               <button
                 onClick={() => setViewMode("table")}
                 className={`px-4 py-2 text-sm font-medium ${
                   viewMode === "table"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-primary text-white"
+                    : "bg-card text-foreground/80 hover:bg-secondary/50"
                 }`}
               >
                 Table
@@ -188,8 +188,8 @@ export default function TimetableManagementPage() {
                 onClick={() => setViewMode("calendar")}
                 className={`px-4 py-2 text-sm font-medium ${
                   viewMode === "calendar"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-primary text-white"
+                    : "bg-card text-foreground/80 hover:bg-secondary/50"
                 }`}
               >
                 Calendar
@@ -197,7 +197,7 @@ export default function TimetableManagementPage() {
             </div>
             <button
               onClick={handleCreate}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="inline-flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
             >
               <svg
                 className="w-5 h-5 mr-2"
@@ -218,16 +218,16 @@ export default function TimetableManagementPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-card rounded-lg shadow p-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 Filter by Batch
               </label>
               <select
                 value={filterBatch}
                 onChange={(e) => setFilterBatch(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
               >
                 <option value="" disabled>
                   Select Batch
@@ -270,32 +270,32 @@ export default function TimetableManagementPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="text-sm font-medium text-gray-500">
+          <div className="bg-card rounded-lg shadow p-4">
+            <div className="text-sm font-medium text-muted-foreground">
               Total Time Slots
             </div>
-            <div className="mt-1 text-2xl font-semibold text-gray-900">
+            <div className="mt-1 text-2xl font-semibold text-foreground">
               {timeSlots.length}
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="text-sm font-medium text-gray-500">
+          <div className="bg-card rounded-lg shadow p-4">
+            <div className="text-sm font-medium text-muted-foreground">
               Active Slots
             </div>
             <div className="mt-1 text-2xl font-semibold text-green-600">
               {timeSlots.filter((s) => s.is_active).length}
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="text-sm font-medium text-gray-500">
+          <div className="bg-card rounded-lg shadow p-4">
+            <div className="text-sm font-medium text-muted-foreground">
               Batches Covered
             </div>
-            <div className="mt-1 text-2xl font-semibold text-blue-600">
+            <div className="mt-1 text-2xl font-semibold text-primary">
               {new Set(timeSlots.map((s) => s.batch)).size}
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="text-sm font-medium text-gray-500">
+          <div className="bg-card rounded-lg shadow p-4">
+            <div className="text-sm font-medium text-muted-foreground">
               Faculty Assigned
             </div>
             <div className="mt-1 text-2xl font-semibold text-purple-600">

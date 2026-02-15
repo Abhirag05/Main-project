@@ -100,11 +100,11 @@ export default function CourseForm({
   };
 
   const getFieldClass = (name: keyof FieldErrors) => {
-    const base = "w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900";
+    const base = "w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-all text-foreground";
     if (touched[name] && fieldErrors[name]) {
       return `${base} border-red-300 focus:border-red-500 focus:ring-red-200`;
     }
-    return `${base} border-gray-300 focus:border-blue-500 focus:ring-blue-200 hover:border-gray-400`;
+    return `${base} border-border focus:border-ring focus:ring-ring/30 hover:border-border`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -144,14 +144,14 @@ export default function CourseForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-card rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-primary to-primary/80 px-6 py-4 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-white">
               {course ? "Edit Course" : "Add New Course"}
             </h2>
-            <p className="text-blue-100 text-sm mt-0.5">
+            <p className="text-primary-foreground text-sm mt-0.5">
               {course ? "Update course information" : "Create a new academic course"}
             </p>
           </div>
@@ -182,7 +182,7 @@ export default function CourseForm({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Course Code */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                   Course Code <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -199,12 +199,12 @@ export default function CourseForm({
                 {touched.code && fieldErrors.code && (
                   <p className="mt-1 text-sm text-red-600">{fieldErrors.code}</p>
                 )}
-                <p className="mt-1 text-xs text-gray-500">Uppercase code identifier</p>
+                <p className="mt-1 text-xs text-muted-foreground">Uppercase code identifier</p>
               </div>
 
               {/* Duration */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                   Duration (Months) <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -221,13 +221,13 @@ export default function CourseForm({
                 {touched.duration_months && fieldErrors.duration_months && (
                   <p className="mt-1 text-sm text-red-600">{fieldErrors.duration_months}</p>
                 )}
-                <p className="mt-1 text-xs text-gray-500">e.g., 36 for 3 years</p>
+                <p className="mt-1 text-xs text-muted-foreground">e.g., 36 for 3 years</p>
               </div>
             </div>
 
             {/* Course Name */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
                 Course Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -248,63 +248,63 @@ export default function CourseForm({
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                Description <span className="text-gray-400 text-xs font-normal">(Optional)</span>
+              <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
+                Description <span className="text-muted-foreground/70 text-xs font-normal">(Optional)</span>
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Brief description of the course"
                 rows={3}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-blue-500 focus:ring-blue-200 hover:border-gray-400 transition-all text-gray-900"
+                className="w-full px-4 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:border-ring focus:ring-ring/30 hover:border-border transition-all text-foreground"
                 disabled={loading}
               />
             </div>
 
             {/* Skills */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                Skills <span className="text-gray-400 text-xs font-normal">(Optional)</span>
+              <label className="block text-sm font-semibold text-foreground/80 mb-1.5">
+                Skills <span className="text-muted-foreground/70 text-xs font-normal">(Optional)</span>
               </label>
               <textarea
                 value={formData.skills}
                 onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
                 placeholder="e.g., Python, Django, REST APIs"
                 rows={2}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-blue-500 focus:ring-blue-200 hover:border-gray-400 transition-all text-gray-900"
+                className="w-full px-4 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:border-ring focus:ring-ring/30 hover:border-border transition-all text-foreground"
                 disabled={loading}
               />
-              <p className="mt-1 text-xs text-gray-500">Comma-separated list of skills</p>
+              <p className="mt-1 text-xs text-muted-foreground">Comma-separated list of skills</p>
             </div>
 
             {/* Active Status */}
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-lg">
               <input
                 type="checkbox"
                 id="is_active"
                 checked={formData.is_active}
                 onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-primary focus:ring-ring border-border rounded"
                 disabled={loading}
               />
-              <label htmlFor="is_active" className="text-sm text-gray-700">
+              <label htmlFor="is_active" className="text-sm text-foreground/80">
                 <span className="font-semibold">Active</span> — Course is available for use
               </label>
             </div>
 
             {/* Form Actions */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <div className="flex justify-end gap-3 pt-4 border-t border-border">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-5 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-5 py-2.5 border-2 border-border text-foreground/80 font-semibold rounded-lg hover:bg-secondary/50 transition-colors"
                 disabled={loading}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 disabled={loading}
               >
                 {loading && (

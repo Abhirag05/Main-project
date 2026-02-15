@@ -15,63 +15,63 @@ export default function FacultyBatchList({
   if (loading) {
     return (
       <FacultyCard className="p-6 mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <h2 className="text-xl font-semibold text-foreground mb-4">
           Assigned Batches
         </h2>
-        <p className="text-gray-600">Loading...</p>
+        <p className="text-muted-foreground">Loading...</p>
       </FacultyCard>
     );
   }
 
   return (
     <FacultyCard className="p-6 mb-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
+      <h2 className="text-xl font-semibold text-foreground mb-4">
         Assigned Batches
       </h2>
 
       {assignments.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-500 text-lg">No batches assigned yet</p>
-          <p className="text-gray-400 text-sm mt-2">
+          <p className="text-muted-foreground text-lg">No batches assigned yet</p>
+          <p className="text-muted-foreground/70 text-sm mt-2">
             You will see your assigned batches here once they are allocated by
             the admin
           </p>
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-secondary/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Batch Code
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Course Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Start Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   End Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Status
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-card divide-y divide-border">
               {assignments.map((assignment) => (
-                <tr key={assignment.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <tr key={assignment.id} className="hover:bg-secondary/50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                     {assignment.batch.code}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                     {assignment.batch.course_name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                     {new Date(assignment.batch.start_date).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                     {new Date(assignment.batch.end_date).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -80,7 +80,7 @@ export default function FacultyBatchList({
                         assignment.batch.status === "ACTIVE"
                           ? "bg-green-100 text-green-800"
                           : assignment.batch.status === "COMPLETED"
-                            ? "bg-blue-100 text-blue-800"
+                            ? "bg-primary/10 text-primary"
                             : "bg-red-100 text-red-800"
                       }`}
                     >

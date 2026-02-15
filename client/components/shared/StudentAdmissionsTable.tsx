@@ -21,10 +21,10 @@ function StatusBadge({ status }: { status: AdmissionStatus }) {
     APPROVED: "bg-green-100 text-green-800 border-green-200",
     REJECTED: "bg-red-100 text-red-800 border-red-200",
     FULL_PAYMENT_VERIFIED: "bg-green-100 text-green-800 border-green-200",
-    INSTALLMENT_VERIFIED: "bg-blue-100 text-blue-800 border-blue-200",
+    INSTALLMENT_VERIFIED: "bg-primary/10 text-primary border-primary/20",
     INSTALLMENT_PENDING: "bg-orange-100 text-orange-800 border-orange-200",
     COURSE_COMPLETED: "bg-purple-100 text-purple-800 border-purple-200",
-    DISABLED: "bg-gray-100 text-gray-800 border-gray-200",
+    DISABLED: "bg-secondary text-foreground border-border",
   };
 
   const labels = {
@@ -53,12 +53,12 @@ function TableSkeleton() {
   return (
     <div className="animate-pulse">
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="border-b border-gray-200">
+        <div key={i} className="border-b border-border">
           <div className="px-6 py-4 flex space-x-4">
-            <div className="flex-1 h-4 bg-gray-200 rounded"></div>
-            <div className="flex-1 h-4 bg-gray-200 rounded"></div>
-            <div className="flex-1 h-4 bg-gray-200 rounded"></div>
-            <div className="w-24 h-4 bg-gray-200 rounded"></div>
+            <div className="flex-1 h-4 bg-muted rounded"></div>
+            <div className="flex-1 h-4 bg-muted rounded"></div>
+            <div className="flex-1 h-4 bg-muted rounded"></div>
+            <div className="w-24 h-4 bg-muted rounded"></div>
           </div>
         </div>
       ))}
@@ -87,7 +87,7 @@ function StudentAdmissionsTable({
 
   if (isLoading) {
     return (
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="bg-card shadow-md rounded-lg overflow-hidden">
         <TableSkeleton />
       </div>
     );
@@ -95,9 +95,9 @@ function StudentAdmissionsTable({
 
   if (admissions.length === 0) {
     return (
-      <div className="bg-white shadow-md rounded-lg p-12 text-center">
+      <div className="bg-card shadow-md rounded-lg p-12 text-center">
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className="mx-auto h-12 w-12 text-muted-foreground/70"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -109,10 +109,10 @@ function StudentAdmissionsTable({
             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
           />
         </svg>
-        <h3 className="mt-2 text-sm font-medium text-gray-900">
+        <h3 className="mt-2 text-sm font-medium text-foreground">
           No students found
         </h3>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           No student admissions match the current filter.
         </p>
       </div>
@@ -120,88 +120,88 @@ function StudentAdmissionsTable({
   }
 
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden">
+    <div className="bg-card shadow-md rounded-lg overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-border">
+          <thead className="bg-secondary/50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Student Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Phone
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Course
                 
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Referral
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Payment Mode
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Study Mode
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Created Date
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-card divide-y divide-border">
             {paginatedData.map((admission) => (
               <tr
                 key={admission.student_profile_id}
-                className="hover:bg-gray-50"
+                className="hover:bg-secondary/50"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {admission.full_name}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     ID: {admission.user_id}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{admission.email}</div>
+                  <div className="text-sm text-foreground">{admission.email}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">
+                  <div className="text-sm text-foreground">
                     {admission.phone || "N/A"}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">
+                  <div className="text-sm text-foreground">
                     {admission.interested_courses || "N/A"}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {admission.referred_by_name ? (
                     <div>
-                      <div className="text-sm text-gray-900">
+                      <div className="text-sm text-foreground">
                         {admission.referred_by_name}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-muted-foreground">
                         {admission.referred_by_code || "Referral"} •{" "}
                         {admission.referral_confirmed ? "Confirmed" : "Pending"}
                       </div>
                     </div>
                   ) : (
                     <div>
-                      <div className="text-sm text-gray-500">Not referred</div>
+                      <div className="text-sm text-muted-foreground">Not referred</div>
                       {admission.discovery_sources &&
                         admission.discovery_sources.length > 0 && (
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-muted-foreground">
                             {admission.discovery_sources.join(", ")}
                           </div>
                         )}
@@ -209,7 +209,7 @@ function StudentAdmissionsTable({
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">
+                  <div className="text-sm text-foreground">
                     {admission.payment_method === "FULL"
                       ? "Full Payment"
                       : admission.payment_method === "INSTALLMENT"
@@ -218,7 +218,7 @@ function StudentAdmissionsTable({
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">
+                  <div className="text-sm text-foreground">
                     {admission.study_mode === "LIVE"
                       ? "Live"
                       : admission.study_mode === "RECORDED"
@@ -229,7 +229,7 @@ function StudentAdmissionsTable({
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusBadge status={admission.admission_status} />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {new Date(admission.created_at).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -422,7 +422,7 @@ function ActionButtons({
   }
 
   // ── COURSE_COMPLETED / REJECTED: No actions ──
-  return <span className="text-gray-400 text-xs italic">No actions</span>;
+  return <span className="text-muted-foreground/70 text-xs italic">No actions</span>;
 }
 
 export default React.memo(StudentAdmissionsTable);

@@ -169,10 +169,10 @@ export default function CentreAdminFacultySubjectAssignmentsPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">
+            <h2 className="mt-4 text-2xl font-bold text-foreground">
               Access Denied
             </h2>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-muted-foreground">
               You don&apos;t have permission to access this page.
             </p>
           </div>
@@ -187,8 +187,8 @@ export default function CentreAdminFacultySubjectAssignmentsPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Loading...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -202,40 +202,40 @@ export default function CentreAdminFacultySubjectAssignmentsPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-foreground">
             Faculty Module Assignments
           </h1>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-muted-foreground">
             Assign modules to faculty members and manage their teaching
             assignments.
           </p>
         </div>
 
         {/* Faculty Selector Section */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="bg-card rounded-lg shadow p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground/80 mb-2">
                 Select Faculty Member
               </label>
               {loadingFaculty ? (
                 <div className="flex items-center justify-center py-3">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                 </div>
               ) : (
                 <select
                   value={selectedFacultyId || 0}
                   onChange={(e) => handleFacultySelect(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                 >
-                  <option value={0} className="text-gray-500">
+                  <option value={0} className="text-muted-foreground">
                     -- Select Faculty --
                   </option>
                   {facultyList.map((faculty) => (
                     <option
                       key={faculty.id}
                       value={faculty.id}
-                      className="text-gray-900"
+                      className="text-foreground"
                     >
                       {faculty.employee_code} - {faculty.user.full_name} (
                       {faculty.designation})
@@ -246,17 +246,17 @@ export default function CentreAdminFacultySubjectAssignmentsPage() {
             </div>
 
             {selectedFaculty && (
-              <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-                <h3 className="text-sm font-medium text-blue-900 mb-2">
+              <div className="bg-primary/10 border border-primary/20 rounded-md p-4">
+                <h3 className="text-sm font-medium text-primary mb-2">
                   Selected Faculty
                 </h3>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-primary">
                   <strong>Name:</strong> {selectedFaculty.user.full_name}
                 </p>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-primary">
                   <strong>Email:</strong> {selectedFaculty.user.email}
                 </p>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-primary">
                   <strong>Designation:</strong> {selectedFaculty.designation}
                 </p>
               </div>
@@ -269,7 +269,7 @@ export default function CentreAdminFacultySubjectAssignmentsPage() {
           <div className="mb-6 flex justify-end">
             <button
               onClick={handleAssignSubject}
-              className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
+              className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors flex items-center gap-2"
             >
               <svg
                 className="w-5 h-5"
@@ -297,9 +297,9 @@ export default function CentreAdminFacultySubjectAssignmentsPage() {
             onDeactivate={handleDeactivate}
           />
         ) : (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
+          <div className="bg-card rounded-lg shadow p-12 text-center">
             <svg
-              className="mx-auto h-16 w-16 text-gray-400"
+              className="mx-auto h-16 w-16 text-muted-foreground/70"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -311,10 +311,10 @@ export default function CentreAdminFacultySubjectAssignmentsPage() {
                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
               />
             </svg>
-            <h3 className="mt-4 text-lg font-medium text-gray-900">
+            <h3 className="mt-4 text-lg font-medium text-foreground">
               No Faculty Selected
             </h3>
-            <p className="mt-2 text-gray-500">
+            <p className="mt-2 text-muted-foreground">
               Please select a faculty member from the dropdown above to view and
               manage their module assignments.
             </p>

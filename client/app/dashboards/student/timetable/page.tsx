@@ -167,19 +167,19 @@ export default function StudentTimetablePage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">My Timetable</h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <h1 className="text-2xl font-bold text-foreground">My Timetable</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               View your class schedule and upcoming sessions
             </p>
           </div>
           <div className="mt-4 sm:mt-0">
-            <div className="flex rounded-lg border border-gray-300 overflow-hidden">
+            <div className="flex rounded-lg border border-border overflow-hidden">
               <button
                 onClick={() => setViewMode("today")}
                 className={`px-4 py-2 text-sm font-medium ${
                   viewMode === "today"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-primary text-white"
+                    : "bg-card text-foreground/80 hover:bg-secondary/50"
                 }`}
               >
                 Today
@@ -188,8 +188,8 @@ export default function StudentTimetablePage() {
                 onClick={() => setViewMode("week")}
                 className={`px-4 py-2 text-sm font-medium ${
                   viewMode === "week"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-primary text-white"
+                    : "bg-card text-foreground/80 hover:bg-secondary/50"
                 }`}
               >
                 This Week
@@ -198,8 +198,8 @@ export default function StudentTimetablePage() {
                 onClick={() => setViewMode("schedule")}
                 className={`px-4 py-2 text-sm font-medium ${
                   viewMode === "schedule"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-primary text-white"
+                    : "bg-card text-foreground/80 hover:bg-secondary/50"
                 }`}
               >
                 Weekly Schedule
@@ -210,24 +210,24 @@ export default function StudentTimetablePage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="text-sm font-medium text-gray-500">
+          <div className="bg-card rounded-lg shadow p-4">
+            <div className="text-sm font-medium text-muted-foreground">
               Weekly Classes
             </div>
-            <div className="mt-1 text-2xl font-semibold text-gray-900">
+            <div className="mt-1 text-2xl font-semibold text-foreground">
               {stats.weeklyClasses}
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="text-sm font-medium text-gray-500">
+          <div className="bg-card rounded-lg shadow p-4">
+            <div className="text-sm font-medium text-muted-foreground">
               Today&apos;s Classes
             </div>
-            <div className="mt-1 text-2xl font-semibold text-blue-600">
+            <div className="mt-1 text-2xl font-semibold text-primary">
               {stats.todayClasses}
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="text-sm font-medium text-gray-500">
+          <div className="bg-card rounded-lg shadow p-4">
+            <div className="text-sm font-medium text-muted-foreground">
               Upcoming (7 days)
             </div>
             <div className="mt-1 text-2xl font-semibold text-purple-600">
@@ -245,7 +245,7 @@ export default function StudentTimetablePage() {
 
         {/* Notice */}
         {notice && !error && (
-          <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg">
+          <div className="bg-primary/10 border border-primary/20 text-primary px-4 py-3 rounded-lg">
             {notice}
           </div>
         )}
@@ -253,13 +253,13 @@ export default function StudentTimetablePage() {
         {/* Content */}
         {viewMode === "today" && (
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               Today&apos;s Classes
             </h2>
             {todaySessions.length === 0 ? (
-              <div className="bg-white rounded-lg shadow p-12 text-center">
+              <div className="bg-card rounded-lg shadow p-12 text-center">
                 <svg
-                  className="mx-auto h-12 w-12 text-gray-400"
+                  className="mx-auto h-12 w-12 text-muted-foreground/70"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -271,10 +271,10 @@ export default function StudentTimetablePage() {
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
-                <h3 className="mt-2 text-lg font-medium text-gray-900">
+                <h3 className="mt-2 text-lg font-medium text-foreground">
                   No classes today
                 </h3>
-                <p className="mt-1 text-gray-500">Enjoy your day!</p>
+                <p className="mt-1 text-muted-foreground">Enjoy your day!</p>
               </div>
             ) : (
               <ClassSessionList
@@ -290,7 +290,7 @@ export default function StudentTimetablePage() {
 
         {viewMode === "week" && (
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               This Week&apos;s Classes
             </h2>
             <ClassSessionList

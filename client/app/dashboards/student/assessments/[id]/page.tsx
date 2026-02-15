@@ -178,7 +178,7 @@ export default function AssessmentAttemptPage() {
     return (
       <DashboardLayout>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="bg-card rounded-lg shadow-lg p-8 text-center">
             <div className="mb-6">
               <svg
                 className="mx-auto h-16 w-16 text-green-500"
@@ -194,20 +194,20 @@ export default function AssessmentAttemptPage() {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               Assessment Submitted Successfully!
             </h2>
             <div className="space-y-4 text-lg">
               <div className="flex justify-center items-center gap-8">
                 <div className="text-center">
-                  <p className="text-gray-600">Score</p>
-                  <p className="text-2xl font-bold text-blue-600">
+                  <p className="text-muted-foreground">Score</p>
+                  <p className="text-2xl font-bold text-primary">
                     {submissionResult.total_marks_obtained}/
                     {assessment?.total_marks}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-gray-600">Percentage</p>
+                  <p className="text-muted-foreground">Percentage</p>
                   {(() => {
                     const pct = submissionResult?.percentage ?? null;
                     const passing = assessment?.passing_percentage ?? 0;
@@ -241,13 +241,13 @@ export default function AssessmentAttemptPage() {
                     `/dashboards/student/assessments/${assessmentId}/result`,
                   )
                 }
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
                 View Detailed Results
               </button>
               <button
                 onClick={() => router.push("/dashboards/student/assessments")}
-                className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                className="px-6 py-3 bg-foreground/60 text-white rounded-lg hover:bg-foreground/80 transition-colors"
               >
                 Back to Assessments
               </button>
@@ -262,7 +262,7 @@ export default function AssessmentAttemptPage() {
     return (
       <DashboardLayout>
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       </DashboardLayout>
     );
@@ -292,10 +292,10 @@ export default function AssessmentAttemptPage() {
       <DashboardLayout>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <p className="text-gray-600">Assessment not found</p>
+            <p className="text-muted-foreground">Assessment not found</p>
             <button
               onClick={() => router.back()}
-              className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-foreground/60 text-white rounded-lg hover:bg-foreground/80 transition-colors"
             >
               Go Back
             </button>
@@ -310,40 +310,40 @@ export default function AssessmentAttemptPage() {
     return (
       <DashboardLayout>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="bg-card rounded-lg shadow-lg p-8">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              <h1 className="text-3xl font-bold text-foreground mb-4">
                 {assessment.title}
               </h1>
               {assessment.description && (
-                <p className="text-gray-600 text-lg mb-6">
+                <p className="text-muted-foreground text-lg mb-6">
                   {assessment.description}
                 </p>
               )}
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 text-center">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="text-gray-600">Subject</p>
-                <p className="font-semibold text-gray-900">
+              <div className="bg-primary/10 p-4 rounded-lg">
+                <p className="text-muted-foreground">Subject</p>
+                <p className="font-semibold text-foreground">
                   {assessment.subject_name}
                 </p>
               </div>
               <div className="bg-green-50 p-4 rounded-lg">
-                <p className="text-gray-600">Duration</p>
-                <p className="font-semibold text-gray-900">
+                <p className="text-muted-foreground">Duration</p>
+                <p className="font-semibold text-foreground">
                   {assessment.duration_minutes} minutes
                 </p>
               </div>
               <div className="bg-purple-50 p-4 rounded-lg">
-                <p className="text-gray-600">Questions</p>
-                <p className="font-semibold text-gray-900">
+                <p className="text-muted-foreground">Questions</p>
+                <p className="font-semibold text-foreground">
                   {assessment.questions_count}
                 </p>
               </div>
               <div className="bg-orange-50 p-4 rounded-lg">
-                <p className="text-gray-600">Total Marks</p>
-                <p className="font-semibold text-gray-900">
+                <p className="text-muted-foreground">Total Marks</p>
+                <p className="font-semibold text-foreground">
                   {assessment.total_marks}
                 </p>
               </div>
@@ -372,7 +372,7 @@ export default function AssessmentAttemptPage() {
               <button
                 onClick={startAssessment}
                 disabled={loading}
-                className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                className="px-8 py-4 bg-primary text-white text-lg font-semibold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
                 {loading ? "Starting..." : "Start Assessment"}
               </button>
@@ -388,16 +388,16 @@ export default function AssessmentAttemptPage() {
     <DashboardLayout>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with timer */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+        <div className="bg-card rounded-lg shadow-sm p-4 mb-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-foreground">
                 {assessment.title}
               </h1>
-              <p className="text-gray-600">{assessment.subject_name}</p>
+              <p className="text-muted-foreground">{assessment.subject_name}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-600">Time Remaining</p>
+              <p className="text-sm text-muted-foreground">Time Remaining</p>
               <p className={`text-2xl font-bold ${getTimeColorClass()}`}>
                 {formatTime(attemptState.timeRemaining)}
               </p>
@@ -408,8 +408,8 @@ export default function AssessmentAttemptPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Question Navigation Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-4 sticky top-4">
-              <h3 className="font-semibold text-gray-900 mb-4">Questions</h3>
+            <div className="bg-card rounded-lg shadow-sm p-4 sticky top-4">
+              <h3 className="font-semibold text-foreground mb-4">Questions</h3>
               <div className="grid grid-cols-5 lg:grid-cols-4 gap-2">
                 {assessment.questions.map((question, index) => {
                   const isAnswered = attemptState.answers.has(question.id);
@@ -421,10 +421,10 @@ export default function AssessmentAttemptPage() {
                       onClick={() => navigateToQuestion(index)}
                       className={`w-10 h-10 text-sm font-medium rounded-lg transition-colors ${
                         isCurrent
-                          ? "bg-blue-600 text-white"
+                          ? "bg-primary text-white"
                           : isAnswered
                             ? "bg-green-100 text-green-800 hover:bg-green-200"
-                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                            : "bg-secondary text-muted-foreground hover:bg-muted"
                       }`}
                     >
                       {index + 1}
@@ -432,9 +432,9 @@ export default function AssessmentAttemptPage() {
                   );
                 })}
               </div>
-              <div className="mt-4 text-xs text-gray-600">
+              <div className="mt-4 text-xs text-muted-foreground">
                 <div className="flex items-center gap-2 mb-1">
-                  <div className="w-3 h-3 bg-blue-600 rounded"></div>
+                  <div className="w-3 h-3 bg-primary rounded"></div>
                   <span>Current</span>
                 </div>
                 <div className="flex items-center gap-2 mb-1">
@@ -442,7 +442,7 @@ export default function AssessmentAttemptPage() {
                   <span>Answered</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-gray-100 border border-gray-300 rounded"></div>
+                  <div className="w-3 h-3 bg-secondary border border-border rounded"></div>
                   <span>Not Answered</span>
                 </div>
               </div>
@@ -452,20 +452,20 @@ export default function AssessmentAttemptPage() {
           {/* Main Question Area */}
           <div className="lg:col-span-3">
             {currentQuestion && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="bg-card rounded-lg shadow-sm p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-foreground">
                     Question {attemptState.currentQuestionIndex + 1} of{" "}
                     {assessment.questions.length}
                   </h2>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-muted-foreground">
                     {currentQuestion.marks}{" "}
                     {currentQuestion.marks === 1 ? "mark" : "marks"}
                   </span>
                 </div>
 
                 <div className="mb-6">
-                  <p className="text-gray-900 text-lg leading-relaxed">
+                  <p className="text-foreground text-lg leading-relaxed">
                     {currentQuestion.question_text}
                   </p>
                 </div>
@@ -477,8 +477,8 @@ export default function AssessmentAttemptPage() {
                       className={`flex items-start p-4 rounded-lg border-2 cursor-pointer transition-colors ${
                         attemptState.answers.get(currentQuestion.id) ===
                         option.id
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:border-border"
                       }`}
                     >
                       <input
@@ -492,9 +492,9 @@ export default function AssessmentAttemptPage() {
                         onChange={() =>
                           handleAnswerSelect(currentQuestion.id, option.id)
                         }
-                        className="mt-1 mr-3 text-blue-600"
+                        className="mt-1 mr-3 text-primary"
                       />
-                      <span className="text-gray-900">
+                      <span className="text-foreground">
                         {option.option_text}
                       </span>
                     </label>
@@ -508,7 +508,7 @@ export default function AssessmentAttemptPage() {
                       navigateToQuestion(attemptState.currentQuestionIndex - 1)
                     }
                     disabled={attemptState.currentQuestionIndex === 0}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-foreground/60 text-white rounded-lg hover:bg-foreground/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Previous
                   </button>
@@ -518,7 +518,7 @@ export default function AssessmentAttemptPage() {
                       onClick={() =>
                         handleAnswerSelect(currentQuestion.id, null)
                       }
-                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="px-4 py-2 border border-border text-foreground/80 rounded-lg hover:bg-secondary/50 transition-colors"
                     >
                       Clear Answer
                     </button>
@@ -541,7 +541,7 @@ export default function AssessmentAttemptPage() {
                             attemptState.currentQuestionIndex + 1,
                           )
                         }
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                       >
                         Next
                       </button>

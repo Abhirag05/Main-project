@@ -225,10 +225,10 @@ export default function SessionsManagementPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-foreground">
               Session Management
             </h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Generate and manage class sessions from your timetable
             </p>
           </div>
@@ -236,7 +236,7 @@ export default function SessionsManagementPage() {
             <button
               onClick={handleOpenGenerate}
               disabled={!filterBatch || loadingSlots}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loadingSlots ? (
                 <svg
@@ -280,10 +280,10 @@ export default function SessionsManagementPage() {
 
         {/* Info banner */}
         {!filterBatch && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
             <div className="flex items-start">
               <svg
-                className="w-5 h-5 text-blue-400 mr-3 mt-0.5"
+                className="w-5 h-5 text-primary/70 mr-3 mt-0.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -295,7 +295,7 @@ export default function SessionsManagementPage() {
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <div className="text-sm text-blue-700">
+              <div className="text-sm text-primary">
                 <p className="font-medium">How it works</p>
                 <ol className="mt-1 list-decimal list-inside space-y-1">
                   <li>
@@ -319,16 +319,16 @@ export default function SessionsManagementPage() {
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-card rounded-lg shadow p-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 Batch <span className="text-red-500">*</span>
               </label>
               <select
                 value={filterBatch}
                 onChange={(e) => setFilterBatch(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
               >
                 <option value="" disabled>
                   Select Batch
@@ -343,37 +343,37 @@ export default function SessionsManagementPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 From Date
               </label>
               <input
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 To Date
               </label>
               <input
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground/80 mb-1">
                 Status
               </label>
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-border rounded-lg px-3 py-2 bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
               >
                 <option value="">All Statuses</option>
                 <option value="SCHEDULED">Scheduled</option>
@@ -396,34 +396,34 @@ export default function SessionsManagementPage() {
         {/* Stats */}
         {filterBatch && (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-sm font-medium text-gray-500">Total</div>
-              <div className="mt-1 text-2xl font-semibold text-gray-900">
+            <div className="bg-card rounded-lg shadow p-4">
+              <div className="text-sm font-medium text-muted-foreground">Total</div>
+              <div className="mt-1 text-2xl font-semibold text-foreground">
                 {sessions.length}
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-sm font-medium text-gray-500">Scheduled</div>
-              <div className="mt-1 text-2xl font-semibold text-blue-600">
+            <div className="bg-card rounded-lg shadow p-4">
+              <div className="text-sm font-medium text-muted-foreground">Scheduled</div>
+              <div className="mt-1 text-2xl font-semibold text-primary">
                 {scheduledCount}
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-sm font-medium text-gray-500">
+            <div className="bg-card rounded-lg shadow p-4">
+              <div className="text-sm font-medium text-muted-foreground">
                 In Progress
               </div>
               <div className="mt-1 text-2xl font-semibold text-green-600">
                 {inProgressCount}
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-sm font-medium text-gray-500">Completed</div>
-              <div className="mt-1 text-2xl font-semibold text-gray-600">
+            <div className="bg-card rounded-lg shadow p-4">
+              <div className="text-sm font-medium text-muted-foreground">Completed</div>
+              <div className="mt-1 text-2xl font-semibold text-muted-foreground">
                 {completedCount}
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-sm font-medium text-gray-500">Cancelled</div>
+            <div className="bg-card rounded-lg shadow p-4">
+              <div className="text-sm font-medium text-muted-foreground">Cancelled</div>
               <div className="mt-1 text-2xl font-semibold text-red-600">
                 {cancelledCount}
               </div>

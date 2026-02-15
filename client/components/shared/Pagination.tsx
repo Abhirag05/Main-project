@@ -43,17 +43,17 @@ export default function Pagination({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2 py-3">
       {/* Left: showing info + optional page size */}
-      <div className="flex items-center gap-4 text-sm text-gray-600">
+      <div className="flex items-center gap-4 text-sm text-muted-foreground">
         <span>
-          Showing <span className="font-medium text-gray-900">{startItem}</span>
-          –<span className="font-medium text-gray-900">{endItem}</span> of{" "}
-          <span className="font-medium text-gray-900">{totalItems}</span>
+          Showing <span className="font-medium text-foreground">{startItem}</span>
+          –<span className="font-medium text-foreground">{endItem}</span> of{" "}
+          <span className="font-medium text-foreground">{totalItems}</span>
         </span>
         {onPageSizeChange && (
           <select
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
-            className="rounded-md border border-gray-300 py-1 pl-2 pr-7 text-sm text-gray-700 focus:border-blue-500 focus:ring-blue-500"
+            className="rounded-md border border-border py-1 pl-2 pr-7 text-sm text-foreground/80 focus:border-ring focus:ring-ring"
           >
             {pageSizeOptions.map((size) => (
               <option key={size} value={size}>
@@ -70,7 +70,7 @@ export default function Pagination({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          className="inline-flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="inline-flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-foreground/80 hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -80,7 +80,7 @@ export default function Pagination({
 
         {getPageNumbers().map((page, idx) =>
           page === "ellipsis" ? (
-            <span key={`e-${idx}`} className="px-1 text-gray-400">
+            <span key={`e-${idx}`} className="px-1 text-muted-foreground/70">
               …
             </span>
           ) : (
@@ -89,8 +89,8 @@ export default function Pagination({
               onClick={() => onPageChange(page)}
               className={`min-w-[32px] rounded-md px-2 py-1.5 text-sm font-medium transition-colors ${
                 page === currentPage
-                  ? "bg-blue-600 text-white shadow-sm"
-                  : "text-gray-700 hover:bg-gray-100"
+                  ? "bg-primary text-white shadow-sm"
+                  : "text-foreground/80 hover:bg-secondary"
               }`}
             >
               {page}
@@ -102,7 +102,7 @@ export default function Pagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          className="inline-flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="inline-flex items-center rounded-md px-2 py-1.5 text-sm font-medium text-foreground/80 hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

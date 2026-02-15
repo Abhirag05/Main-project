@@ -90,9 +90,9 @@ export default function FacultyBatchesPage() {
         {loading ? (
           <FacultyCard className="p-6">
             <div className="animate-pulse space-y-4">
-              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-              <div className="h-20 bg-gray-200 rounded"></div>
-              <div className="h-20 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-muted rounded w-1/4"></div>
+              <div className="h-20 bg-muted rounded"></div>
+              <div className="h-20 bg-muted rounded"></div>
             </div>
           </FacultyCard>
         ) : batchAssignments.length === 0 ? (
@@ -124,7 +124,7 @@ export default function FacultyBatchesPage() {
                 {/* Batch Header - Clickable */}
                 <button
                   onClick={() => toggleBatch(assignment.batch.id)}
-                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-secondary/50 transition-colors"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
@@ -145,17 +145,17 @@ export default function FacultyBatchesPage() {
                       </div>
                     </div>
                     <div className="text-left">
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-lg font-semibold text-foreground">
                         {assignment.batch.code}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         {assignment.batch.course_name}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="text-right hidden sm:block">
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         {new Date(
                           assignment.batch.start_date,
                         ).toLocaleDateString()}{" "}
@@ -169,7 +169,7 @@ export default function FacultyBatchesPage() {
                           assignment.batch.status === "ACTIVE"
                             ? "bg-green-100 text-green-800"
                             : assignment.batch.status === "COMPLETED"
-                              ? "bg-blue-100 text-blue-800"
+                              ? "bg-primary/10 text-primary"
                               : "bg-red-100 text-red-800"
                         }`}
                       >
@@ -177,7 +177,7 @@ export default function FacultyBatchesPage() {
                       </span>
                     </div>
                     <svg
-                      className={`h-5 w-5 text-gray-400 transition-transform ${
+                      className={`h-5 w-5 text-muted-foreground/70 transition-transform ${
                         expandedBatches.has(assignment.batch.id)
                           ? "rotate-180"
                           : ""
@@ -198,12 +198,12 @@ export default function FacultyBatchesPage() {
 
                 {/* Expanded Content - Modules */}
                 {expandedBatches.has(assignment.batch.id) && (
-                  <div className="border-t bg-gray-50 px-6 py-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-3">
+                  <div className="border-t bg-secondary/50 px-6 py-4">
+                    <h4 className="text-sm font-medium text-foreground/80 mb-3">
                       Assigned Modules
                     </h4>
                     {moduleAssignments.length === 0 ? (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         No modules assigned yet.
                       </p>
                     ) : (
@@ -211,7 +211,7 @@ export default function FacultyBatchesPage() {
                         {moduleAssignments.map((module) => (
                           <div
                             key={module.id}
-                            className="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-sm transition-shadow"
+                            className="bg-card rounded-lg border border-border p-3 hover:shadow-sm transition-shadow"
                           >
                             <div className="flex items-start space-x-3">
                               <div className="flex-shrink-0">
@@ -232,10 +232,10 @@ export default function FacultyBatchesPage() {
                                 </div>
                               </div>
                               <div className="min-w-0 flex-1">
-                                <p className="text-sm font-medium text-gray-900 truncate">
+                                <p className="text-sm font-medium text-foreground truncate">
                                   {module.module.name}
                                 </p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-muted-foreground">
                                   {module.module.code}
                                 </p>
                               </div>
@@ -243,7 +243,7 @@ export default function FacultyBatchesPage() {
                                 className={`flex-shrink-0 inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${
                                   module.is_active
                                     ? "bg-green-100 text-green-700"
-                                    : "bg-gray-100 text-gray-600"
+                                    : "bg-secondary text-muted-foreground"
                                 }`}
                               >
                                 {module.is_active ? "Active" : "Inactive"}

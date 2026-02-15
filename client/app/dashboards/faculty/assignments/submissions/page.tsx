@@ -46,10 +46,10 @@ export default function AllSubmissionsPage() {
     return (
       <DashboardLayout>
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+          <div className="bg-card rounded-lg shadow-md p-6 animate-pulse">
+            <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
             <div className="space-y-4">
-              <div className="h-12 bg-gray-200 rounded"></div>
+              <div className="h-12 bg-muted rounded"></div>
             </div>
           </div>
         </div>
@@ -63,8 +63,8 @@ export default function AllSubmissionsPage() {
     <DashboardLayout>
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Assignment Submissions</h1>
-          <p className="text-gray-600 mt-1">View and evaluate student submissions</p>
+          <h1 className="text-3xl font-bold text-foreground">Assignment Submissions</h1>
+          <p className="text-muted-foreground mt-1">View and evaluate student submissions</p>
         </div>
 
         {error && (
@@ -76,21 +76,21 @@ export default function AllSubmissionsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {activeAssignments.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-gray-500">No active assignments with submissions</p>
+              <p className="text-muted-foreground">No active assignments with submissions</p>
             </div>
           ) : (
             activeAssignments.map((assignment) => (
               <Link
                 key={assignment.id}
                 href={`/dashboards/faculty/assignments/${assignment.id}/submissions`}
-                className="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6"
+                className="block bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow p-6"
               >
-                <h3 className="font-semibold text-gray-900 mb-2">{assignment.title}</h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <h3 className="font-semibold text-foreground mb-2">{assignment.title}</h3>
+                <p className="text-sm text-muted-foreground mb-4">
                   {assignment.batch_name} - {assignment.subject_name}
                 </p>
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600">
+                  <span className="text-muted-foreground">
                     {assignment.total_submissions || 0} submissions
                   </span>
                   {(assignment.pending_evaluations || 0) > 0 && (

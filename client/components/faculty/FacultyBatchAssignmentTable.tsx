@@ -19,13 +19,13 @@ function FacultyBatchAssignmentTable({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-card rounded-lg shadow overflow-hidden">
         <div className="animate-pulse">
-          <div className="h-12 bg-gray-200"></div>
+          <div className="h-12 bg-muted"></div>
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="h-16 bg-gray-100 border-t border-gray-200"
+              className="h-16 bg-secondary border-t border-border"
             ></div>
           ))}
         </div>
@@ -35,9 +35,9 @@ function FacultyBatchAssignmentTable({
 
   if (safeAssignments.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-12 text-center">
+      <div className="bg-card rounded-lg shadow p-12 text-center">
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className="mx-auto h-12 w-12 text-muted-foreground/70"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -49,10 +49,10 @@ function FacultyBatchAssignmentTable({
             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
           />
         </svg>
-        <h3 className="mt-2 text-lg font-medium text-gray-900">
+        <h3 className="mt-2 text-lg font-medium text-foreground">
           No batch assignments found
         </h3>
-        <p className="mt-1 text-gray-500">
+        <p className="mt-1 text-muted-foreground">
           Select a faculty member to view their assigned batches, or assign a
           batch using the button above.
         </p>
@@ -66,66 +66,66 @@ function FacultyBatchAssignmentTable({
       case "ACTIVE":
         return "bg-green-100 text-green-800";
       case "COMPLETED":
-        return "bg-blue-100 text-blue-800";
+        return "bg-primary/10 text-primary";
       case "CANCELLED":
         return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-secondary text-foreground";
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
+    <div className="bg-card rounded-lg shadow overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-border">
+          <thead className="bg-secondary/50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Batch Code
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Course
               </th>
               
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Batch Period
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Batch Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Assignment Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Assigned At
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Assigned By
               </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-card divide-y divide-border">
             {safeAssignments.map((assignment) => (
               <tr
                 key={assignment.id}
-                className="hover:bg-gray-50 transition-colors"
+                className="hover:bg-secondary/50 transition-colors"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {assignment.batch.code}
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {assignment.batch.course_name}
                   </div>
                 </td>
                 
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">
+                  <div className="text-sm text-foreground">
                     {new Date(assignment.batch.start_date).toLocaleDateString(
                       "en-US",
                       {
@@ -135,7 +135,7 @@ function FacultyBatchAssignmentTable({
                       }
                     )}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     to{" "}
                     {new Date(assignment.batch.end_date).toLocaleDateString(
                       "en-US",
@@ -161,13 +161,13 @@ function FacultyBatchAssignmentTable({
                     className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       assignment.is_active
                         ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-800"
+                        : "bg-secondary text-foreground"
                     }`}
                   >
                     {assignment.is_active ? "Active" : "Inactive"}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {new Date(assignment.assigned_at).toLocaleDateString(
                     "en-US",
                     {
@@ -177,7 +177,7 @@ function FacultyBatchAssignmentTable({
                     }
                   )}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {assignment.assigned_by?.full_name || "N/A"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
