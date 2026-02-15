@@ -281,7 +281,7 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-secondary/50 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-md">
         <div className="bg-card rounded-lg shadow-md p-8">
           <h1 className="text-3xl font-bold text-center text-foreground mb-2">
