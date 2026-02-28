@@ -121,6 +121,17 @@ export default function StudentSkillsPage() {
                     </div>
                   </div>
 
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-secondary/50 rounded px-2 py-1.5 text-center">
+                      <span className="font-semibold text-foreground">{skill.assessment_count}</span>
+                      <span className="text-muted-foreground ml-1">Assessment{skill.assessment_count !== 1 ? "s" : ""}</span>
+                    </div>
+                    <div className="bg-secondary/50 rounded px-2 py-1.5 text-center">
+                      <span className="font-semibold text-foreground">{skill.assignment_count}</span>
+                      <span className="text-muted-foreground ml-1">Assignment{skill.assignment_count !== 1 ? "s" : ""}</span>
+                    </div>
+                  </div>
+
                   <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground/70">
                     <span>{skill.attempts_count} assessment{skill.attempts_count !== 1 ? "s" : ""}</span>
                     {skill.last_updated && (

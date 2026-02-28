@@ -119,7 +119,6 @@ function StudentAdmissionsTable({
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Email</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Phone</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Course</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Referral</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Payment Mode</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Created Date</th>
@@ -141,24 +140,6 @@ function StudentAdmissionsTable({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-foreground">{admission.interested_courses || "N/A"}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {admission.referred_by_name ? (
-                    <div>
-                      <div className="text-sm text-foreground">{admission.referred_by_name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {admission.referred_by_code || "Referral"} •{" "}
-                        {admission.referral_confirmed ? "Confirmed" : "Pending"}
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <div className="text-sm text-muted-foreground">Not referred</div>
-                      {admission.discovery_sources && admission.discovery_sources.length > 0 && (
-                        <div className="text-xs text-muted-foreground">{admission.discovery_sources.join(", ")}</div>
-                      )}
-                    </div>
-                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-foreground">

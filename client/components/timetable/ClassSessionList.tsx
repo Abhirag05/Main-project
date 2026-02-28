@@ -5,8 +5,8 @@ import { ClassSession } from "@/lib/timetableAPI";
 interface ClassSessionListProps {
   sessions: ClassSession[];
   loading: boolean;
-  onStatusChange: (session: ClassSession, newStatus: string) => void;
-  onViewDetails: (session: ClassSession) => void;
+  onStatusChange?: (session: ClassSession, newStatus: string) => void;
+  onViewDetails?: (session: ClassSession) => void;
   showBatchInfo?: boolean;
   showFacultyInfo?: boolean;
   showAttendanceButton?: boolean;
@@ -328,6 +328,7 @@ export default function ClassSessionList({
                             </button>
                           )}
 
+                        {onViewDetails && (
                         <button
                           onClick={() => onViewDetails(session)}
                           className="p-2 text-muted-foreground/70 hover:text-muted-foreground rounded-full hover:bg-secondary"
@@ -353,6 +354,7 @@ export default function ClassSessionList({
                             />
                           </svg>
                         </button>
+                        )}
 
                         {session.effective_meeting_link && (
                           <a

@@ -28,8 +28,6 @@ export default function RegistrationForm() {
     password: "",
     interestedCourse: "",
     paymentMethod: "",
-    hasReferral: "",
-    referralCode: "",
     discoverySources: [] as string[],
   });
 
@@ -41,7 +39,6 @@ export default function RegistrationForm() {
     password: "",
     interestedCourse: "",
     paymentMethod: "",
-    referralCode: "",
     general: "",
   });
 
@@ -50,10 +47,6 @@ export default function RegistrationForm() {
   const [success, setSuccess] = useState(false);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
-  const [referralStatus, setReferralStatus] = useState<
-    "idle" | "checking" | "valid" | "invalid"
-  >("idle");
-  const [referralMessage, setReferralMessage] = useState("");
 
   const discoveryOptions = [
     "Ads",
@@ -97,8 +90,6 @@ export default function RegistrationForm() {
       error = validatePhone(value);
     } else if (name === "password") {
       error = validatePassword(value);
-    } else if (name === "referralCode") {
-      error = value ? "" : "Referral code is required";
     }
 
     setErrors((prev) => ({ ...prev, [name]: error }));
@@ -116,47 +107,6 @@ export default function RegistrationForm() {
     });
   };
 
-  const handleHasReferralChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      hasReferral: value,
-      referralCode: value === "yes" ? prev.referralCode : "",
-      discoverySources: value === "no" ? prev.discoverySources : [],
-    }));
-    setErrors((prev) => ({ ...prev, referralCode: "" }));
-    setReferralStatus("idle");
-    setReferralMessage("");
-  };
-
-  useEffect(() => {
-    if (formData.hasReferral !== "yes") {
-      setReferralStatus("idle");
-      setReferralMessage("");
-      return;
-    }
-
-    const code = formData.referralCode.trim();
-    if (!code) {
-      setReferralStatus("idle");
-      setReferralMessage("");
-      return;
-    }
-
-    setReferralStatus("checking");
-    const timer = setTimeout(async () => {
-      try {
-        const response = await apiClient.validateReferralCode(code);
-        setReferralStatus(response.valid ? "valid" : "invalid");
-        setReferralMessage(response.message);
-      } catch (error) {
-        setReferralStatus("invalid");
-        setReferralMessage("Unable to validate referral code.");
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [formData.referralCode, formData.hasReferral]);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -166,14 +116,6 @@ export default function RegistrationForm() {
     const emailError = validateEmail(formData.email);
     const phoneNumberError = validatePhone(formData.phoneNumber);
     const passwordError = validatePassword(formData.password);
-    const referralCodeError =
-      formData.hasReferral === "yes"
-        ? formData.referralCode.trim()
-          ? referralStatus === "valid"
-            ? ""
-            : "Please enter a valid referral code"
-          : "Referral code is required"
-        : "";
 
     setErrors({
       firstName: firstNameError,
@@ -183,7 +125,6 @@ export default function RegistrationForm() {
       password: passwordError,
       interestedCourse: "",
       paymentMethod: "",
-      referralCode: referralCodeError,
       general: "",
     });
 
@@ -193,8 +134,7 @@ export default function RegistrationForm() {
       lastNameError ||
       emailError ||
       phoneNumberError ||
-      passwordError ||
-      referralCodeError
+      passwordError
     ) {
       return;
     }
@@ -213,12 +153,7 @@ export default function RegistrationForm() {
         interested_courses: formData.interestedCourse,
         study_mode: "LIVE",
         payment_method: formData.paymentMethod,
-        referral_code:
-          formData.hasReferral === "yes"
-            ? formData.referralCode.trim().toUpperCase()
-            : undefined,
-        discovery_sources:
-          formData.hasReferral === "no" ? formData.discoverySources : [],
+        discovery_sources: formData.discoverySources,
       });
 
       console.log("Registration response:", response);
@@ -235,8 +170,6 @@ export default function RegistrationForm() {
         password: "",
         interestedCourse: "",
         paymentMethod: "",
-        hasReferral: "",
-        referralCode: "",
         discoverySources: [],
       });
       setErrors({
@@ -247,11 +180,8 @@ export default function RegistrationForm() {
         password: "",
         interestedCourse: "",
         paymentMethod: "",
-        referralCode: "",
         general: "",
       });
-      setReferralStatus("idle");
-      setReferralMessage("");
 
       // Redirect to login page after 3 seconds
       setTimeout(() => {
@@ -479,106 +409,29 @@ export default function RegistrationForm() {
               )}
             </div>
 
-            {/* Referral Section */}
+            {/* Discovery Sources */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground/80">
-                Do you have a referral code?
-              </label>
-              <div className="flex items-center gap-6">
-                <label className="inline-flex items-center gap-2 text-sm text-foreground/80">
-                  <input
-                    type="radio"
-                    name="hasReferral"
-                    value="yes"
-                    checked={formData.hasReferral === "yes"}
-                    onChange={(e) => handleHasReferralChange(e.target.value)}
-                    disabled={isSubmitting || success}
-                  />
-                  Yes
-                </label>
-                <label className="inline-flex items-center gap-2 text-sm text-foreground/80">
-                  <input
-                    type="radio"
-                    name="hasReferral"
-                    value="no"
-                    checked={formData.hasReferral === "no"}
-                    onChange={(e) => handleHasReferralChange(e.target.value)}
-                    disabled={isSubmitting || success}
-                  />
-                  No
-                </label>
-              </div>
-
-              {formData.hasReferral === "yes" && (
-                <div>
-                  <label
-                    htmlFor="referralCode"
-                    className="block text-sm font-medium text-foreground/80 mb-2"
-                  >
-                    Referral Code
-                  </label>
-                  <input
-                    type="text"
-                    id="referralCode"
-                    name="referralCode"
-                    value={formData.referralCode}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition text-foreground ${
-                      errors.referralCode || referralStatus === "invalid"
-                        ? "border-red-500 bg-red-50"
-                        : referralStatus === "valid"
-                          ? "border-green-500 bg-green-50"
-                          : "border-border"
-                    }`}
-                    placeholder="Enter referral code"
-                    disabled={isSubmitting || success}
-                  />
-                  {errors.referralCode && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.referralCode}
-                    </p>
-                  )}
-                  {!errors.referralCode && referralStatus !== "idle" && (
-                    <p
-                      className={`mt-1 text-sm ${
-                        referralStatus === "valid"
-                          ? "text-green-600"
-                          : referralStatus === "checking"
-                            ? "text-muted-foreground"
-                            : "text-red-600"
-                      }`}
+              <div className="bg-secondary/50 border border-border rounded-lg p-4">
+                <p className="text-sm font-medium text-foreground/80 mb-3">
+                  How did you hear about us?
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {discoveryOptions.map((option) => (
+                    <label
+                      key={option}
+                      className="inline-flex items-center gap-2 text-sm text-foreground/80"
                     >
-                      {referralStatus === "checking"
-                        ? "Checking referral code..."
-                        : referralMessage}
-                    </p>
-                  )}
+                      <input
+                        type="checkbox"
+                        checked={formData.discoverySources.includes(option)}
+                        onChange={() => handleDiscoveryChange(option)}
+                        disabled={isSubmitting || success}
+                      />
+                      {option}
+                    </label>
+                  ))}
                 </div>
-              )}
-
-              {formData.hasReferral === "no" && (
-                <div className="bg-secondary/50 border border-border rounded-lg p-4">
-                  <p className="text-sm font-medium text-foreground/80 mb-3">
-                    How did you hear about us?
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {discoveryOptions.map((option) => (
-                      <label
-                        key={option}
-                        className="inline-flex items-center gap-2 text-sm text-foreground/80"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={formData.discoverySources.includes(option)}
-                          onChange={() => handleDiscoveryChange(option)}
-                          disabled={isSubmitting || success}
-                        />
-                        {option}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
 
             {/* Password Field */}

@@ -5,7 +5,6 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import {
   WeeklyScheduleView,
   ClassSessionList,
-  SessionDetailModal,
 } from "@/components/timetable";
 import { MarkAttendanceModal } from "@/components/attendance";
 import { useFacultyGuard } from "@/components/faculty/hooks/useFacultyGuard";
@@ -34,12 +33,6 @@ export default function FacultySchedulePage() {
   const [viewMode, setViewMode] = useState<"schedule" | "today" | "upcoming">(
     "today",
   );
-
-  // Session detail modal
-  const [selectedSession, setSelectedSession] = useState<ClassSession | null>(
-    null,
-  );
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   // Attendance modal
   const [attendanceSession, setAttendanceSession] =
@@ -134,29 +127,6 @@ export default function FacultySchedulePage() {
     fetchData();
   }, [user?.id, isAllowed]);
 
-  const handleStatusChange = async (
-    session: ClassSession,
-    newStatus: string,
-  ) => {
-    try {
-      await timetableAPI.updateSession(session.id, {
-        status: newStatus as SessionStatus,
-      });
-      // Refresh data
-      const today = await timetableAPI.getTodaySessions();
-      setTodaySessions(today.sessions || []);
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to update session status";
-      alert(errorMessage);
-    }
-  };
-
-  const handleViewDetails = (session: ClassSession) => {
-    setSelectedSession(session);
-    setIsDetailOpen(true);
-  };
-
   const handleMarkAttendance = (session: ClassSession) => {
     setAttendanceSession(session);
     setIsAttendanceOpen(true);
@@ -165,16 +135,6 @@ export default function FacultySchedulePage() {
   const handleSlotClick = (slot: TimeSlot) => {
     // Could show slot details or allow faculty to see more info
     alert(`${slot.module_detail?.name}\nBatch: ${slot.batch_detail?.code}`);
-  };
-
-  const handleUpdateSession = (updated: ClassSession) => {
-    setTodaySessions((prev) =>
-      prev.map((s) => (s.id === updated.id ? updated : s)),
-    );
-    setUpcomingSessions((prev) =>
-      prev.map((s) => (s.id === updated.id ? updated : s)),
-    );
-    setSelectedSession(updated);
   };
 
   // Get today's day of week (1 = Monday, 7 = Sunday to match Django's TimeSlot.WEEKDAY_CHOICES)
@@ -288,8 +248,6 @@ export default function FacultySchedulePage() {
             <ClassSessionList
               sessions={todaySessions}
               loading={loading}
-              onStatusChange={handleStatusChange}
-              onViewDetails={handleViewDetails}
               showFacultyInfo={false}
               showBatchInfo={true}
               showAttendanceButton={true}
@@ -306,8 +264,6 @@ export default function FacultySchedulePage() {
             <ClassSessionList
               sessions={upcomingSessions}
               loading={loading}
-              onStatusChange={handleStatusChange}
-              onViewDetails={handleViewDetails}
               showFacultyInfo={false}
               showAttendanceButton={true}
               onMarkAttendance={handleMarkAttendance}
@@ -325,18 +281,6 @@ export default function FacultySchedulePage() {
           />
         )}
       </div>
-
-      {/* Session Detail Modal */}
-      <SessionDetailModal
-        isOpen={isDetailOpen}
-        onClose={() => {
-          setIsDetailOpen(false);
-          setSelectedSession(null);
-        }}
-        session={selectedSession}
-        onUpdate={handleUpdateSession}
-        canEdit={true}
-      />
 
       {/* Attendance Modal */}
       {attendanceSession && (

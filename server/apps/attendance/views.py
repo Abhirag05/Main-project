@@ -462,7 +462,8 @@ class StudentAttendanceAPIView(APIView):
         batch_ids = list(enrollments.values_list('batch_id', flat=True))
 
         sessions = ClassSession.objects.filter(
-            time_slot__batch_id__in=batch_ids
+            time_slot__batch_id__in=batch_ids,
+            status='COMPLETED'
         ).select_related(
             'time_slot', 'time_slot__module', 'time_slot__batch'
         ).order_by('session_date')

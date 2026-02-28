@@ -145,11 +145,6 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
         },
       ],
     },
-    {
-      name: "Referral",
-      icon: "share",
-      href: "/dashboards/admin/referral",
-    },
   ],
   FACULTY: [
     {
@@ -309,17 +304,6 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           name: "Placement Links",
           href: "/dashboards/student/placements",
           icon: "link",
-        },
-      ],
-    },
-    {
-      name: "Referral",
-      icon: "share",
-      subsections: [
-        {
-          name: "My Referral",
-          href: "/dashboards/student/referral",
-          icon: "gift",
         },
       ],
     },

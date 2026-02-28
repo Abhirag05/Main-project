@@ -9,7 +9,7 @@ from django.db import transaction
 from apps.users.models import User
 from apps.roles.models import Role
 from apps.centres.models import Centre
-from apps.students.models import StudentProfile, generate_referral_code
+from apps.students.models import StudentProfile
 from apps.audit.services import AuditService
 
 
@@ -68,12 +68,7 @@ class StudentRegistrationSerializer(serializers.Serializer):
         default='LIVE',
         help_text="Study mode (Live only)"
     )
-    referral_code = serializers.CharField(
-        max_length=12,
-        required=False,
-        allow_blank=True,
-        help_text="Optional referral code provided by another student"
-    )
+
     discovery_sources = serializers.ListField(
         child=serializers.CharField(max_length=50),
         required=False,
@@ -117,8 +112,7 @@ class StudentRegistrationSerializer(serializers.Serializer):
         interested_courses = validated_data.get('interested_courses', '')
         payment_method = validated_data.get('payment_method', '')
         study_mode = validated_data.get('study_mode', 'LIVE')
-        referral_code_input = validated_data.get(
-            'referral_code', '').strip().upper()
+
         discovery_sources = validated_data.get('discovery_sources', [])
 
         # Full name = first_name + last_name
@@ -142,16 +136,7 @@ class StudentRegistrationSerializer(serializers.Serializer):
                 "No active centre found in the system."
             )
 
-        # Resolve referral (optional)
-        referred_by_profile = None
-        if referral_code_input:
-            referred_by_profile = StudentProfile.objects.filter(
-                referral_code=referral_code_input
-            ).first()
-            if not referred_by_profile:
-                raise serializers.ValidationError(
-                    {"referral_code": "Invalid referral code."}
-                )
+
 
         # Create User
         user = User.objects.create_user(
@@ -166,20 +151,12 @@ class StudentRegistrationSerializer(serializers.Serializer):
             payment_method=payment_method
         )
 
-        # Generate unique referral code for the new student
-        referral_code = generate_referral_code()
-        while StudentProfile.objects.filter(referral_code=referral_code).exists():
-            referral_code = generate_referral_code()
-
         # Create StudentProfile with PENDING admission status
         student_profile = StudentProfile.objects.create(
             user=user,
             phone_number=phone_number,
             admission_status='PENDING',
             study_mode=study_mode,
-            referral_code=referral_code,
-            referred_by=referred_by_profile,
-            referral_confirmed=False,
             discovery_sources=discovery_sources
         )
 
@@ -205,39 +182,6 @@ class StudentRegistrationSerializer(serializers.Serializer):
         }
 
 
-class StudentReferralSerializer(serializers.Serializer):
-    """Serializer for student referral info."""
-    referral_code = serializers.CharField(read_only=True)
-    confirmed_count = serializers.IntegerField(read_only=True)
-
-
-class FinanceReferralListSerializer(serializers.ModelSerializer):
-    """Serializer for listing pending referrals for Finance."""
-    student_profile_id = serializers.IntegerField(source='id', read_only=True)
-    student_name = serializers.CharField(
-        source='user.full_name', read_only=True)
-    student_email = serializers.EmailField(source='user.email', read_only=True)
-    referred_by_name = serializers.CharField(
-        source='referred_by.user.full_name', read_only=True)
-    referred_by_email = serializers.EmailField(
-        source='referred_by.user.email', read_only=True)
-    referred_by_code = serializers.CharField(
-        source='referred_by.referral_code', read_only=True)
-    created_at = serializers.DateTimeField(read_only=True)
-
-    class Meta:
-        model = StudentProfile
-        fields = [
-            'student_profile_id',
-            'student_name',
-            'student_email',
-            'referred_by_name',
-            'referred_by_email',
-            'referred_by_code',
-            'created_at'
-        ]
-
-
 class StudentAdmissionListSerializer(serializers.ModelSerializer):
     """
     Serializer for listing student admissions for Finance users.
@@ -256,11 +200,6 @@ class StudentAdmissionListSerializer(serializers.ModelSerializer):
     payment_method = serializers.CharField(
         source='user.payment_method', read_only=True)
     study_mode = serializers.CharField(read_only=True)
-    referred_by_name = serializers.CharField(
-        source='referred_by.user.full_name', read_only=True)
-    referred_by_code = serializers.CharField(
-        source='referred_by.referral_code', read_only=True)
-    referral_confirmed = serializers.BooleanField(read_only=True)
     discovery_sources = serializers.ListField(read_only=True)
 
     def get_interested_courses(self, obj):
@@ -297,9 +236,6 @@ class StudentAdmissionListSerializer(serializers.ModelSerializer):
             'interested_courses',
             'payment_method',
             'study_mode',
-            'referred_by_name',
-            'referred_by_code',
-            'referral_confirmed',
             'discovery_sources',
             'admission_status',
             'payment_status',

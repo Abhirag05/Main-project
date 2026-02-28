@@ -10,6 +10,7 @@ import {
   CourseSkill,
   CreateAssessmentRequest,
   QuestionBank,
+  QuestionBankDetail,
 } from "@/lib/assessmentAPI";
 
 interface FormData {
@@ -67,6 +68,17 @@ function CreateAssessmentPage() {
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
+  // Question bank import state
+  const [importFromBank, setImportFromBank] = useState(false);
+  const [questionBanks, setQuestionBanks] = useState<QuestionBank[]>([]);
+  const [selectedBankId, setSelectedBankId] = useState<number | null>(null);
+  const [selectedBankDetail, setSelectedBankDetail] = useState<QuestionBankDetail | null>(null);
+  const [numQuestions, setNumQuestions] = useState<number>(10);
+  const [randomize, setRandomize] = useState(true);
+  const [marksPerQuestion, setMarksPerQuestion] = useState<number>(1);
+  const [loadingBanks, setLoadingBanks] = useState(false);
+  const [loadingBankDetail, setLoadingBankDetail] = useState(false);
 
   // Check user role on mount
   useEffect(() => {
@@ -208,6 +220,58 @@ function CreateAssessmentPage() {
     }
   };
 
+  const fetchQuestionBanks = async () => {
+    setLoadingBanks(true);
+    try {
+      const data = await assessmentApiClient.getQuestionBanks();
+      // Filter banks by selected module/subject
+      const filtered = formData.module_id
+        ? data.filter((b) => b.subject === formData.module_id)
+        : data;
+      setQuestionBanks(filtered);
+    } catch (err) {
+      console.error("Failed to load question banks:", err);
+      setQuestionBanks([]);
+    } finally {
+      setLoadingBanks(false);
+    }
+  };
+
+  const fetchBankDetail = async (bankId: number) => {
+    setLoadingBankDetail(true);
+    try {
+      const data = await assessmentApiClient.getQuestionBank(bankId);
+      setSelectedBankDetail(data);
+      // Default numQuestions to available count
+      setNumQuestions(Math.min(numQuestions, data.questions.filter((q) => q.is_active).length));
+    } catch (err) {
+      console.error("Failed to load bank detail:", err);
+      setSelectedBankDetail(null);
+    } finally {
+      setLoadingBankDetail(false);
+    }
+  };
+
+  // Fetch question banks when import is enabled and module is selected
+  useEffect(() => {
+    if (importFromBank && formData.module_id) {
+      fetchQuestionBanks();
+    } else {
+      setQuestionBanks([]);
+      setSelectedBankId(null);
+      setSelectedBankDetail(null);
+    }
+  }, [importFromBank, formData.module_id]);
+
+  // Fetch bank detail when a bank is selected
+  useEffect(() => {
+    if (selectedBankId) {
+      fetchBankDetail(selectedBankId);
+    } else {
+      setSelectedBankDetail(null);
+    }
+  }, [selectedBankId]);
+
 
 
   const validateForm = (): boolean => {
@@ -294,10 +358,50 @@ function CreateAssessmentPage() {
       if (isEditMode && editId) {
         // Update existing assessment
         await assessmentApiClient.updateAssessment(Number(editId), requestData);
+
+        // Import from question bank if enabled (edit mode)
+        if (importFromBank && selectedBankId && numQuestions > 0) {
+          try {
+            await assessmentApiClient.importFromBank(Number(editId), {
+              bank_id: selectedBankId,
+              number_of_questions: numQuestions,
+              randomize,
+              marks_per_question: marksPerQuestion,
+            });
+          } catch (importErr) {
+            const importError = importErr as Error;
+            setError(
+              `Assessment updated but failed to import questions: ${importError.message}`
+            );
+            setSubmitting(false);
+            return;
+          }
+        }
+
         router.push("/dashboards/faculty/assessments");
       } else {
         // Create new assessment
-        await assessmentApiClient.createAssessment(requestData);
+        const created = await assessmentApiClient.createAssessment(requestData);
+
+        // Import from question bank if enabled
+        if (importFromBank && selectedBankId && numQuestions > 0) {
+          try {
+            await assessmentApiClient.importFromBank(created.id, {
+              bank_id: selectedBankId,
+              number_of_questions: numQuestions,
+              randomize,
+              marks_per_question: marksPerQuestion,
+            });
+          } catch (importErr) {
+            const importError = importErr as Error;
+            setError(
+              `Assessment created but failed to import questions: ${importError.message}`
+            );
+            setSubmitting(false);
+            return;
+          }
+        }
+
         router.push("/dashboards/faculty/assessments");
       }
     } catch (err) {
@@ -555,7 +659,134 @@ function CreateAssessmentPage() {
               )}
             </div>
 
+            {/* Import from Question Bank */}
+            <div className="border border-border rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-foreground/80">
+                    Import from Question Bank
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Import questions from an existing question bank
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setImportFromBank(!importFromBank)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    importFromBank ? "bg-primary" : "bg-muted"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      importFromBank ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
 
+              {importFromBank && (
+                <div className="mt-4 space-y-4">
+                  {!formData.module_id ? (
+                    <p className="text-sm text-yellow-600">
+                      Please select a module first to see available question banks
+                    </p>
+                  ) : loadingBanks ? (
+                    <div className="text-sm text-muted-foreground">Loading question banks...</div>
+                  ) : questionBanks.length === 0 ? (
+                    <p className="text-sm text-yellow-600">
+                      No question banks found for the selected module
+                    </p>
+                  ) : (
+                    <>
+                      {/* Bank Selection */}
+                      <div>
+                        <label className="block text-sm font-medium text-foreground/80 mb-1">
+                          Question Bank <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          value={selectedBankId ?? ""}
+                          onChange={(e) =>
+                            setSelectedBankId(
+                              e.target.value ? Number(e.target.value) : null
+                            )
+                          }
+                          className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground"
+                        >
+                          <option value="">Select a question bank</option>
+                          {questionBanks.map((bank) => (
+                            <option key={bank.id} value={bank.id}>
+                              {bank.name} ({bank.questions_count} questions)
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Bank Detail Preview */}
+                      {selectedBankId && (
+                        <>
+                          {loadingBankDetail ? (
+                            <div className="text-sm text-muted-foreground">Loading bank details...</div>
+                          ) : selectedBankDetail ? (
+                            <div className="bg-secondary/30 rounded-lg p-3 text-sm space-y-1">
+                              <p className="font-medium text-foreground">{selectedBankDetail.name}</p>
+                              {selectedBankDetail.description && (
+                                <p className="text-muted-foreground">{selectedBankDetail.description}</p>
+                              )}
+                              <p className="text-muted-foreground">
+                                Available: {selectedBankDetail.questions.filter((q) => q.is_active).length} questions
+                              </p>
+                            </div>
+                          ) : null}
+
+                          {/* Import Options */}
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-foreground/80 mb-1">
+                                Number of Questions
+                              </label>
+                              <input
+                                type="number"
+                                value={numQuestions}
+                                onChange={(e) => setNumQuestions(Math.max(1, Number(e.target.value)))}
+                                min="1"
+                                max={selectedBankDetail?.questions.filter((q) => q.is_active).length || 100}
+                                className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-foreground/80 mb-1">
+                                Marks per Question
+                              </label>
+                              <input
+                                type="number"
+                                value={marksPerQuestion}
+                                onChange={(e) => setMarksPerQuestion(Math.max(1, Number(e.target.value)))}
+                                min="1"
+                                className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring bg-card text-foreground"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Randomize Toggle */}
+                          <label className="flex items-center space-x-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={randomize}
+                              onChange={(e) => setRandomize(e.target.checked)}
+                              className="h-4 w-4 text-primary focus:ring-ring border-border rounded"
+                            />
+                            <span className="text-sm text-foreground/80">
+                              Randomize question selection
+                            </span>
+                          </label>
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Date/Time Selection */}
             <div className="grid grid-cols-2 gap-4">

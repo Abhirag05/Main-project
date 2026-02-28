@@ -16,8 +16,6 @@ from apps.students.serializers import (
     MyBatchSerializer,
     MyBatchModuleFacultySerializer,
     PlacementStudentWithSkillsSerializer,
-    StudentReferralSerializer,
-    FinanceReferralListSerializer
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -84,43 +82,6 @@ class StudentRegistrationView(APIView):
         return Response(
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
-        )
-
-
-class ReferralCodeValidationView(APIView):
-    """
-    Public API to validate referral codes.
-
-    GET /api/public/student/referral/validate/?code=AB12CD34
-
-    Response:
-    {
-        "valid": true,
-        "message": "Referral code is valid."
-    }
-    """
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        code = (request.query_params.get('code') or '').strip().upper()
-
-        if not code:
-            return Response(
-                {
-                    'valid': False,
-                    'message': 'Referral code is required.'
-                },
-                status=status.HTTP_200_OK
-            )
-
-        exists = StudentProfile.objects.filter(referral_code=code).exists()
-
-        return Response(
-            {
-                'valid': exists,
-                'message': 'Referral code is valid.' if exists else 'Referral code is invalid.'
-            },
-            status=status.HTTP_200_OK
         )
 
 
@@ -417,110 +378,6 @@ class FinanceAdmissionViewSet(viewsets.ReadOnlyModelViewSet):
         )
 
 
-class StudentReferralView(APIView):
-    """
-    Student API for viewing referral info.
-
-    GET /api/student/referral/
-
-    Response:
-    {
-        "referral_code": "AB12CD34",
-        "confirmed_count": 3
-    }
-    """
-    permission_classes = [IsAuthenticated, IsStudent]
-
-    def get(self, request):
-        student_profile = get_object_or_404(StudentProfile, user=request.user)
-
-        # Ensure referral code exists
-        if not student_profile.referral_code:
-            from apps.students.models import generate_referral_code
-
-            referral_code = generate_referral_code()
-            while StudentProfile.objects.filter(referral_code=referral_code).exists():
-                referral_code = generate_referral_code()
-            student_profile.referral_code = referral_code
-            student_profile.save(update_fields=['referral_code'])
-
-        serializer = StudentReferralSerializer({
-            'referral_code': student_profile.referral_code,
-            'confirmed_count': student_profile.referral_confirmed_count
-        })
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class FinanceReferralViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    Finance API for confirming student referrals.
-
-    ENDPOINTS:
-    - GET /api/finance/referrals/ - List pending referrals
-    - PATCH /api/finance/referrals/{student_profile_id}/confirm/ - Confirm referral
-    """
-    permission_classes = [IsAuthenticated, IsFinanceUser]
-    serializer_class = FinanceReferralListSerializer
-
-    def get_queryset(self):
-        return StudentProfile.objects.select_related(
-            'user',
-            'referred_by',
-            'referred_by__user'
-        ).filter(referred_by__isnull=False, referral_confirmed=False)
-
-    @action(detail=True, methods=['patch'], url_path='confirm')
-    @transaction.atomic
-    def confirm(self, request, pk=None):
-        referred_student = get_object_or_404(StudentProfile, pk=pk)
-
-        if referred_student.referral_confirmed:
-            return Response(
-                {'error': 'Referral already confirmed.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if not referred_student.referred_by:
-            return Response(
-                {'error': 'No referrer found for this student.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        referrer = StudentProfile.objects.select_for_update().get(
-            pk=referred_student.referred_by_id
-        )
-
-        referred_student.referral_confirmed = True
-        referred_student.referral_confirmed_at = timezone.now()
-        referred_student.save(
-            update_fields=['referral_confirmed', 'referral_confirmed_at'])
-
-        referrer.referral_confirmed_count = referrer.referral_confirmed_count + 1
-        referrer.save(update_fields=['referral_confirmed_count'])
-
-        AuditService.log(
-            action='REFERRAL_CONFIRMED',
-            entity='StudentProfile',
-            entity_id=str(referred_student.id),
-            performed_by=request.user,
-            details={
-                'referred_student_id': referred_student.id,
-                'referred_student_email': referred_student.user.email,
-                'referrer_student_id': referrer.id,
-                'referrer_email': referrer.user.email
-            }
-        )
-
-        return Response(
-            {
-                'student_profile_id': referred_student.id,
-                'referrer_student_profile_id': referrer.id,
-                'message': 'Referral confirmed successfully.'
-            },
-            status=status.HTTP_200_OK
-        )
-
-
 class MyBatchView(APIView):
     """
     Read-only API for students to view their currently assigned batch.
@@ -656,26 +513,66 @@ class MySkillsView(APIView):
     permission_classes = [IsAuthenticated, IsStudent]
 
     def get(self, request):
-        from apps.assessments.models import StudentSkill
+        from apps.assessments.models import StudentSkill, Skill, AssessmentSkillMapping, StudentAssessmentAttempt
+        from apps.assignments.models import AssignmentSkillMapping, AssignmentSubmission
 
         student_profile = get_object_or_404(StudentProfile, user=request.user)
 
+        # Get student's active batch enrollment(s) to find course
+        enrollments = BatchStudent.objects.filter(
+            student=student_profile, is_active=True
+        ).select_related('batch__template__course')
+
+        if not enrollments.exists():
+            return Response({'skills': []}, status=status.HTTP_200_OK)
+
+        # Collect all course IDs from active enrollments
+        course_ids = set()
+        for enrollment in enrollments:
+            course_ids.add(enrollment.batch.template.course_id)
+
+        # Get ALL skills for those courses
+        all_skills = Skill.objects.filter(
+            course_id__in=course_ids, is_active=True
+        ).order_by('name')
+
+        # Get student's acquired skill data (keyed by skill_id)
         student_skills = StudentSkill.objects.filter(
             student=student_profile
-        ).select_related('skill').order_by('skill__name')
+        ).select_related('skill')
+        skill_map = {ss.skill_id: ss for ss in student_skills}
 
-        skills_data = [
-            {
-                'skill_id': ss.skill.id,
-                'skill_name': ss.skill.name,
-                'skill_description': ss.skill.description if hasattr(ss.skill, 'description') else '',
-                'level': ss.level,
-                'percentage_score': float(ss.percentage_score),
-                'attempts_count': ss.attempts_count,
-                'last_updated': ss.last_updated.isoformat() if ss.last_updated else None,
-            }
-            for ss in student_skills
-        ]
+        # Count assessments attempted per skill
+        # StudentAssessmentAttempt where assessment has a mapping to this skill
+        assessment_counts = {}
+        for skill in all_skills:
+            assessment_counts[skill.id] = StudentAssessmentAttempt.objects.filter(
+                student=student_profile,
+                assessment__skill_mappings__skill=skill
+            ).distinct().count()
+
+        # Count assignments submitted per skill
+        assignment_counts = {}
+        for skill in all_skills:
+            assignment_counts[skill.id] = AssignmentSubmission.objects.filter(
+                student=student_profile,
+                assignment__skill_mappings__skill=skill
+            ).distinct().count()
+
+        skills_data = []
+        for skill in all_skills:
+            ss = skill_map.get(skill.id)
+            skills_data.append({
+                'skill_id': skill.id,
+                'skill_name': skill.name,
+                'skill_description': skill.description or '',
+                'level': ss.level if ss else 'NOT_ACQUIRED',
+                'percentage_score': float(ss.percentage_score) if ss else 0.0,
+                'attempts_count': ss.attempts_count if ss else 0,
+                'last_updated': ss.last_updated.isoformat() if ss and ss.last_updated else None,
+                'assessment_count': assessment_counts.get(skill.id, 0),
+                'assignment_count': assignment_counts.get(skill.id, 0),
+            })
 
         return Response({'skills': skills_data}, status=status.HTTP_200_OK)
 

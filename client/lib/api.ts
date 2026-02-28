@@ -34,11 +34,6 @@ interface LoginResponse {
   };
 }
 
-export interface StudentReferralInfo {
-  referral_code: string;
-  confirmed_count: number;
-}
-
 export interface StudentSkillInfo {
   skill_id: number;
   skill_name: string;
@@ -47,6 +42,8 @@ export interface StudentSkillInfo {
   percentage_score: number;
   attempts_count: number;
   last_updated: string | null;
+  assessment_count: number;
+  assignment_count: number;
 }
 
 class ApiClient {
@@ -476,26 +473,6 @@ class ApiClient {
       },
       body: JSON.stringify(registrationData),
     });
-
-    return this.handleResponse(response);
-  }
-
-  /**
-   * Validate a referral code (public endpoint)
-   * GET /api/public/student/referral/validate/?code=CODE
-   */
-  async validateReferralCode(
-    code: string,
-  ): Promise<ReferralValidationResponse> {
-    const response = await fetch(
-      `${this.baseURL}/public/student/referral/validate/?code=${encodeURIComponent(code)}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
 
     return this.handleResponse(response);
   }
@@ -1164,18 +1141,6 @@ class ApiClient {
   }
 
   /**
-   * Get student's referral info
-   * GET /api/student/referral/
-   * Access: STUDENT only
-   */
-  async getMyReferralInfo(): Promise<StudentReferralInfo> {
-    return this.authenticatedFetch<StudentReferralInfo>(
-      `${this.baseURL}/student/referral/`,
-      { method: "GET" },
-    );
-  }
-
-  /**
    * Get student's own skills
    * GET /api/student/my-skills/
    * Access: STUDENT only
@@ -1612,18 +1577,12 @@ interface StudentRegistrationRequest {
   interested_courses?: string;
   study_mode?: "LIVE";
   payment_method?: string;
-  referral_code?: string;
   discovery_sources?: string[];
 }
 
 interface StudentRegistrationResponse {
   message: string;
   student_id: number;
-}
-
-interface ReferralValidationResponse {
-  valid: boolean;
-  message: string;
 }
 
 interface Course {

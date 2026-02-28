@@ -15,13 +15,10 @@
  * - First Name, Last Name, Email, Phone, Password, Confirm Password
  * - Course Selection (required)
  * - Study Mode & Payment Method
- * - Referral toggle (Yes/No)
- *   - If Yes: Show referral code input (validated before submit)
- *   - If No: Show discovery source checkboxes
+ * - Discovery source checkboxes
  *
  * VALIDATION:
  * - All existing validation logic preserved
- * - Referral code validated before submission
  * - Form blocked on any validation failure
  */
 
@@ -70,8 +67,6 @@ export default function AuthPage() {
     confirmPassword: "",
     interested_courses: "",
     payment_method: "",
-    hasReferral: "no",
-    referralCode: "",
     discoverySources: [] as string[],
   });
 
@@ -86,12 +81,6 @@ export default function AuthPage() {
   // Courses list from API
   const [courses, setCourses] = useState<Course[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
-
-  // Referral validation state
-  const [referralStatus, setReferralStatus] = useState<
-    "idle" | "checking" | "valid" | "invalid"
-  >("idle");
-  const [referralMessage, setReferralMessage] = useState("");
 
   // Discovery source options
   const discoveryOptions = [
@@ -118,39 +107,6 @@ export default function AuthPage() {
     };
     fetchCourses();
   }, []);
-
-  // ============================================
-  // REFERRAL CODE VALIDATION (debounced)
-  // Validates referral code when user types
-  // ============================================
-  useEffect(() => {
-    if (registerData.hasReferral !== "yes") {
-      setReferralStatus("idle");
-      setReferralMessage("");
-      return;
-    }
-
-    const code = registerData.referralCode.trim();
-    if (!code) {
-      setReferralStatus("idle");
-      setReferralMessage("");
-      return;
-    }
-
-    setReferralStatus("checking");
-    const timer = setTimeout(async () => {
-      try {
-        const response = await apiClient.validateReferralCode(code);
-        setReferralStatus(response.valid ? "valid" : "invalid");
-        setReferralMessage(response.message);
-      } catch (error) {
-        setReferralStatus("invalid");
-        setReferralMessage("Unable to validate referral code.");
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [registerData.referralCode, registerData.hasReferral]);
 
   // ============================================
   // TOGGLE BETWEEN SIGN-IN AND SIGN-UP
@@ -245,18 +201,8 @@ export default function AuthPage() {
       newErrors.payment_method = "Payment method is required";
     }
 
-    // Referral validation
-    if (registerData.hasReferral === "yes") {
-      if (!registerData.referralCode.trim()) {
-        newErrors.referralCode = "Referral code is required";
-      } else if (referralStatus !== "valid") {
-        newErrors.referralCode = "Please enter a valid referral code";
-      }
-    }
-
-    // Discovery source validation (required if no referral)
+    // Discovery source validation
     if (
-      registerData.hasReferral === "no" &&
       registerData.discoverySources.length === 0
     ) {
       newErrors.discoverySources = "Please select how you heard about us";
@@ -282,19 +228,8 @@ export default function AuthPage() {
         interested_courses: registerData.interested_courses,
         payment_method: registerData.payment_method,
         study_mode: "LIVE",
-        discovery_sources:
-          registerData.hasReferral === "no"
-            ? registerData.discoverySources
-            : [],
+        discovery_sources: registerData.discoverySources,
       };
-
-      // Add referral code if provided
-      if (
-        registerData.hasReferral === "yes" &&
-        registerData.referralCode.trim()
-      ) {
-        payload.referral_code = registerData.referralCode.trim().toUpperCase();
-      }
 
       await apiClient.registerStudent(payload);
 
@@ -316,8 +251,6 @@ export default function AuthPage() {
           confirmPassword: "",
           interested_courses: "",
           payment_method: "",
-          hasReferral: "no",
-          referralCode: "",
           discoverySources: [],
         });
       }, 2000);
@@ -712,124 +645,26 @@ export default function AuthPage() {
             )}
 
             {/* ============================================
-                REFERRAL SECTION
-                Conditional rendering based on Yes/No selection
+                DISCOVERY SOURCE SECTION
+                How did you hear about us?
                 ============================================ */}
-            <p className={styles.fieldLabel}>Do you have a referral code?</p>
-            <div className={styles.radioGroup}>
-              <label>
-                <input
-                  type="radio"
-                  name="hasReferral"
-                  value="no"
-                  checked={registerData.hasReferral === "no"}
-                  onChange={(e) =>
-                    setRegisterData({
-                      ...registerData,
-                      hasReferral: e.target.value,
-                      referralCode: "",
-                    })
-                  }
-                />
-                No
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="hasReferral"
-                  value="yes"
-                  checked={registerData.hasReferral === "yes"}
-                  onChange={(e) =>
-                    setRegisterData({
-                      ...registerData,
-                      hasReferral: e.target.value,
-                      discoverySources: [],
-                    })
-                  }
-                />
-                Yes
-              </label>
-            </div>
-
-            {/* ============================================
-                CONDITIONAL: Referral Code Input
-                Shown only when hasReferral = "yes"
-                Validated in real-time before submission
-                ============================================ */}
-            {registerData.hasReferral === "yes" && (
-              <>
-                <div className={styles.inputField}>
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                    />
-                  </svg>
+            <p className={styles.fieldLabel}>How did you hear about us?</p>
+            <div className={styles.checkboxGroup}>
+              {discoveryOptions.map((source) => (
+                <label key={source}>
                   <input
-                    type="text"
-                    placeholder="Enter Referral Code"
-                    value={registerData.referralCode}
-                    onChange={(e) =>
-                      setRegisterData({
-                        ...registerData,
-                        referralCode: e.target.value.toUpperCase(),
-                      })
-                    }
+                    type="checkbox"
+                    checked={registerData.discoverySources.includes(source)}
+                    onChange={() => handleDiscoveryChange(source)}
                   />
-                </div>
-                {/* Show referral validation status */}
-                {referralStatus === "checking" && (
-                  <span className={styles.errorText} style={{ color: "#666" }}>
-                    Validating...
-                  </span>
-                )}
-                {referralStatus === "valid" && (
-                  <span
-                    className={styles.errorText}
-                    style={{ color: "#27ae60" }}
-                  >
-                    {referralMessage}
-                  </span>
-                )}
-                {referralStatus === "invalid" && (
-                  <span className={styles.errorText}>{referralMessage}</span>
-                )}
-                {errors.referralCode && (
-                  <span className={styles.errorText}>
-                    {errors.referralCode}
-                  </span>
-                )}
-              </>
-            )}
-
-            {/* ============================================
-                CONDITIONAL: Discovery Source Checkboxes
-                Shown only when hasReferral = "no"
-                At least one must be selected
-                ============================================ */}
-            {registerData.hasReferral === "no" && (
-              <>
-                <p className={styles.fieldLabel}>How did you hear about us?</p>
-                <div className={styles.checkboxGroup}>
-                  {discoveryOptions.map((source) => (
-                    <label key={source}>
-                      <input
-                        type="checkbox"
-                        checked={registerData.discoverySources.includes(source)}
-                        onChange={() => handleDiscoveryChange(source)}
-                      />
-                      {source}
-                    </label>
-                  ))}
-                </div>
-                {errors.discoverySources && (
-                  <span className={styles.errorText}>
-                    {errors.discoverySources}
-                  </span>
-                )}
-              </>
+                  {source}
+                </label>
+              ))}
+            </div>
+            {errors.discoverySources && (
+              <span className={styles.errorText}>
+                {errors.discoverySources}
+              </span>
             )}
 
             {/* Password & Confirm Password Row */}

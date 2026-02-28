@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-import uuid
 
 
 class StudentProfile(models.Model):
@@ -55,39 +54,6 @@ class StudentProfile(models.Model):
         help_text="Student's contact phone number"
     )
 
-    referral_code = models.CharField(
-        max_length=12,
-        unique=True,
-        blank=True,
-        null=True,
-        help_text="Unique referral code for the student"
-    )
-
-    referred_by = models.ForeignKey(
-        'self',
-        on_delete=models.SET_NULL,
-        related_name='referrals',
-        null=True,
-        blank=True,
-        help_text="Referring student profile (if any)"
-    )
-
-    referral_confirmed = models.BooleanField(
-        default=False,
-        help_text="Whether the referral was confirmed by Finance"
-    )
-
-    referral_confirmed_at = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text="When the referral was confirmed"
-    )
-
-    referral_confirmed_count = models.PositiveIntegerField(
-        default=0,
-        help_text="Count of confirmed referrals for this student"
-    )
-
     discovery_sources = models.JSONField(
         default=list,
         blank=True,
@@ -130,8 +96,3 @@ class StudentProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.full_name} - {self.admission_status}"
-
-
-def generate_referral_code() -> str:
-    """Generate a short uppercase referral code."""
-    return uuid.uuid4().hex[:8].upper()

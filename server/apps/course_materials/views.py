@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch
+from django.utils.datastructures import MultiValueDict
 
 from .models import CourseMaterial, CourseMaterialBatch
 from .serializers import (
@@ -101,8 +102,15 @@ class FacultyMaterialListCreateAPIView(APIView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        # Handle batch_ids coming as repeated form fields or JSON list
-        data = request.data.copy()
+        # Handle batch_ids coming as repeated form fields or JSON list.
+        # Avoid request.data.copy() which deep-copies file objects and breaks
+        # under Python 3.14 (BufferedRandom is not picklable).
+        # Build a fresh MultiValueDict from POST text fields + FILES instead.
+        data = MultiValueDict()
+        for key, values in request.POST.lists():
+            data.setlist(key, values)
+        for key, values in request.FILES.lists():
+            data.setlist(key, values)
         if 'batch_ids' not in data and 'batch_ids[]' in data:
             data.setlist('batch_ids', data.getlist('batch_ids[]'))
 

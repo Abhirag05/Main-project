@@ -122,8 +122,10 @@ async function fetchStudentInfo(): Promise<DashboardStudent> {
 
 async function fetchAttendance(): Promise<DashboardAttendance> {
   const sessions = await studentAttendanceAPI.getMyAttendance();
-  const total = sessions.length;
-  const attended = sessions.filter(
+  // Only count sessions where attendance has been marked (PRESENT or ABSENT)
+  const markedSessions = sessions.filter((s) => s.attendance_status !== null);
+  const total = markedSessions.length;
+  const attended = markedSessions.filter(
     (s) => s.attendance_status === "PRESENT"
   ).length;
   const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;

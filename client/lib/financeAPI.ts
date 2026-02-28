@@ -29,30 +29,11 @@ export interface StudentAdmission {
   interested_courses: string;
   payment_method: string;
   study_mode?: string;
-  referred_by_name?: string | null;
-  referred_by_code?: string | null;
-  referral_confirmed?: boolean;
   discovery_sources?: string[];
   admission_status: AdmissionStatus;
   payment_status: PaymentStatus;
   created_at: string;
   updated_at: string;
-}
-
-export interface FinanceReferralItem {
-  student_profile_id: number;
-  student_name: string;
-  student_email: string;
-  referred_by_name: string;
-  referred_by_email: string;
-  referred_by_code: string;
-  created_at: string;
-}
-
-export interface FinanceReferralConfirmResponse {
-  student_profile_id: number;
-  referrer_student_profile_id: number;
-  message: string;
 }
 
 export interface PaymentVerificationResponse {
@@ -270,27 +251,6 @@ export class FinanceAPI {
   ): Promise<PaymentVerificationResponse> {
     return this.request<PaymentVerificationResponse>(
       `/admissions/${studentProfileId}/enable-access/`,
-      {
-        method: "PATCH",
-      },
-    );
-  }
-
-  /**
-   * Get pending referrals for confirmation
-   */
-  async getPendingReferrals(): Promise<FinanceReferralItem[]> {
-    return this.request<FinanceReferralItem[]>(`/referrals/`);
-  }
-
-  /**
-   * Confirm a referral
-   */
-  async confirmReferral(
-    studentProfileId: number,
-  ): Promise<FinanceReferralConfirmResponse> {
-    return this.request<FinanceReferralConfirmResponse>(
-      `/referrals/${studentProfileId}/confirm/`,
       {
         method: "PATCH",
       },
