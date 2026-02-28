@@ -1,16 +1,20 @@
 /**
  * Types for Finance Admission Management
+ *
+ * Student Lifecycle:
+ *   PENDING     → Registered, awaiting first payment verification
+ *   ACTIVE      → Payment verified, full LMS access
+ *   PAYMENT_DUE → Installment overdue, access temporarily revoked
+ *   SUSPENDED   → Admin manually suspended access
+ *   DROPPED     → Permanently removed from the system
  */
 
 export type AdmissionStatus =
   | "PENDING"
-  | "APPROVED"
-  | "REJECTED"
-  | "FULL_PAYMENT_VERIFIED"
-  | "INSTALLMENT_VERIFIED"
-  | "INSTALLMENT_PENDING"
-  | "COURSE_COMPLETED"
-  | "DISABLED";
+  | "ACTIVE"
+  | "PAYMENT_DUE"
+  | "SUSPENDED"
+  | "DROPPED";
 
 export type PaymentStatus = "PENDING" | "FULL_PAYMENT" | "INSTALLMENT";
 
@@ -24,7 +28,7 @@ export interface StudentAdmission {
   centre_code: string;
   interested_courses: string;
   payment_method: string;
-  study_mode?: "LIVE" | "RECORDED";
+  study_mode?: string;
   referred_by_name?: string | null;
   referred_by_code?: string | null;
   referral_confirmed?: boolean;
@@ -145,7 +149,7 @@ export class FinanceAPI {
   }
 
   /**
-   * Verify full payment for a student
+   * Verify full payment for a student → ACTIVE
    */
   async verifyFullPayment(
     studentProfileId: number,
@@ -159,7 +163,7 @@ export class FinanceAPI {
   }
 
   /**
-   * Verify installment payment for a student
+   * Verify installment payment for a student → ACTIVE
    */
   async verifyInstallment(
     studentProfileId: number,
@@ -173,7 +177,79 @@ export class FinanceAPI {
   }
 
   /**
-   * Disable student access
+   * Mark an installment student as overdue → PAYMENT_DUE
+   * Only for ACTIVE installment students.
+   */
+  async markOverdue(
+    studentProfileId: number,
+  ): Promise<{ message: string }> {
+    return this.request<{ message: string }>(
+      `/admissions/${studentProfileId}/mark-overdue/`,
+      {
+        method: "PATCH",
+      },
+    );
+  }
+
+  /**
+   * Collect overdue installment payment → ACTIVE
+   * Only for PAYMENT_DUE students.
+   */
+  async collectPayment(
+    studentProfileId: number,
+  ): Promise<{ message: string }> {
+    return this.request<{ message: string }>(
+      `/admissions/${studentProfileId}/collect-payment/`,
+      {
+        method: "PATCH",
+      },
+    );
+  }
+
+  /**
+   * Admin suspends a student → SUSPENDED
+   */
+  async suspendStudent(
+    studentProfileId: number,
+  ): Promise<{ message: string }> {
+    return this.request<{ message: string }>(
+      `/admissions/${studentProfileId}/suspend/`,
+      {
+        method: "PATCH",
+      },
+    );
+  }
+
+  /**
+   * Reactivate a suspended student → ACTIVE
+   */
+  async reactivateStudent(
+    studentProfileId: number,
+  ): Promise<{ message: string }> {
+    return this.request<{ message: string }>(
+      `/admissions/${studentProfileId}/reactivate/`,
+      {
+        method: "PATCH",
+      },
+    );
+  }
+
+  /**
+   * Permanently drop a student → DROPPED
+   */
+  async dropStudent(
+    studentProfileId: number,
+  ): Promise<{ message: string }> {
+    return this.request<{ message: string }>(
+      `/admissions/${studentProfileId}/drop/`,
+      {
+        method: "PATCH",
+      },
+    );
+  }
+
+  /**
+   * @deprecated Use suspendStudent / markOverdue instead
    */
   async disableAccess(
     studentProfileId: number,
@@ -187,27 +263,13 @@ export class FinanceAPI {
   }
 
   /**
-   * Enable student access
+   * @deprecated Use reactivateStudent instead
    */
   async enableAccess(
     studentProfileId: number,
   ): Promise<PaymentVerificationResponse> {
     return this.request<PaymentVerificationResponse>(
       `/admissions/${studentProfileId}/enable-access/`,
-      {
-        method: "PATCH",
-      },
-    );
-  }
-
-  /**
-   * Mark course as completed (full payment students only)
-   */
-  async completeCourse(
-    studentProfileId: number,
-  ): Promise<{ message: string }> {
-    return this.request<{ message: string }>(
-      `/admissions/${studentProfileId}/complete-course/`,
       {
         method: "PATCH",
       },

@@ -65,9 +65,6 @@ function BatchTemplateTable({
                 Template Name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Mode
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Max Students
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -94,17 +91,6 @@ function BatchTemplateTable({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-foreground">{template.name}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      template.mode === 'LIVE'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-purple-100 text-purple-800'
-                    }`}
-                  >
-                    {template.mode}
-                  </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   {template.max_students}

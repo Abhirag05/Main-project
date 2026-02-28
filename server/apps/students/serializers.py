@@ -63,10 +63,10 @@ class StudentRegistrationSerializer(serializers.Serializer):
         help_text="Preferred payment method"
     )
     study_mode = serializers.ChoiceField(
-        choices=[('LIVE', 'Live'), ('RECORDED', 'Recorded')],
+        choices=[('LIVE', 'Live')],
         required=False,
         default='LIVE',
-        help_text="Preferred study mode"
+        help_text="Study mode (Live only)"
     )
     referral_code = serializers.CharField(
         max_length=12,

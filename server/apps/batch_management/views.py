@@ -2,8 +2,7 @@
 Views for batch management app.
 Provides REST API endpoints for BatchTemplate and related models.
 """
-from apps.batch_management.models import BatchRecordedSession
-from apps.batch_management.serializers import MentorBatchSerializer, MentorBatchStudentSerializer, BatchRecordedSessionSerializer
+from apps.batch_management.serializers import MentorBatchSerializer, MentorBatchStudentSerializer
 from rest_framework import viewsets, permissions, status, generics, serializers
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -295,7 +294,7 @@ class BatchViewSet(viewsets.ModelViewSet):
     ).all()
 
     permission_classes = [IsCentreAdminOrSuperAdminReadOnly]
-    http_method_names = ['get', 'post', 'patch', 'head', 'options']
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
 
     def get_serializer_class(self):
         """Return appropriate serializer based on action."""
@@ -431,6 +430,26 @@ class BatchViewSet(viewsets.ModelViewSet):
 
         return base_code
 
+    def destroy(self, request, *args, **kwargs):
+        """
+        Delete a batch (Centre Admin only).
+
+        Forcefully deletes the batch and all associated student enrollments.
+        Students return to a no-batch-assigned state automatically.
+        """
+        batch = self.get_object()
+        batch_code = batch.code
+
+        # Remove all student enrollments first (FK is PROTECT, must clear manually)
+        batch.students.all().delete()
+
+        batch.delete()
+
+        return Response(
+            {"message": f"Batch '{batch_code}' deleted successfully."},
+            status=status.HTTP_200_OK
+        )
+
     @action(detail=True, methods=['patch'], url_path='status')
     def update_status(self, request, pk=None):
         """
@@ -455,6 +474,37 @@ class BatchViewSet(viewsets.ModelViewSet):
         batch.save(update_fields=['status', 'updated_at'])
 
         # Return updated batch
+        response_serializer = BatchSerializer(batch)
+        return Response(response_serializer.data)
+
+    @action(detail=True, methods=['patch'], url_path='set-meeting-link')
+    def set_meeting_link(self, request, pk=None):
+        """
+        Set or update the common meeting link for a batch.
+
+        PATCH /api/batches/{id}/set-meeting-link/
+        Body: { "meeting_link": "https://..." }
+        """
+        batch = self.get_object()
+        meeting_link = request.data.get('meeting_link', '').strip()
+
+        batch.meeting_link = meeting_link
+        batch.save(update_fields=['meeting_link', 'updated_at'])
+
+        # Also propagate to all active TimeSlot default_meeting_link fields
+        from apps.timetable.models import TimeSlot
+        TimeSlot.objects.filter(batch=batch, is_active=True).update(
+            default_meeting_link=meeting_link
+        )
+
+        AuditService.log(
+            action='batch.meeting_link.updated',
+            entity='Batch',
+            entity_id=batch.id,
+            performed_by=request.user,
+            details={'meeting_link': meeting_link}
+        )
+
         response_serializer = BatchSerializer(batch)
         return Response(response_serializer.data)
 
@@ -487,10 +537,10 @@ class BatchViewSet(viewsets.ModelViewSet):
         GET /api/batches/{batch_id}/eligible-students/
 
         Eligibility criteria:
-        - admission_status in ['APPROVED', 'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']
+        - admission_status in ['ACTIVE', 'APPROVED', 'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']
         - NOT having any BatchStudent with is_active = True
         - Finance Admin only sees students with fee verification
-          (FULL_PAYMENT_VERIFIED or INSTALLMENT_VERIFIED)
+          (ACTIVE, FULL_PAYMENT_VERIFIED or INSTALLMENT_VERIFIED)
         - Centre Admin sees all APPROVED students
 
         Access: CENTRE_ADMIN or FINANCE
@@ -512,16 +562,16 @@ class BatchViewSet(viewsets.ModelViewSet):
         user_role = request.user.role.code
 
         if user_role == 'FINANCE':
-            # Finance Admin only sees fee-verified students
+            # Finance Admin only sees fee-verified students (ACTIVE or legacy verified statuses)
             eligible_students = base_queryset.filter(
                 admission_status__in=[
-                    'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']
+                    'ACTIVE', 'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']
             )
         else:
             # Centre Admin sees all approved students (including fee-verified ones)
             eligible_students = base_queryset.filter(
                 admission_status__in=[
-                    'APPROVED', 'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']
+                    'ACTIVE', 'APPROVED', 'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']
             )
 
         eligible_students = eligible_students.order_by('-created_at')
@@ -594,7 +644,7 @@ class BatchViewSet(viewsets.ModelViewSet):
             )
 
         # 4. Validate all students have approved or fee-verified status
-        valid_statuses = ['APPROVED',
+        valid_statuses = ['ACTIVE', 'APPROVED',
                           'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']
         non_approved = students.exclude(admission_status__in=valid_statuses)
         if non_approved.exists():
@@ -670,6 +720,54 @@ class BatchViewSet(viewsets.ModelViewSet):
                 'max_students': max_students
             },
             status=status.HTTP_201_CREATED
+        )
+
+    @action(detail=True, methods=['delete'], url_path='remove-student/(?P<student_profile_id>[0-9]+)',
+            permission_classes=[IsCentreOrFinanceAdmin])
+    @transaction.atomic
+    def remove_student(self, request, pk=None, student_profile_id=None):
+        """
+        Remove a student from a batch.
+
+        DELETE /api/batches/{batch_id}/remove-student/{student_profile_id}/
+
+        Sets the BatchStudent record to is_active=False.
+        Access: CENTRE_ADMIN or FINANCE
+        """
+        batch = self.get_object()
+
+        try:
+            membership = BatchStudent.objects.get(
+                batch=batch,
+                student_id=student_profile_id,
+                is_active=True
+            )
+        except BatchStudent.DoesNotExist:
+            return Response(
+                {'error': 'Student is not actively enrolled in this batch.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        membership.is_active = False
+        membership.save(update_fields=['is_active'])
+
+        AuditService.log(
+            action='STUDENT_REMOVED_FROM_BATCH',
+            entity='Batch',
+            entity_id=str(batch.id),
+            performed_by=request.user,
+            details={
+                'batch_code': batch.code,
+                'batch_id': batch.id,
+                'student_profile_id': int(student_profile_id),
+                'centre_id': batch.centre_id,
+                'removed_by_role': request.user.role.code,
+            }
+        )
+
+        return Response(
+            {'message': 'Student removed from batch successfully.'},
+            status=status.HTTP_200_OK
         )
 
     @action(detail=True, methods=['get'], url_path='details',
@@ -1017,60 +1115,3 @@ class MentorBatchStudentsView(generics.ListAPIView):
             'student',
             'student__user'
         ).order_by('student__user__full_name')
-
-
-class MentorBatchRecordedSessionsView(generics.ListCreateAPIView):
-    """
-    List/create recorded sessions for a mentor's recorded batch.
-
-    GET /api/mentor/batches/{batch_id}/recordings/
-    POST /api/mentor/batches/{batch_id}/recordings/
-
-    Access: BATCH_MENTOR only (must be assigned to this batch)
-    """
-
-    serializer_class = BatchRecordedSessionSerializer
-    permission_classes = [permissions.IsAuthenticated, IsBatchMentor]
-
-    def get_queryset(self):
-        batch_id = self.kwargs.get('batch_id')
-
-        is_assigned = BatchMentorAssignment.objects.filter(
-            mentor=self.request.user,
-            batch_id=batch_id,
-            is_active=True
-        ).exists()
-
-        if not is_assigned:
-            return BatchRecordedSession.objects.none()
-
-        return BatchRecordedSession.objects.filter(batch_id=batch_id).order_by('-session_date', '-created_at')
-
-    def perform_create(self, serializer):
-        batch_id = self.kwargs.get('batch_id')
-
-        # Ensure mentor is assigned
-        is_assigned = BatchMentorAssignment.objects.filter(
-            mentor=self.request.user,
-            batch_id=batch_id,
-            is_active=True
-        ).exists()
-
-        if not is_assigned:
-            raise PermissionDenied("You are not assigned to this batch.")
-
-        batch = Batch.objects.get(id=batch_id)
-
-        # Ensure batch is recorded mode
-        if batch.template.mode != 'RECORDED':
-            raise PermissionDenied(
-                "Recordings are only allowed for recorded batches.")
-
-        # Validate session date within batch duration
-        session_date = serializer.validated_data.get('session_date')
-        if session_date < batch.start_date or session_date > batch.end_date:
-            raise serializers.ValidationError({
-                'session_date': f"Session date must be within batch duration ({batch.start_date} to {batch.end_date})"
-            })
-
-        serializer.save(batch=batch, uploaded_by=self.request.user)

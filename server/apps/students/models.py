@@ -15,7 +15,13 @@ class StudentProfile(models.Model):
     """
 
     ADMISSION_STATUS_CHOICES = [
-        ('PENDING', 'Pending'),
+        # ── Active lifecycle states ──────────────────────────────
+        ('PENDING', 'Pending'),             # Registered, awaiting payment verification
+        ('ACTIVE', 'Active'),               # Payment verified, full LMS access
+        ('PAYMENT_DUE', 'Payment Due'),     # Installment overdue, access suspended
+        ('SUSPENDED', 'Suspended'),         # Admin manually suspended access
+        ('DROPPED', 'Dropped'),             # Permanently removed from system
+        # ── Legacy (kept for backward compatibility) ─────────────
         ('APPROVED', 'Approved'),
         ('REJECTED', 'Rejected'),
         ('FULL_PAYMENT_VERIFIED', 'Full Payment Verified'),
@@ -33,7 +39,6 @@ class StudentProfile(models.Model):
 
     STUDY_MODE_CHOICES = [
         ('LIVE', 'Live'),
-        ('RECORDED', 'Recorded'),
     ]
 
     user = models.OneToOneField(

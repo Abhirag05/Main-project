@@ -250,24 +250,6 @@ export default function TimetableManagementPage() {
           </div>
         )}
 
-        {/* Content */}
-        {viewMode === "table" ? (
-          <TimeSlotTable
-            timeSlots={timeSlots}
-            loading={loading}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ) : (
-          <WeeklyScheduleView
-            timeSlots={timeSlots}
-            loading={loading}
-            onSlotClick={handleEdit}
-            viewMode="batch"
-            title="Weekly Schedule Overview"
-          />
-        )}
-
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-card rounded-lg shadow p-4">
@@ -303,6 +285,24 @@ export default function TimetableManagementPage() {
             </div>
           </div>
         </div>
+
+        {/* Content */}
+        {viewMode === "table" ? (
+          <TimeSlotTable
+            timeSlots={timeSlots}
+            loading={loading}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        ) : (
+          <WeeklyScheduleView
+            timeSlots={timeSlots}
+            loading={loading}
+            onSlotClick={handleEdit}
+            viewMode="batch"
+            title="Weekly Schedule Overview"
+          />
+        )}
       </div>
 
       {/* Modals */}

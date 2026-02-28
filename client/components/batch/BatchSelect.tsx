@@ -6,14 +6,12 @@ import { apiClient, MentorBatch } from "@/lib/api";
 interface Props {
   value?: number | null;
   onChange?: (batchId: number | null) => void;
-  modeFilter?: "LIVE" | "RECORDED" | undefined;
   className?: string;
 }
 
 export default function BatchSelect({
   value,
   onChange,
-  modeFilter,
   className,
 }: Props) {
   const [batches, setBatches] = useState<MentorBatch[]>([]);
@@ -26,21 +24,10 @@ export default function BatchSelect({
         setLoading(true);
         const data = await apiClient.getMentorBatches();
         if (!mounted) return;
-        const withMode = data.map((b: any) => ({
-          ...b,
-          __inferred_mode:
-            b.mode ||
-            (b.batch_code?.toUpperCase().includes("RECORDED")
-              ? "RECORDED"
-              : "LIVE"),
-        }));
-        const filtered = modeFilter
-          ? withMode.filter((b) => b.__inferred_mode === modeFilter)
-          : withMode;
-        setBatches(filtered);
+        setBatches(data);
         // if no value selected, pick first
-        if ((value === undefined || value === null) && filtered.length > 0) {
-          onChange?.(filtered[0].batch_id);
+        if ((value === undefined || value === null) && data.length > 0) {
+          onChange?.(data[0].batch_id);
         }
       } catch (err) {
         console.error("Failed to load batches", err);
@@ -52,7 +39,7 @@ export default function BatchSelect({
     return () => {
       mounted = false;
     };
-  }, [modeFilter]);
+  }, []);
 
   return (
     <div className={className}>

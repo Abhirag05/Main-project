@@ -1212,7 +1212,7 @@ class BatchTimetableAPIView(APIView):
                 'start_time': slot.start_time.strftime('%H:%M'),
                 'end_time': slot.end_time.strftime('%H:%M'),
                 'room': slot.room_number,
-                'meeting_link': slot.default_meeting_link
+                'meeting_link': slot.default_meeting_link or batch.meeting_link
             })
 
         day_names = dict(TimeSlot.WEEKDAY_CHOICES)
@@ -1229,6 +1229,9 @@ class BatchTimetableAPIView(APIView):
             'batch_id': batch.id,
             'batch_code': batch.code,
             'course': batch.template.course.name,
+            'start_date': str(batch.start_date),
+            'end_date': str(batch.end_date),
+            'meeting_link': batch.meeting_link,
             'weekly_schedule': weekly_schedule,
             'upcoming_sessions': ClassSessionListSerializer(upcoming_sessions, many=True).data
         })

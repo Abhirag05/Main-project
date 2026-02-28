@@ -41,7 +41,7 @@ export interface VerifiedStudent {
   centre: string;
   centre_code: string;
   interested_courses: string;
-  study_mode?: "LIVE" | "RECORDED";
+  study_mode?: string;
   admission_status: AdmissionStatus;
   created_at: string;
   updated_at: string;

@@ -27,7 +27,6 @@ export default function RegistrationForm() {
     phoneNumber: "",
     password: "",
     interestedCourse: "",
-    studyMode: "",
     paymentMethod: "",
     hasReferral: "",
     referralCode: "",
@@ -41,7 +40,6 @@ export default function RegistrationForm() {
     phoneNumber: "",
     password: "",
     interestedCourse: "",
-    studyMode: "",
     paymentMethod: "",
     referralCode: "",
     general: "",
@@ -99,8 +97,6 @@ export default function RegistrationForm() {
       error = validatePhone(value);
     } else if (name === "password") {
       error = validatePassword(value);
-    } else if (name === "studyMode") {
-      error = value ? "" : "Study mode is required";
     } else if (name === "referralCode") {
       error = value ? "" : "Referral code is required";
     }
@@ -170,7 +166,6 @@ export default function RegistrationForm() {
     const emailError = validateEmail(formData.email);
     const phoneNumberError = validatePhone(formData.phoneNumber);
     const passwordError = validatePassword(formData.password);
-    const studyModeError = formData.studyMode ? "" : "Study mode is required";
     const referralCodeError =
       formData.hasReferral === "yes"
         ? formData.referralCode.trim()
@@ -187,7 +182,6 @@ export default function RegistrationForm() {
       phoneNumber: phoneNumberError,
       password: passwordError,
       interestedCourse: "",
-      studyMode: studyModeError,
       paymentMethod: "",
       referralCode: referralCodeError,
       general: "",
@@ -200,7 +194,6 @@ export default function RegistrationForm() {
       emailError ||
       phoneNumberError ||
       passwordError ||
-      studyModeError ||
       referralCodeError
     ) {
       return;
@@ -218,7 +211,7 @@ export default function RegistrationForm() {
         phone_number: formData.phoneNumber,
         password: formData.password,
         interested_courses: formData.interestedCourse,
-        study_mode: formData.studyMode as "LIVE" | "RECORDED" | undefined,
+        study_mode: "LIVE",
         payment_method: formData.paymentMethod,
         referral_code:
           formData.hasReferral === "yes"
@@ -241,7 +234,6 @@ export default function RegistrationForm() {
         phoneNumber: "",
         password: "",
         interestedCourse: "",
-        studyMode: "",
         paymentMethod: "",
         hasReferral: "",
         referralCode: "",
@@ -254,7 +246,6 @@ export default function RegistrationForm() {
         phoneNumber: "",
         password: "",
         interestedCourse: "",
-        studyMode: "",
         paymentMethod: "",
         referralCode: "",
         general: "",
@@ -455,35 +446,7 @@ export default function RegistrationForm() {
               )}
             </div>
 
-            {/* Study Mode Field */}
-            <div>
-              <label
-                htmlFor="studyMode"
-                className="block text-sm font-medium text-foreground/80 mb-2"
-              >
-                Study Mode <span className="text-red-500">*</span>
-              </label>
-              <select
-                id="studyMode"
-                name="studyMode"
-                value={formData.studyMode}
-                onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition text-foreground ${
-                  errors.studyMode
-                    ? "border-red-500 bg-red-50"
-                    : "border-border"
-                }`}
-                disabled={isSubmitting || success}
-                required
-              >
-                <option value="">Select study mode</option>
-                <option value="LIVE">Live</option>
-                <option value="RECORDED">Recorded</option>
-              </select>
-              {errors.studyMode && (
-                <p className="mt-1 text-sm text-red-600">{errors.studyMode}</p>
-              )}
-            </div>
+
 
             {/* Payment Method Field */}
             <div>

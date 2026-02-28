@@ -20,6 +20,12 @@ export default function BatchDetailPage() {
   const [editedBatch, setEditedBatch] = useState<Partial<Batch>>({});
   const toast = useToast();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [removeModal, setRemoveModal] = useState<{ open: boolean; studentProfileId: number | null; studentName: string }>({
+    open: false,
+    studentProfileId: null,
+    studentName: "",
+  });
+  const [isRemoving, setIsRemoving] = useState(false);
 
   useEffect(() => {
     // Check user role
@@ -95,6 +101,25 @@ export default function BatchDetailPage() {
   };
 
  
+  const handleRemoveStudent = (studentProfileId: number, studentName: string) => {
+    setRemoveModal({ open: true, studentProfileId, studentName });
+  };
+
+  const handleRemoveConfirm = async () => {
+    if (!removeModal.studentProfileId || !batch) return;
+    setIsRemoving(true);
+    try {
+      await apiClient.removeStudentFromBatch(batch.id, removeModal.studentProfileId);
+      toast.show("success", `${removeModal.studentName} removed from batch`);
+      setRemoveModal({ open: false, studentProfileId: null, studentName: "" });
+      fetchBatchDetail();
+    } catch (err: any) {
+      toast.show("error", err.message || "Failed to remove student");
+    } finally {
+      setIsRemoving(false);
+    }
+  };
+
   const handleStatusChange = async (newStatus: "COMPLETED" | "CANCELLED") => {
     if (!batch) return;
 
@@ -115,17 +140,6 @@ export default function BatchDetailPage() {
         return "bg-primary/10 text-primary";
       case "CANCELLED":
         return "bg-red-100 text-red-800";
-      default:
-        return "bg-secondary text-foreground";
-    }
-  };
-
-  const getModeColor = (mode: string) => {
-    switch (mode) {
-      case "LIVE":
-        return "bg-purple-100 text-purple-800";
-      case "RECORDED":
-        return "bg-orange-100 text-orange-800";
       default:
         return "bg-secondary text-foreground";
     }
@@ -209,13 +223,6 @@ export default function BatchDetailPage() {
                   )}`}
                 >
                   {batch.status}
-                </span>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${getModeColor(
-                    batch.mode
-                  )}`}
-                >
-                  {batch.mode}
                 </span>
               </div>
               <p className="mt-2 text-lg text-muted-foreground">{batch.course_name}</p>
@@ -306,19 +313,6 @@ export default function BatchDetailPage() {
                 <p className="mt-1 text-base text-foreground">
                   {batch.course_duration_months} months
                 </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-muted-foreground">
-                  Mode
-                </label>
-                <span
-                  className={`inline-block mt-1 px-3 py-1 rounded-full text-sm font-medium ${getModeColor(
-                    batch.mode
-                  )}`}
-                >
-                  {batch.mode}
-                </span>
               </div>
 
               <div>
@@ -522,6 +516,11 @@ export default function BatchDetailPage() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       Status
                     </th>
+                    {batch.status === "ACTIVE" && (
+                      <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        Action
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="bg-card divide-y divide-border">
@@ -550,6 +549,19 @@ export default function BatchDetailPage() {
                           Active
                         </span>
                       </td>
+                      {batch.status === "ACTIVE" && (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <button
+                            onClick={() => handleRemoveStudent(student.student_profile_id, student.full_name)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 rounded-md hover:bg-red-100 transition-colors"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" />
+                            </svg>
+                            Remove
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -601,6 +613,42 @@ export default function BatchDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Remove Student Confirmation Modal */}
+      {removeModal.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-card rounded-lg shadow-xl p-6 max-w-md w-full mx-4 border border-border">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex-shrink-0 rounded-full bg-red-100 p-2">
+                <svg className="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-foreground">Remove Student</h3>
+            </div>
+            <p className="text-sm text-muted-foreground mb-6">
+              Are you sure you want to remove <span className="font-semibold text-foreground">{removeModal.studentName}</span> from this batch? They can be re-assigned later.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setRemoveModal({ open: false, studentProfileId: null, studentName: "" })}
+                disabled={isRemoving}
+                className="px-4 py-2 text-sm font-medium text-foreground border border-border rounded-lg hover:bg-secondary/50 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRemoveConfirm}
+                disabled={isRemoving}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {isRemoving && <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" /></svg>}
+                Remove Student
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }

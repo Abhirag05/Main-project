@@ -9,7 +9,7 @@ import { useToast } from "@/lib/toast";
 import { financeAPI, StudentAdmission } from "@/lib/financeAPI";
 import { isAdminRole } from "@/lib/roles";
 
-export default function AdminDisabledStudentsPage() {
+export default function AdminSuspendedStudentsPage() {
   const { user, isLoading: authLoading } = useAuth();
   const [admissions, setAdmissions] = useState<StudentAdmission[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,14 +27,13 @@ export default function AdminDisabledStudentsPage() {
     try {
       setIsLoading(true);
       const data = await financeAPI.getAdmissions();
-      const disabledStudents = data.filter(
+      const suspendedStudents = data.filter(
         (admission) =>
-          admission.admission_status === "INSTALLMENT_PENDING" ||
-          admission.admission_status === "DISABLED"
+          admission.admission_status === "SUSPENDED"
       );
-      setAdmissions(disabledStudents);
+      setAdmissions(suspendedStudents);
     } catch (error: any) {
-      toast.show("error", error.message || "Failed to load disabled students");
+      toast.show("error", error.message || "Failed to load suspended students");
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +62,7 @@ export default function AdminDisabledStudentsPage() {
     if (!enableModal.studentProfileId) return;
     try {
       setIsProcessing(true);
-      await financeAPI.enableAccess(enableModal.studentProfileId);
+      await financeAPI.reactivateStudent(enableModal.studentProfileId);
       toast.show("success", "Student access enabled successfully");
       setEnableModal({ isOpen: false, studentProfileId: null, studentName: "" });
       fetchAdmissions();
@@ -93,9 +92,9 @@ export default function AdminDisabledStudentsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Disabled Students</h1>
+            <h1 className="text-3xl font-bold text-foreground">Suspended Students</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Students with disabled access or pending installments
+              Students with suspended LMS access
             </p>
           </div>
           <button
@@ -124,7 +123,7 @@ export default function AdminDisabledStudentsPage() {
             </div>
             <div className="ml-5">
               <h2 className="text-2xl font-bold text-foreground">{admissions.length}</h2>
-              <p className="text-sm text-muted-foreground">Total Disabled Students</p>
+              <p className="text-sm text-muted-foreground">Total Suspended Students</p>
             </div>
           </div>
         </div>
@@ -134,8 +133,11 @@ export default function AdminDisabledStudentsPage() {
           isLoading={isLoading}
           onVerifyFullPayment={() => {}}
           onVerifyInstallment={() => {}}
-          onDisableAccess={() => {}}
-          onEnableAccess={handleEnableAccessClick}
+          onMarkOverdue={() => {}}
+          onCollectPayment={() => {}}
+          onSuspend={() => {}}
+          onReactivate={handleEnableAccessClick}
+          onDrop={() => {}}
           isProcessing={isProcessing}
         />
       </div>

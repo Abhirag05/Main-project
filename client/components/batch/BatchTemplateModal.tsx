@@ -221,32 +221,18 @@ export default function BatchTemplateModal({
                 Mode <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-4">
-                <label className={`flex items-center gap-2.5 px-4 py-3 border rounded-lg cursor-pointer transition-all ${formData.mode === 'LIVE' ? 'border-primary bg-primary/10 ring-2 ring-ring/30' : 'border-border hover:border-border'}`}>
+                <label className={`flex items-center gap-2.5 px-4 py-3 border rounded-lg cursor-pointer transition-all border-primary bg-primary/10 ring-2 ring-ring/30`}>
                   <input
                     type="radio"
                     value="LIVE"
-                    checked={formData.mode === 'LIVE'}
-                    onChange={() => setFormData({ ...formData, mode: 'LIVE' })}
+                    checked={true}
+                    readOnly
                     className="text-primary focus:ring-ring"
                     disabled={loading}
                   />
                   <div>
                     <span className="text-sm font-semibold text-foreground/80">Live</span>
                     <p className="text-xs text-muted-foreground">Real-time classes</p>
-                  </div>
-                </label>
-                <label className={`flex items-center gap-2.5 px-4 py-3 border rounded-lg cursor-pointer transition-all ${formData.mode === 'RECORDED' ? 'border-primary bg-primary/10 ring-2 ring-ring/30' : 'border-border hover:border-border'}`}>
-                  <input
-                    type="radio"
-                    value="RECORDED"
-                    checked={formData.mode === 'RECORDED'}
-                    onChange={() => setFormData({ ...formData, mode: 'RECORDED' })}
-                    className="text-primary focus:ring-ring"
-                    disabled={loading}
-                  />
-                  <div>
-                    <span className="text-sm font-semibold text-foreground/80">Recorded</span>
-                    <p className="text-xs text-muted-foreground">Pre-recorded content</p>
                   </div>
                 </label>
               </div>

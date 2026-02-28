@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import { apiClient } from "@/lib/api";
+import { useMemo } from "react";
 import { isAdminRole, getDashboardPathForRole, ADMIN_DASHBOARD_PATH } from "@/lib/roles";
 
 export interface NavigationItem {
@@ -30,8 +29,8 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           icon: "user-check",
         },
         {
-          name: "Disabled",
-          href: "/dashboards/admin/students/disabled",
+          name: "Suspended",
+          href: "/dashboards/admin/students/suspended",
           icon: "user-ban",
         },
         {
@@ -124,9 +123,9 @@ const ROLE_NAVIGATION: Record<string, NavigationItem[]> = {
           icon: "clock",
         },
         {
-          name: "Sessions",
+          name: "Add Link",
           href: "/dashboards/admin/sessions",
-          icon: "calendar-check",
+          icon: "link",
         },
       ],
     },
@@ -345,32 +344,6 @@ export function getDashboardPath(roleCode: string): string {
  * Build navigation menu based on user role
  */
 export function useNavigation(roleCode: string) {
-  const [studentMode, setStudentMode] = useState<"LIVE" | "RECORDED" | null>(
-    null,
-  );
-
-  useEffect(() => {
-    const code = roleCode.toUpperCase();
-    if (code !== "STUDENT") return;
-
-    let mounted = true;
-    (async () => {
-      try {
-        const batch = await apiClient.getMyBatch();
-        if (!mounted) return;
-        if (batch?.mode) {
-          setStudentMode(batch.mode);
-        }
-      } catch {
-        // ignore
-      }
-    })();
-
-    return () => {
-      mounted = false;
-    };
-  }, [roleCode]);
-
   const navigation = useMemo(() => {
     const code = roleCode.toUpperCase();
 
@@ -387,34 +360,13 @@ export function useNavigation(roleCode: string) {
     }
     let roleItems = ROLE_NAVIGATION[navKey] || ROLE_NAVIGATION[code] || [];
 
-    if (code === "STUDENT" && studentMode === "RECORDED") {
-      roleItems = roleItems.map((item) => {
-        if (item.name !== "Academics") return item;
-        return {
-          ...item,
-          subsections: [
-            {
-              name: "My Classes",
-              href: "/dashboards/student/recorded-classes",
-              icon: "play",
-            },
-            {
-              name: "My Batch",
-              href: "/dashboards/student/my-batch",
-              icon: "book",
-            },
-          ],
-        };
-      });
-    }
-
     items.push(...roleItems);
 
     // Add common navigation items
     items.push(...COMMON_NAVIGATION);
 
     return items;
-  }, [roleCode, studentMode]);
+  }, [roleCode]);
 
   return navigation;
 }

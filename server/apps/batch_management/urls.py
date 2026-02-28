@@ -9,7 +9,6 @@ from apps.batch_management.views import (
     CourseListView,
     MentorMyBatchesView,
     MentorBatchStudentsView,
-    MentorBatchRecordedSessionsView,
 )
 from apps.attendance.views import MentorSessionAttendanceAPIView
 
@@ -55,7 +54,4 @@ mentor_urlpatterns = [
     # GET /api/mentor/sessions/{session_id}/attendance/
     path('sessions/<int:session_id>/attendance/',
          MentorSessionAttendanceAPIView.as_view(), name='mentor-session-attendance'),
-    # GET/POST /api/mentor/batches/{batch_id}/recordings/
-    path('batches/<int:batch_id>/recordings/',
-         MentorBatchRecordedSessionsView.as_view(), name='mentor-batch-recordings'),
 ]

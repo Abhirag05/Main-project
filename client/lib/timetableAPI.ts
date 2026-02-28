@@ -258,6 +258,9 @@ export interface BatchTimetable {
   batch_id: number;
   batch_code: string;
   course: string;
+  start_date: string;
+  end_date: string;
+  meeting_link: string;
   weekly_schedule: {
     day: number;
     day_name: string;

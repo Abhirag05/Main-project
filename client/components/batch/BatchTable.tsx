@@ -17,12 +17,6 @@ export default function BatchTable({ batches, onStatusUpdate }: BatchTableProps)
     return badges[status as keyof typeof badges] || "bg-secondary text-foreground";
   };
 
-  const getModeBadge = (mode: string) => {
-    return mode === "LIVE"
-      ? "bg-green-100 text-green-800"
-      : "bg-purple-100 text-purple-800";
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -47,12 +41,6 @@ export default function BatchTable({ batches, onStatusUpdate }: BatchTableProps)
               className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
             >
               Course
-            </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
-            >
-              Mode
             </th>
             <th
               scope="col"
@@ -99,15 +87,6 @@ export default function BatchTable({ batches, onStatusUpdate }: BatchTableProps)
                   </div>
                   <div className="text-muted-foreground">{batch.course_code}</div>
                 </div>
-              </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getModeBadge(
-                    batch.mode
-                  )}`}
-                >
-                  {batch.mode}
-                </span>
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
                 {formatDate(batch.start_date)}

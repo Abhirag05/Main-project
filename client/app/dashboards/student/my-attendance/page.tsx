@@ -1,24 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import StudentAttendance from "@/components/student/StudentAttendance";
-import { apiClient } from "@/lib/api";
 
 export default function MyAttendancePage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const checkMode = async () => {
-      const batch = await apiClient.getMyBatch();
-      if (batch?.mode === "RECORDED") {
-        router.push("/dashboards/student/recorded-classes");
-      }
-    };
-
-    checkMode();
-  }, [router]);
 
   return (
     <DashboardLayout>

@@ -215,8 +215,7 @@ export default function UsersPage() {
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Name</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Role</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Centre</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Phone</th>
                     <th className="px-6 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
@@ -232,12 +231,9 @@ export default function UsersPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{u.email}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex px-2.5 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary border border-primary/20">
-                          {u.role?.code}
-                        </span>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                        {u.phone || u.phone_number || "-"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{u.centre?.name || "—"}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         <div className="flex items-center justify-center gap-2">
                           <button

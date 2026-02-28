@@ -6,8 +6,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import StudentAdmissionsTable from "@/components/shared/StudentAdmissionsTable";
 import VerifyFullPaymentModal from "@/components/shared/VerifyFullPaymentModal";
 import VerifyInstallmentModal from "@/components/shared/VerifyInstallmentModal";
-import DisableAccessModal from "@/components/shared/DisableAccessModal";
-import EnableAccessModal from "@/components/shared/EnableAccessModal";
+import ConfirmActionModal from "@/components/shared/ConfirmActionModal";
 import { useToast } from "@/lib/toast";
 import { financeAPI, StudentAdmission } from "@/lib/financeAPI";
 import { isAdminRole } from "@/lib/roles";
@@ -33,27 +32,17 @@ export default function AdminAllStudentsPage() {
     studentName: string;
   }>({ isOpen: false, studentProfileId: null, studentName: "" });
 
-  const [disableAccessModal, setDisableAccessModal] = useState<{
+  const [actionModal, setActionModal] = useState<{
     isOpen: boolean;
     studentProfileId: number | null;
     studentName: string;
-  }>({ isOpen: false, studentProfileId: null, studentName: "" });
-
-  const [enableAccessModal, setEnableAccessModal] = useState<{
-    isOpen: boolean;
-    studentProfileId: number | null;
-    studentName: string;
-  }>({ isOpen: false, studentProfileId: null, studentName: "" });
-
-  const [completeCourseModal, setCompleteCourseModal] = useState<{
-    isOpen: boolean;
-    studentProfileId: number | null;
-    studentName: string;
-  }>({ isOpen: false, studentProfileId: null, studentName: "" });
+    action: "markOverdue" | "collectPayment" | "suspend" | "reactivate" | "drop" | null;
+  }>({ isOpen: false, studentProfileId: null, studentName: "", action: null });
 
   const toast = useToast();
 
-  // Fetch admissions
+  // ── Fetch ──────────────────────────────────────────────────────
+
   const fetchAdmissions = async () => {
     try {
       setIsLoading(true);
@@ -72,18 +61,12 @@ export default function AdminAllStudentsPage() {
     }
   }, [authLoading, user]);
 
-  // ── Payment verification handlers ──────────────────────────────
+  // ── Payment verification handlers ─────────────────────────────
 
   const handleVerifyFullPaymentClick = (studentProfileId: number) => {
-    const admission = admissions.find(
-      (a) => a.student_profile_id === studentProfileId
-    );
+    const admission = admissions.find((a) => a.student_profile_id === studentProfileId);
     if (admission) {
-      setVerifyFullPaymentModal({
-        isOpen: true,
-        studentProfileId,
-        studentName: admission.full_name,
-      });
+      setVerifyFullPaymentModal({ isOpen: true, studentProfileId, studentName: admission.full_name });
     }
   };
 
@@ -92,7 +75,7 @@ export default function AdminAllStudentsPage() {
     try {
       setIsProcessing(true);
       await financeAPI.verifyFullPayment(verifyFullPaymentModal.studentProfileId);
-      toast.show("success", "Full payment verified successfully");
+      toast.show("success", "Payment verified — student is now Active");
       setVerifyFullPaymentModal({ isOpen: false, studentProfileId: null, studentName: "" });
       fetchAdmissions();
     } catch (error: any) {
@@ -103,15 +86,9 @@ export default function AdminAllStudentsPage() {
   };
 
   const handleVerifyInstallmentClick = (studentProfileId: number) => {
-    const admission = admissions.find(
-      (a) => a.student_profile_id === studentProfileId
-    );
+    const admission = admissions.find((a) => a.student_profile_id === studentProfileId);
     if (admission) {
-      setVerifyInstallmentModal({
-        isOpen: true,
-        studentProfileId,
-        studentName: admission.full_name,
-      });
+      setVerifyInstallmentModal({ isOpen: true, studentProfileId, studentName: admission.full_name });
     }
   };
 
@@ -120,105 +97,93 @@ export default function AdminAllStudentsPage() {
     try {
       setIsProcessing(true);
       await financeAPI.verifyInstallment(verifyInstallmentModal.studentProfileId);
-      toast.show("success", "Installment payment verified successfully");
+      toast.show("success", "Installment verified — student is now Active");
       setVerifyInstallmentModal({ isOpen: false, studentProfileId: null, studentName: "" });
       fetchAdmissions();
     } catch (error: any) {
-      toast.show("error", error.message || "Failed to verify payment");
+      toast.show("error", error.message || "Failed to verify installment");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // ── Access control handlers ────────────────────────────────────
+  // ── Generic lifecycle action handler ──────────────────────────
 
-  const handleDisableAccessClick = (studentProfileId: number) => {
-    const admission = admissions.find(
-      (a) => a.student_profile_id === studentProfileId
-    );
+  const openActionModal = (
+    studentProfileId: number,
+    action: "markOverdue" | "collectPayment" | "suspend" | "reactivate" | "drop",
+  ) => {
+    const admission = admissions.find((a) => a.student_profile_id === studentProfileId);
     if (admission) {
-      setDisableAccessModal({
-        isOpen: true,
-        studentProfileId,
-        studentName: admission.full_name,
-      });
+      setActionModal({ isOpen: true, studentProfileId, studentName: admission.full_name, action });
     }
   };
 
-  const handleDisableAccessConfirm = async () => {
-    if (!disableAccessModal.studentProfileId) return;
+  const handleActionConfirm = async () => {
+    if (!actionModal.studentProfileId || !actionModal.action) return;
+
+    const apiMap = {
+      markOverdue: financeAPI.markOverdue.bind(financeAPI),
+      collectPayment: financeAPI.collectPayment.bind(financeAPI),
+      suspend: financeAPI.suspendStudent.bind(financeAPI),
+      reactivate: financeAPI.reactivateStudent.bind(financeAPI),
+      drop: financeAPI.dropStudent.bind(financeAPI),
+    };
+
+    const successMsg: Record<string, string> = {
+      markOverdue: "Student marked as Payment Due",
+      collectPayment: "Payment collected — student is now Active",
+      suspend: "Student has been suspended",
+      reactivate: "Student has been reactivated",
+      drop: "Student has been dropped",
+    };
+
     try {
       setIsProcessing(true);
-      await financeAPI.disableAccess(disableAccessModal.studentProfileId);
-      toast.show("success", "Student access disabled");
-      setDisableAccessModal({ isOpen: false, studentProfileId: null, studentName: "" });
+      await apiMap[actionModal.action](actionModal.studentProfileId);
+      toast.show("success", successMsg[actionModal.action]);
+      setActionModal({ isOpen: false, studentProfileId: null, studentName: "", action: null });
       fetchAdmissions();
     } catch (error: any) {
-      toast.show("error", error.message || "Failed to disable access");
+      toast.show("error", error.message || "Action failed");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleEnableAccessClick = (studentProfileId: number) => {
-    const admission = admissions.find(
-      (a) => a.student_profile_id === studentProfileId
-    );
-    if (admission) {
-      setEnableAccessModal({
-        isOpen: true,
-        studentProfileId,
-        studentName: admission.full_name,
-      });
-    }
+  // ── Action modal config ──────────────────────────────────────
+
+  const actionConfig: Record<string, { title: string; description: string; variant: "warning" | "danger" | "success" | "info" }> = {
+    markOverdue: {
+      title: "Mark Payment Due",
+      description: `Are you sure you want to mark ${actionModal.studentName}'s installment as overdue? Their LMS access will be suspended until the next payment is collected.`,
+      variant: "warning",
+    },
+    collectPayment: {
+      title: "Collect Payment",
+      description: `Confirm that ${actionModal.studentName} has made their installment payment? Their LMS access will be restored.`,
+      variant: "success",
+    },
+    suspend: {
+      title: "Suspend Student",
+      description: `Are you sure you want to suspend ${actionModal.studentName}? Their LMS access will be revoked until reactivated.`,
+      variant: "warning",
+    },
+    reactivate: {
+      title: "Reactivate Student",
+      description: `Are you sure you want to reactivate ${actionModal.studentName}? Their LMS access will be restored.`,
+      variant: "success",
+    },
+    drop: {
+      title: "Drop Student",
+      description: `Are you sure you want to permanently drop ${actionModal.studentName}? This action cannot be easily undone.`,
+      variant: "danger",
+    },
   };
 
-  const handleEnableAccessConfirm = async () => {
-    if (!enableAccessModal.studentProfileId) return;
-    try {
-      setIsProcessing(true);
-      await financeAPI.enableAccess(enableAccessModal.studentProfileId);
-      toast.show("success", "Student access enabled");
-      setEnableAccessModal({ isOpen: false, studentProfileId: null, studentName: "" });
-      fetchAdmissions();
-    } catch (error: any) {
-      toast.show("error", error.message || "Failed to enable access");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+  const currentActionConfig = actionModal.action ? actionConfig[actionModal.action] : null;
 
-  // ── Course complete handler ────────────────────────────────────
-
-  const handleCompleteCourseClick = (studentProfileId: number) => {
-    const admission = admissions.find(
-      (a) => a.student_profile_id === studentProfileId
-    );
-    if (admission) {
-      setCompleteCourseModal({
-        isOpen: true,
-        studentProfileId,
-        studentName: admission.full_name,
-      });
-    }
-  };
-
-  const handleCompleteCourseConfirm = async () => {
-    if (!completeCourseModal.studentProfileId) return;
-    try {
-      setIsProcessing(true);
-      await financeAPI.completeCourse(completeCourseModal.studentProfileId);
-      toast.show("success", "Course marked as completed. Student access has been disabled.");
-      setCompleteCourseModal({ isOpen: false, studentProfileId: null, studentName: "" });
-      fetchAdmissions();
-    } catch (error: any) {
-      toast.show("error", error.message || "Failed to mark course as completed");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  // ── Filtered data ──────────────────────────────────────────────
+  // ── Filtered data ─────────────────────────────────────────────
 
   const filteredAdmissions = admissions.filter((admission) => {
     const matchesPayment =
@@ -228,33 +193,23 @@ export default function AdminAllStudentsPage() {
     return matchesPayment && matchesStatus;
   });
 
-  // ── Access control ─────────────────────────────────────────────
+  // ── Access denied ─────────────────────────────────────────────
 
   if (!authLoading && user && !isAdminRole(user.role.code)) {
     return (
       <DashboardLayout>
         <div className="text-center py-20">
-          <svg
-            className="mx-auto h-12 w-12 text-red-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
+          <svg className="mx-auto h-12 w-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <h1 className="mt-4 text-2xl font-bold text-foreground">Access Denied</h1>
-          <p className="mt-2 text-muted-foreground">
-            You do not have permission to access this page.
-          </p>
+          <p className="mt-2 text-muted-foreground">You do not have permission to access this page.</p>
         </div>
       </DashboardLayout>
     );
   }
+
+  // ── Render ────────────────────────────────────────────────────
 
   return (
     <DashboardLayout>
@@ -262,9 +217,9 @@ export default function AdminAllStudentsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">All Students</h1>
+            <h1 className="text-3xl font-bold text-foreground">Student Management</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Manage student payments and access
+              Manage the student lifecycle — payments, access &amp; status
             </p>
           </div>
           <button
@@ -273,19 +228,10 @@ export default function AdminAllStudentsPage() {
             className="inline-flex items-center px-4 py-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground/80 bg-card hover:bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50"
           >
             <svg
-              className={`-ml-1 mr-2 h-5 w-5 text-muted-foreground ${
-                isLoading ? "animate-spin" : ""
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+              className={`-ml-1 mr-2 h-5 w-5 text-muted-foreground ${isLoading ? "animate-spin" : ""}`}
+              fill="none" stroke="currentColor" viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             Refresh
           </button>
@@ -295,9 +241,7 @@ export default function AdminAllStudentsPage() {
         <div className="bg-card shadow rounded-lg p-4">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
-              <label htmlFor="status-filter" className="text-sm font-medium text-foreground/80">
-                Status:
-              </label>
+              <label htmlFor="status-filter" className="text-sm font-medium text-foreground/80">Status:</label>
               <select
                 id="status-filter"
                 value={statusFilter}
@@ -306,17 +250,14 @@ export default function AdminAllStudentsPage() {
               >
                 <option value="all">All Statuses</option>
                 <option value="PENDING">Pending</option>
-                <option value="FULL_PAYMENT_VERIFIED">Full Payment Verified</option>
-                <option value="INSTALLMENT_VERIFIED">Installment Active</option>
-                <option value="INSTALLMENT_PENDING">Installment Pending</option>
-                <option value="COURSE_COMPLETED">Course Completed</option>
-                <option value="DISABLED">Disabled</option>
+                <option value="ACTIVE">Active</option>
+                <option value="PAYMENT_DUE">Payment Due</option>
+                <option value="SUSPENDED">Suspended</option>
+                <option value="DROPPED">Dropped</option>
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <label htmlFor="payment-mode-filter" className="text-sm font-medium text-foreground/80">
-                Payment Mode:
-              </label>
+              <label htmlFor="payment-mode-filter" className="text-sm font-medium text-foreground/80">Payment Mode:</label>
               <select
                 id="payment-mode-filter"
                 value={paymentModeFilter}
@@ -330,10 +271,7 @@ export default function AdminAllStudentsPage() {
             </div>
             {(paymentModeFilter !== "all" || statusFilter !== "all") && (
               <button
-                onClick={() => {
-                  setPaymentModeFilter("all");
-                  setStatusFilter("all");
-                }}
+                onClick={() => { setPaymentModeFilter("all"); setStatusFilter("all"); }}
                 className="text-sm text-primary hover:text-primary"
               >
                 Clear Filters
@@ -359,7 +297,7 @@ export default function AdminAllStudentsPage() {
                   <dl>
                     <dt className="text-sm font-medium text-muted-foreground truncate">Pending</dt>
                     <dd className="text-lg font-semibold text-foreground">
-                      {admissions.filter((a) => a.admission_status === "PENDING" || a.admission_status === "APPROVED").length}
+                      {admissions.filter((a) => a.admission_status === "PENDING").length}
                     </dd>
                   </dl>
                 </div>
@@ -367,25 +305,22 @@ export default function AdminAllStudentsPage() {
             </div>
           </div>
 
-          {/* Verified */}
+          {/* Active */}
           <div className="bg-card overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <div className="rounded-md bg-emerald-500 p-3">
                     <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-muted-foreground truncate">Verified</dt>
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Active</dt>
                     <dd className="text-lg font-semibold text-foreground">
-                      {admissions.filter((a) =>
-                        a.admission_status === "FULL_PAYMENT_VERIFIED" ||
-                        a.admission_status === "INSTALLMENT_VERIFIED"
-                      ).length}
+                      {admissions.filter((a) => a.admission_status === "ACTIVE").length}
                     </dd>
                   </dl>
                 </div>
@@ -393,22 +328,22 @@ export default function AdminAllStudentsPage() {
             </div>
           </div>
 
-          {/* Installment Pending */}
+          {/* Payment Due */}
           <div className="bg-card overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <div className="rounded-md bg-orange-500 p-3">
                     <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.832c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-muted-foreground truncate">Installment Pending</dt>
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Payment Due</dt>
                     <dd className="text-lg font-semibold text-foreground">
-                      {admissions.filter((a) => a.admission_status === "INSTALLMENT_PENDING").length}
+                      {admissions.filter((a) => a.admission_status === "PAYMENT_DUE").length}
                     </dd>
                   </dl>
                 </div>
@@ -416,35 +351,12 @@ export default function AdminAllStudentsPage() {
             </div>
           </div>
 
-          {/* Course Completed */}
+          {/* Suspended */}
           <div className="bg-card overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="rounded-md bg-purple-500 p-3">
-                    <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-muted-foreground truncate">Course Completed</dt>
-                    <dd className="text-lg font-semibold text-foreground">
-                      {admissions.filter((a) => a.admission_status === "COURSE_COMPLETED").length}
-                    </dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Disabled */}
-          <div className="bg-card overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="rounded-md bg-muted-foreground p-3">
+                  <div className="rounded-md bg-red-500 p-3">
                     <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                     </svg>
@@ -452,9 +364,32 @@ export default function AdminAllStudentsPage() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-muted-foreground truncate">Disabled</dt>
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Suspended</dt>
                     <dd className="text-lg font-semibold text-foreground">
-                      {admissions.filter((a) => a.admission_status === "DISABLED").length}
+                      {admissions.filter((a) => a.admission_status === "SUSPENDED").length}
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Dropped */}
+          <div className="bg-card overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="rounded-md bg-gray-500 p-3">
+                    <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-muted-foreground truncate">Dropped</dt>
+                    <dd className="text-lg font-semibold text-foreground">
+                      {admissions.filter((a) => a.admission_status === "DROPPED").length}
                     </dd>
                   </dl>
                 </div>
@@ -469,98 +404,45 @@ export default function AdminAllStudentsPage() {
           isLoading={isLoading}
           onVerifyFullPayment={handleVerifyFullPaymentClick}
           onVerifyInstallment={handleVerifyInstallmentClick}
-          onDisableAccess={handleDisableAccessClick}
-          onEnableAccess={handleEnableAccessClick}
-          onCompleteCourse={handleCompleteCourseClick}
+          onMarkOverdue={(id) => openActionModal(id, "markOverdue")}
+          onCollectPayment={(id) => openActionModal(id, "collectPayment")}
+          onSuspend={(id) => openActionModal(id, "suspend")}
+          onReactivate={(id) => openActionModal(id, "reactivate")}
+          onDrop={(id) => openActionModal(id, "drop")}
           isProcessing={isProcessing}
         />
       </div>
 
-      {/* Modals */}
+      {/* Verify Full Payment Modal */}
       <VerifyFullPaymentModal
         isOpen={verifyFullPaymentModal.isOpen}
         studentName={verifyFullPaymentModal.studentName}
         onConfirm={handleVerifyFullPaymentConfirm}
-        onCancel={() =>
-          setVerifyFullPaymentModal({ isOpen: false, studentProfileId: null, studentName: "" })
-        }
+        onCancel={() => setVerifyFullPaymentModal({ isOpen: false, studentProfileId: null, studentName: "" })}
         isLoading={isProcessing}
       />
 
+      {/* Verify Installment Modal */}
       <VerifyInstallmentModal
         isOpen={verifyInstallmentModal.isOpen}
         studentName={verifyInstallmentModal.studentName}
         onConfirm={handleVerifyInstallmentConfirm}
-        onCancel={() =>
-          setVerifyInstallmentModal({ isOpen: false, studentProfileId: null, studentName: "" })
-        }
+        onCancel={() => setVerifyInstallmentModal({ isOpen: false, studentProfileId: null, studentName: "" })}
         isLoading={isProcessing}
       />
 
-      <DisableAccessModal
-        isOpen={disableAccessModal.isOpen}
-        studentName={disableAccessModal.studentName}
-        onConfirm={handleDisableAccessConfirm}
-        onCancel={() =>
-          setDisableAccessModal({ isOpen: false, studentProfileId: null, studentName: "" })
-        }
-        isLoading={isProcessing}
-      />
-
-      <EnableAccessModal
-        isOpen={enableAccessModal.isOpen}
-        studentName={enableAccessModal.studentName}
-        onConfirm={handleEnableAccessConfirm}
-        onCancel={() =>
-          setEnableAccessModal({ isOpen: false, studentProfileId: null, studentName: "" })
-        }
-        isLoading={isProcessing}
-      />
-
-      {/* Course Complete Confirmation Modal */}
-      {completeCourseModal.isOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <div className="fixed inset-0 bg-muted-foreground bg-opacity-75 transition-opacity" onClick={() => setCompleteCourseModal({ isOpen: false, studentProfileId: null, studentName: "" })} />
-            <div className="relative transform overflow-hidden rounded-lg bg-card px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-              <div className="sm:flex sm:items-start">
-                <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-purple-100 sm:mx-0 sm:h-10 sm:w-10">
-                  <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                  </svg>
-                </div>
-                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                  <h3 className="text-base font-semibold leading-6 text-foreground">
-                    Mark Course as Completed
-                  </h3>
-                  <div className="mt-2">
-                    <p className="text-sm text-muted-foreground">
-                      Are you sure you want to mark <strong>{completeCourseModal.studentName}</strong>&apos;s course as completed?
-                      This will disable their access to the student dashboard.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse gap-3">
-                <button
-                  type="button"
-                  onClick={handleCompleteCourseConfirm}
-                  disabled={isProcessing}
-                  className="inline-flex w-full justify-center rounded-md bg-purple-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 sm:w-auto disabled:opacity-50"
-                >
-                  {isProcessing ? "Processing..." : "Confirm"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCompleteCourseModal({ isOpen: false, studentProfileId: null, studentName: "" })}
-                  className="mt-3 inline-flex w-full justify-center rounded-md bg-card px-3 py-2 text-sm font-semibold text-foreground shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-secondary/50 sm:mt-0 sm:w-auto"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Generic Action Confirmation Modal */}
+      {currentActionConfig && (
+        <ConfirmActionModal
+          isOpen={actionModal.isOpen}
+          title={currentActionConfig.title}
+          description={currentActionConfig.description}
+          variant={currentActionConfig.variant}
+          confirmLabel={currentActionConfig.title}
+          onConfirm={handleActionConfirm}
+          onCancel={() => setActionModal({ isOpen: false, studentProfileId: null, studentName: "", action: null })}
+          isLoading={isProcessing}
+        />
       )}
     </DashboardLayout>
   );

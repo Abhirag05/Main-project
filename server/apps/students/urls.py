@@ -12,7 +12,6 @@ from apps.students.views import (
     MyBatchView,
     MyBatchModulesView,
     StudentReferralView,
-    StudentRecordedSessionsView,
     MySkillsView,
 )
 
@@ -34,8 +33,6 @@ urlpatterns = [
     path('my-batch/', MyBatchView.as_view(), name='student-my-batch'),
     path('my-batch/modules/', MyBatchModulesView.as_view(),
          name='student-my-batch-modules'),
-    path('recordings/', StudentRecordedSessionsView.as_view(),
-         name='student-recordings'),
     path('my-skills/', MySkillsView.as_view(),
          name='student-my-skills'),
     path('', include(router.urls)),

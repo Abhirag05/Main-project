@@ -75,6 +75,34 @@ class LoginSerializer(serializers.Serializer):
                     code='authorization'
                 )
 
+            # Check if account is deactivated BEFORE authenticating
+            # This allows us to provide better error messages for students
+            if not existing_user.is_active:
+                # For students, check admission_status for specific messaging
+                if existing_user.role and existing_user.role.code == 'STUDENT':
+                    if hasattr(existing_user, 'student_profile'):
+                        profile = existing_user.student_profile
+                        if profile.admission_status == 'SUSPENDED':
+                            raise serializers.ValidationError(
+                                'Your account has been suspended. Please contact the admin for assistance.',
+                                code='suspended'
+                            )
+                        elif profile.admission_status == 'PAYMENT_DUE':
+                            raise serializers.ValidationError(
+                                'Your access has been suspended due to pending installment payment. Please contact the finance team.',
+                                code='payment_due'
+                            )
+                        elif profile.admission_status in ['DROPPED', 'REJECTED']:
+                            raise serializers.ValidationError(
+                                'Your admission has been terminated. Please contact the admin for more details.',
+                                code='terminated'
+                            )
+                # Generic message for non-students or if no profile
+                raise serializers.ValidationError(
+                    'Your account has been disabled. Please contact the admin.',
+                    code='authorization'
+                )
+
             # Authenticate using email (USERNAME_FIELD)
             user = authenticate(
                 request=self.context.get('request'),
@@ -85,12 +113,6 @@ class LoginSerializer(serializers.Serializer):
             if not user:
                 raise serializers.ValidationError(
                     'Incorrect password.',
-                    code='authorization'
-                )
-
-            if not user.is_active:
-                raise serializers.ValidationError(
-                    'User account is disabled.',
                     code='authorization'
                 )
 
@@ -113,23 +135,28 @@ class LoginSerializer(serializers.Serializer):
                     # Check if student profile exists
                     if hasattr(user, 'student_profile'):
                         profile = user.student_profile
+                        # New lifecycle: only ACTIVE students can login
+                        # Legacy statuses also allowed for backward compatibility
                         allowed_statuses = [
-                            'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']
+                            'ACTIVE',
+                            'FULL_PAYMENT_VERIFIED',  # legacy
+                            'INSTALLMENT_VERIFIED'    # legacy
+                        ]
 
                         if profile.admission_status not in allowed_statuses:
                             # Customize message based on status
-                            if profile.admission_status == 'PENDING':
+                            if profile.admission_status in ['PENDING', 'APPROVED']:
                                 msg = 'Your admission is pending payment verification. Please wait for the admin to verify your payment before you can access the system.'
-                            elif profile.admission_status == 'REJECTED':
-                                msg = 'Your admission application has been rejected. Please contact the admin for more details.'
-                            elif profile.admission_status == 'INSTALLMENT_PENDING':
+                            elif profile.admission_status == 'PAYMENT_DUE':
                                 msg = 'Your access has been suspended due to pending installment payment. Please complete your installment and contact the admin to restore access.'
-                            elif profile.admission_status == 'DISABLED':
-                                msg = 'Your account has been disabled by the admin due to payment issues. Please contact the admin to resolve this.'
-                            elif profile.admission_status == 'COURSE_COMPLETED':
+                            elif profile.admission_status in ['SUSPENDED', 'DISABLED']:
+                                msg = 'Your account has been suspended by the admin. Please contact the admin to resolve this.'
+                            elif profile.admission_status in ['DROPPED', 'REJECTED']:
+                                msg = 'Your admission has been terminated. Please contact the admin for more details.'
+                            elif profile.admission_status == 'INSTALLMENT_PENDING':  # legacy
+                                msg = 'Your access has been suspended due to pending installment payment. Please complete your installment and contact the admin to restore access.'
+                            elif profile.admission_status == 'COURSE_COMPLETED':  # legacy
                                 msg = 'Your course has been completed. Your access to the system has ended. Thank you for learning with us!'
-                            elif profile.admission_status == 'APPROVED':
-                                msg = 'Your admission is approved but payment is not yet verified. Please contact the admin.'
                             else:
                                 msg = f'Your account is currently inactive. Please contact the admin for assistance.'
 

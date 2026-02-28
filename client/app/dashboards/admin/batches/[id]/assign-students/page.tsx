@@ -690,20 +690,6 @@ export default function AssignStudentsPage() {
               </div>
               <div>
                 <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  Mode
-                </p>
-                <span
-                  className={`mt-1 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                    batchDetails.mode === "LIVE"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-purple-100 text-purple-800"
-                  }`}
-                >
-                  {batchDetails.mode}
-                </span>
-              </div>
-              <div>
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                   Capacity
                 </p>
                 <p className="mt-1 text-sm font-semibold text-foreground">

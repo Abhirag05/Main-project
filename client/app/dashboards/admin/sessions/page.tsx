@@ -2,388 +2,181 @@
 
 import { useState, useEffect, useCallback } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import {
-  ClassSessionList,
-  SessionDetailModal,
-  GenerateSessionsModal,
-} from "@/components/timetable";
-import {
-  ClassSession,
-  TimeSlot,
-  timetableAPI,
-} from "@/lib/timetableAPI";
+import { timetableAPI, BatchTimetable } from "@/lib/timetableAPI";
 import { apiClient } from "@/lib/api";
 
-interface Batch {
+interface BatchInfo {
   id: number;
   code: string;
-  name?: string;
-  course_name?: string;
+  course_name: string;
+  start_date: string;
+  end_date: string;
+  status: string;
+  meeting_link: string;
 }
 
-export default function SessionsManagementPage() {
-  const [sessions, setSessions] = useState<ClassSession[]>([]);
-  const [loading, setLoading] = useState(false);
+export default function AddLinkPage() {
+  const [batches, setBatches] = useState<BatchInfo[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Batch filter
-  const [batches, setBatches] = useState<Batch[]>([]);
-  const [filterBatch, setFilterBatch] = useState<string>("");
+  // Expanded batch card (shows timetable)
+  const [expandedBatchId, setExpandedBatchId] = useState<number | null>(null);
+  const [timetable, setTimetable] = useState<BatchTimetable | null>(null);
+  const [loadingTimetable, setLoadingTimetable] = useState(false);
 
-  // Date filters
-  const [dateFrom, setDateFrom] = useState<string>("");
-  const [dateTo, setDateTo] = useState<string>("");
+  // Meeting link editing
+  const [editingBatchId, setEditingBatchId] = useState<number | null>(null);
+  const [linkInput, setLinkInput] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
-  // Status filter
-  const [filterStatus, setFilterStatus] = useState<string>("");
-
-  // Detail modal
-  const [selectedSession, setSelectedSession] = useState<ClassSession | null>(
-    null
-  );
-
-  // Generate sessions modal
-  const [showGenerateModal, setShowGenerateModal] = useState(false);
-  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-  const [loadingSlots, setLoadingSlots] = useState(false);
-
-  // Fetch batches on mount
+  // Fetch all active batches on mount
   useEffect(() => {
     const fetchBatches = async () => {
+      setLoading(true);
       try {
-        const batchRes = await apiClient.getBatches();
+        const batchRes = await apiClient.getBatches({ status: "ACTIVE" });
         setBatches(
           batchRes.map((b) => ({
             id: b.id,
             code: b.code,
-            name: b.course_name,
             course_name: b.course_name,
+            start_date: b.start_date,
+            end_date: b.end_date,
+            status: b.status,
+            meeting_link: b.meeting_link || "",
           }))
         );
       } catch (err) {
         console.error("Failed to fetch batches:", err);
+        setError("Failed to load batches");
+      } finally {
+        setLoading(false);
       }
     };
     fetchBatches();
   }, []);
 
-  // Fetch sessions when filters change
-  const fetchSessions = useCallback(async () => {
-    if (!filterBatch) {
-      setSessions([]);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    try {
-      const params: {
-        batch?: number;
-        date_from?: string;
-        date_to?: string;
-        status?: import("@/lib/timetableAPI").SessionStatus;
-      } = {};
-
-      if (filterBatch) params.batch = parseInt(filterBatch);
-      if (dateFrom) params.date_from = dateFrom;
-      if (dateTo) params.date_to = dateTo;
-      if (filterStatus) params.status = filterStatus as import("@/lib/timetableAPI").SessionStatus;
-
-      const response = await timetableAPI.getSessions(params);
-      setSessions(Array.isArray(response) ? response : []);
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to fetch sessions";
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, [filterBatch, dateFrom, dateTo, filterStatus]);
-
-  useEffect(() => {
-    fetchSessions();
-  }, [fetchSessions]);
-
-  // Fetch time slots for the selected batch (for generate modal)
-  const handleOpenGenerate = async () => {
-    if (!filterBatch) {
-      setError("Please select a batch first");
-      return;
-    }
-
-    setLoadingSlots(true);
-    try {
-      const slots = await timetableAPI.getTimeSlots({
-        batch: parseInt(filterBatch),
-        is_active: true,
-      });
-      setTimeSlots(slots);
-
-      if (slots.length === 0) {
-        setError(
-          "No active time slots found for this batch. Create time slots in the Timetable page first."
-        );
+  // Load timetable when a batch card is expanded
+  const handleToggleBatch = useCallback(
+    async (batchId: number) => {
+      if (expandedBatchId === batchId) {
+        setExpandedBatchId(null);
+        setTimetable(null);
         return;
       }
 
-      setShowGenerateModal(true);
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "Failed to fetch time slots";
-      setError(errorMessage);
+      setExpandedBatchId(batchId);
+      setLoadingTimetable(true);
+      setTimetable(null);
+
+      try {
+        const data = await timetableAPI.getBatchTimetable(batchId);
+        setTimetable(data);
+      } catch (err) {
+        console.error("Failed to load timetable:", err);
+      } finally {
+        setLoadingTimetable(false);
+      }
+    },
+    [expandedBatchId]
+  );
+
+  // Start editing meeting link
+  const handleEditLink = (batch: BatchInfo) => {
+    setEditingBatchId(batch.id);
+    setLinkInput(batch.meeting_link);
+  };
+
+  // Save meeting link
+  const handleSaveLink = async (batchId: number) => {
+    setSaving(true);
+    try {
+      await apiClient.setMeetingLink(batchId, linkInput.trim());
+      setBatches((prev) =>
+        prev.map((b) =>
+          b.id === batchId ? { ...b, meeting_link: linkInput.trim() } : b
+        )
+      );
+      setEditingBatchId(null);
+      setToast({ message: "Meeting link saved successfully!", type: "success" });
+      setTimeout(() => setToast(null), 3000);
+    } catch (err) {
+      console.error("Failed to save meeting link:", err);
+      setToast({ message: "Failed to save meeting link", type: "error" });
+      setTimeout(() => setToast(null), 3000);
     } finally {
-      setLoadingSlots(false);
+      setSaving(false);
     }
   };
 
-  // Generate sessions from time slots
-  const handleGenerateSessions = async (data: {
-    start_date: string;
-    end_date: string;
-    time_slot_ids: number[];
-  }) => {
-    // Use bulk create for each time slot
-    const results = await Promise.all(
-      data.time_slot_ids.map((slotId) =>
-        timetableAPI.createBulkSessions({
-          time_slot: slotId,
-          start_date: data.start_date,
-          end_date: data.end_date,
-        })
-      )
-    );
-
-    const totalCreated = results.reduce(
-      (sum, r) => sum + (r.sessions?.length || 0),
-      0
-    );
-    alert(`Successfully generated ${totalCreated} sessions!`);
-    fetchSessions();
-  };
-
-  // Update session status
-  const handleStatusChange = async (
-    session: ClassSession,
-    newStatus: string
-  ) => {
+  // Remove meeting link
+  const handleRemoveLink = async (batchId: number) => {
+    setSaving(true);
     try {
-      await timetableAPI.updateSession(session.id, {
-        status: newStatus as any,
-      });
-      fetchSessions();
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to update session";
-      alert(errorMessage);
+      await apiClient.setMeetingLink(batchId, "");
+      setBatches((prev) =>
+        prev.map((b) =>
+          b.id === batchId ? { ...b, meeting_link: "" } : b
+        )
+      );
+      setEditingBatchId(null);
+      setToast({ message: "Meeting link removed", type: "success" });
+      setTimeout(() => setToast(null), 3000);
+    } catch (err) {
+      console.error("Failed to remove meeting link:", err);
+      setToast({ message: "Failed to remove meeting link", type: "error" });
+      setTimeout(() => setToast(null), 3000);
+    } finally {
+      setSaving(false);
     }
   };
 
-  // Delete session
-  const handleDeleteSession = async (session: ClassSession) => {
-    try {
-      await timetableAPI.deleteSession(session.id);
-      fetchSessions();
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to delete session";
-      alert(errorMessage);
-    }
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "N/A";
+    return new Date(dateStr).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   };
 
-  // View session details
-  const handleViewDetails = (session: ClassSession) => {
-    setSelectedSession(session);
+  // Calculate duration in months
+  const getDuration = (start: string, end: string) => {
+    if (!start || !end) return "N/A";
+    const s = new Date(start);
+    const e = new Date(end);
+    const months =
+      (e.getFullYear() - s.getFullYear()) * 12 +
+      (e.getMonth() - s.getMonth());
+    return months <= 1 ? "1 month" : `${months} months`;
   };
-
-  // Update session from detail modal
-  const handleSessionUpdate = (updatedSession: ClassSession) => {
-    setSessions((prev) =>
-      prev.map((s) => (s.id === updatedSession.id ? updatedSession : s))
-    );
-    setSelectedSession(updatedSession);
-  };
-
-  // Summary stats
-  const scheduledCount = sessions.filter(
-    (s) => s.status === "SCHEDULED"
-  ).length;
-  const completedCount = sessions.filter(
-    (s) => s.status === "COMPLETED"
-  ).length;
-  const cancelledCount = sessions.filter(
-    (s) => s.status === "CANCELLED"
-  ).length;
-  const inProgressCount = sessions.filter(
-    (s) => s.status === "IN_PROGRESS"
-  ).length;
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">
-              Session Management
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Generate and manage class sessions from your timetable
-            </p>
-          </div>
-          <div className="mt-4 sm:mt-0">
-            <button
-              onClick={handleOpenGenerate}
-              disabled={!filterBatch || loadingSlots}
-              className="inline-flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loadingSlots ? (
-                <svg
-                  className="animate-spin w-5 h-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth={4}
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-              )}
-              Generate Sessions
-            </button>
-          </div>
-        </div>
-
-        {/* Info banner */}
-        {!filterBatch && (
-          <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
-            <div className="flex items-start">
-              <svg
-                className="w-5 h-5 text-primary/70 mr-3 mt-0.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <div className="text-sm text-primary">
-                <p className="font-medium">How it works</p>
-                <ol className="mt-1 list-decimal list-inside space-y-1">
-                  <li>
-                    First, create time slots on the{" "}
-                    <span className="font-semibold">Timetable</span> page
-                    (recurring weekly schedule).
-                  </li>
-                  <li>
-                    Select a batch below and click{" "}
-                    <span className="font-semibold">Generate Sessions</span> to
-                    create actual class sessions from those time slots.
-                  </li>
-                  <li>
-                    Manage individual sessions — update status, cancel, or
-                    delete.
-                  </li>
-                </ol>
-              </div>
-            </div>
+        {/* Toast */}
+        {toast && (
+          <div
+            className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-white text-sm font-medium transition-all ${
+              toast.type === "success" ? "bg-green-600" : "bg-red-600"
+            }`}
+          >
+            {toast.message}
           </div>
         )}
 
-        {/* Filters */}
-        <div className="bg-card rounded-lg shadow p-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground/80 mb-1">
-                Batch <span className="text-red-500">*</span>
-              </label>
-              <select
-                value={filterBatch}
-                onChange={(e) => setFilterBatch(e.target.value)}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-              >
-                <option value="" disabled>
-                  Select Batch
-                </option>
-                {batches.map((batch) => (
-                  <option key={batch.id} value={batch.id}>
-                    {batch.code}
-                    {batch.course_name ? ` - ${batch.course_name}` : ""}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground/80 mb-1">
-                From Date
-              </label>
-              <input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground/80 mb-1">
-                To Date
-              </label>
-              <input
-                type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground/80 mb-1">
-                Status
-              </label>
-              <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-              >
-                <option value="">All Statuses</option>
-                <option value="SCHEDULED">Scheduled</option>
-                <option value="IN_PROGRESS">In Progress</option>
-                <option value="COMPLETED">Completed</option>
-                <option value="CANCELLED">Cancelled</option>
-                <option value="RESCHEDULED">Rescheduled</option>
-              </select>
-            </div>
-          </div>
+        {/* Header */}
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Add Link</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Set a common meeting link for each batch. The link will be visible to
+            faculty and students on their timetable.
+          </p>
         </div>
 
         {/* Error */}
@@ -393,76 +186,348 @@ export default function SessionsManagementPage() {
           </div>
         )}
 
-        {/* Stats */}
-        {filterBatch && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="bg-card rounded-lg shadow p-4">
-              <div className="text-sm font-medium text-muted-foreground">Total</div>
-              <div className="mt-1 text-2xl font-semibold text-foreground">
-                {sessions.length}
+        {/* Loading */}
+        {loading && (
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="bg-card rounded-lg shadow p-6 animate-pulse"
+              >
+                <div className="h-5 bg-muted rounded w-1/3 mb-3"></div>
+                <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
+                <div className="h-4 bg-muted rounded w-1/2"></div>
               </div>
-            </div>
-            <div className="bg-card rounded-lg shadow p-4">
-              <div className="text-sm font-medium text-muted-foreground">Scheduled</div>
-              <div className="mt-1 text-2xl font-semibold text-primary">
-                {scheduledCount}
-              </div>
-            </div>
-            <div className="bg-card rounded-lg shadow p-4">
-              <div className="text-sm font-medium text-muted-foreground">
-                In Progress
-              </div>
-              <div className="mt-1 text-2xl font-semibold text-green-600">
-                {inProgressCount}
-              </div>
-            </div>
-            <div className="bg-card rounded-lg shadow p-4">
-              <div className="text-sm font-medium text-muted-foreground">Completed</div>
-              <div className="mt-1 text-2xl font-semibold text-muted-foreground">
-                {completedCount}
-              </div>
-            </div>
-            <div className="bg-card rounded-lg shadow p-4">
-              <div className="text-sm font-medium text-muted-foreground">Cancelled</div>
-              <div className="mt-1 text-2xl font-semibold text-red-600">
-                {cancelledCount}
-              </div>
-            </div>
+            ))}
           </div>
         )}
 
-        {/* Session List */}
-        {filterBatch && (
-          <ClassSessionList
-            sessions={sessions}
-            loading={loading}
-            onStatusChange={handleStatusChange}
-            onViewDetails={handleViewDetails}
-            showBatchInfo={true}
-            showFacultyInfo={true}
-            showStatusDropdown={true}
-            showDeleteButton={true}
-            onDelete={handleDeleteSession}
-          />
+        {/* No batches */}
+        {!loading && batches.length === 0 && !error && (
+          <div className="bg-card rounded-lg shadow p-12 text-center">
+            <svg
+              className="mx-auto h-12 w-12 text-muted-foreground/50"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
+            <h3 className="mt-3 text-lg font-medium text-foreground">
+              No active batches
+            </h3>
+            <p className="mt-1 text-muted-foreground">
+              Active batches will appear here for link assignment.
+            </p>
+          </div>
         )}
+
+        {/* Batch Cards */}
+        {!loading &&
+          batches.map((batch) => (
+            <div
+              key={batch.id}
+              className="bg-card rounded-lg shadow overflow-hidden"
+            >
+              {/* Card Header */}
+              <div
+                className="p-5 cursor-pointer hover:bg-secondary/30 transition-colors"
+                onClick={() => handleToggleBatch(batch.id)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    {/* Batch icon */}
+                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <svg
+                        className="w-6 h-6 text-primary"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground">
+                        {batch.code}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {batch.course_name}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-6">
+                    {/* Duration info */}
+                    <div className="text-right hidden sm:block">
+                      <p className="text-xs text-muted-foreground">Duration</p>
+                      <p className="text-sm font-medium text-foreground">
+                        {getDuration(batch.start_date, batch.end_date)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatDate(batch.start_date)} –{" "}
+                        {formatDate(batch.end_date)}
+                      </p>
+                    </div>
+
+                    {/* Link status badge */}
+                    {batch.meeting_link ? (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <svg
+                          className="w-3 h-3 mr-1"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        Link Set
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <svg
+                          className="w-3 h-3 mr-1"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        No Link
+                      </span>
+                    )}
+
+                    {/* Expand icon */}
+                    <svg
+                      className={`w-5 h-5 text-muted-foreground transition-transform ${
+                        expandedBatchId === batch.id ? "rotate-180" : ""
+                      }`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Expanded Content */}
+              {expandedBatchId === batch.id && (
+                <div className="border-t border-border">
+                  {/* Meeting Link Section */}
+                  <div className="px-5 py-4 bg-secondary/20">
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-sm font-medium text-foreground">
+                        Common Meeting Link
+                      </label>
+                    </div>
+
+                    {editingBatchId === batch.id ? (
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="url"
+                          value={linkInput}
+                          onChange={(e) => setLinkInput(e.target.value)}
+                          placeholder="https://meet.google.com/xxx or https://zoom.us/j/xxx"
+                          className="flex-1 border border-border rounded-lg px-3 py-2 text-sm bg-card text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
+                          autoFocus
+                        />
+                        <button
+                          onClick={() => handleSaveLink(batch.id)}
+                          disabled={saving}
+                          className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                        >
+                          {saving ? "Saving..." : "Save"}
+                        </button>
+                        <button
+                          onClick={() => setEditingBatchId(null)}
+                          disabled={saving}
+                          className="px-4 py-2 bg-card border border-border text-foreground text-sm font-medium rounded-lg hover:bg-secondary/50 disabled:opacity-50"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        {batch.meeting_link ? (
+                          <>
+                            <a
+                              href={batch.meeting_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline text-sm truncate max-w-sm"
+                            >
+                              {batch.meeting_link}
+                            </a>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditLink(batch);
+                              }}
+                              className="px-3 py-1.5 bg-primary/10 text-primary text-xs font-medium rounded-lg hover:bg-primary/20"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveLink(batch.id);
+                              }}
+                              disabled={saving}
+                              className="px-3 py-1.5 bg-red-50 text-red-600 text-xs font-medium rounded-lg hover:bg-red-100 disabled:opacity-50"
+                            >
+                              Remove
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditLink(batch);
+                            }}
+                            className="inline-flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90"
+                          >
+                            <svg
+                              className="w-4 h-4 mr-2"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                              />
+                            </svg>
+                            Add Meeting Link
+                          </button>
+                        )}
+                      </div>
+                    )}
+
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      This link will be shared with all faculty and students in
+                      this batch for joining classes.
+                    </p>
+                  </div>
+
+                  {/* Timetable Section */}
+                  <div className="px-5 py-4">
+                    <h4 className="text-sm font-semibold text-foreground mb-3">
+                      Weekly Timetable
+                    </h4>
+
+                    {loadingTimetable && (
+                      <div className="animate-pulse space-y-2">
+                        <div className="h-8 bg-muted rounded w-full"></div>
+                        <div className="h-8 bg-muted rounded w-full"></div>
+                        <div className="h-8 bg-muted rounded w-full"></div>
+                      </div>
+                    )}
+
+                    {!loadingTimetable && timetable && (
+                      <>
+                        {timetable.weekly_schedule.filter(
+                          (d) => d.slots.length > 0
+                        ).length === 0 ? (
+                          <div className="text-center py-6 text-muted-foreground text-sm">
+                            No timetable configured for this batch yet. Create
+                            time slots on the Timetable page first.
+                          </div>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-border text-sm">
+                              <thead className="bg-secondary/50">
+                                <tr>
+                                  <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground uppercase">
+                                    Day
+                                  </th>
+                                  <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground uppercase">
+                                    Time
+                                  </th>
+                                  <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground uppercase">
+                                    Subject
+                                  </th>
+                                  <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground uppercase">
+                                    Faculty
+                                  </th>
+                                  
+                                </tr>
+                              </thead>
+                              <tbody className="bg-card divide-y divide-border">
+                                {timetable.weekly_schedule
+                                  .filter((d) => d.slots.length > 0)
+                                  .map((daySchedule) =>
+                                    daySchedule.slots.map((slot, idx) => (
+                                      <tr
+                                        key={`${daySchedule.day}-${slot.id}`}
+                                        className="hover:bg-secondary/30"
+                                      >
+                                        {idx === 0 && (
+                                          <td
+                                            className="px-4 py-2.5 font-medium text-foreground whitespace-nowrap"
+                                            rowSpan={daySchedule.slots.length}
+                                          >
+                                            {daySchedule.day_name}
+                                          </td>
+                                        )}
+                                        <td className="px-4 py-2.5 text-muted-foreground whitespace-nowrap">
+                                          {slot.start_time} – {slot.end_time}
+                                        </td>
+                                        <td className="px-4 py-2.5 text-foreground">
+                                          {slot.subject}
+                                          <span className="ml-1 text-xs text-muted-foreground">
+                                            ({slot.module_code})
+                                          </span>
+                                        </td>
+                                        <td className="px-4 py-2.5 text-muted-foreground">
+                                          {slot.faculty}
+                                        </td>
+                                        
+                                      </tr>
+                                    ))
+                                  )}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {!loadingTimetable && !timetable && (
+                      <div className="text-center py-6 text-muted-foreground text-sm">
+                        Failed to load timetable.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
       </div>
-
-      {/* Generate Sessions Modal */}
-      <GenerateSessionsModal
-        isOpen={showGenerateModal}
-        onClose={() => setShowGenerateModal(false)}
-        onGenerate={handleGenerateSessions}
-        selectedSlots={timeSlots}
-      />
-
-      {/* Session Detail Modal */}
-      <SessionDetailModal
-        isOpen={!!selectedSession}
-        onClose={() => setSelectedSession(null)}
-        session={selectedSession}
-        onUpdate={handleSessionUpdate}
-        canEdit={true}
-      />
     </DashboardLayout>
   );
 }

@@ -19,13 +19,8 @@ export default function AdminVerifiedStudentsPage() {
   const fetchAdmissions = async () => {
     try {
       setIsLoading(true);
-      const data = await financeAPI.getAdmissions();
-      const verifiedStudents = data.filter(
-        (admission) =>
-          admission.admission_status === "FULL_PAYMENT_VERIFIED" ||
-          admission.admission_status === "INSTALLMENT_VERIFIED"
-      );
-      setAdmissions(verifiedStudents);
+      const data = await financeAPI.getAdmissions("ACTIVE");
+      setAdmissions(data);
     } catch (error: any) {
       toast.show("error", error.message || "Failed to load verified students");
     } finally {

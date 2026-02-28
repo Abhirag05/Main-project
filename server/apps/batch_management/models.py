@@ -18,7 +18,6 @@ class BatchTemplate(models.Model):
     class Mode(models.TextChoices):
         """Delivery mode choices for batch."""
         LIVE = "LIVE", "Live"
-        RECORDED = "RECORDED", "Recorded"
 
     course = models.ForeignKey(
         "academics.Course",
@@ -117,6 +116,12 @@ class Batch(models.Model):
         choices=Status.choices,
         default=Status.ACTIVE,
         help_text="Current batch status"
+    )
+
+    meeting_link = models.URLField(
+        blank=True,
+        default="",
+        help_text="Common meeting link for all classes in this batch (Zoom/Meet/Teams)"
     )
 
     is_active = models.BooleanField(

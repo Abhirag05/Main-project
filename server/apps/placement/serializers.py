@@ -74,7 +74,8 @@ class PlacementListStudentSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError("Student is required.")
 
-        if value.admission_status not in ['APPROVED', 'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']:
+        # Allow ACTIVE (new) + legacy statuses
+        if value.admission_status not in ['ACTIVE', 'APPROVED', 'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']:
             raise serializers.ValidationError(
                 "Only approved students can be added to placement lists."
             )
@@ -155,7 +156,8 @@ class AddStudentToListSerializer(serializers.Serializer):
         """
         try:
             student = StudentProfile.objects.get(id=value)
-            if student.admission_status not in ['APPROVED', 'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']:
+            # Allow ACTIVE (new) + legacy statuses
+            if student.admission_status not in ['ACTIVE', 'APPROVED', 'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']:
                 raise serializers.ValidationError(
                     "Only approved students can be added to placement lists."
                 )

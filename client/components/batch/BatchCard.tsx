@@ -6,9 +6,10 @@ import { Batch } from "@/lib/api";
 interface BatchCardProps {
   batch: Batch;
   baseUrl?: string; // Optional base URL for linking (defaults to centre-admin)
+  onDelete?: (id: number) => void;
 }
 
-export default function BatchCard({ batch, baseUrl = "/dashboards/admin/batches" }: BatchCardProps) {
+export default function BatchCard({ batch, baseUrl = "/dashboards/admin/batches", onDelete }: BatchCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "ACTIVE":
@@ -26,10 +27,8 @@ export default function BatchCard({ batch, baseUrl = "/dashboards/admin/batches"
     switch (mode) {
       case "LIVE":
         return "bg-purple-100 text-purple-800";
-      case "RECORDED":
-        return "bg-orange-100 text-orange-800";
       default:
-        return "bg-secondary text-foreground";
+        return "bg-purple-100 text-purple-800";
     }
   };
 
@@ -166,13 +165,24 @@ export default function BatchCard({ batch, baseUrl = "/dashboards/admin/batches"
       </div>
 
       {/* Card Footer with Action Link */}
-      <div className="px-6 py-4 bg-secondary/50 border-t border-border">
+      <div className="px-6 py-4 bg-secondary/50 border-t border-border flex gap-2">
         <Link
           href={`${baseUrl}/${batch.id}`}
-          className="block w-full text-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm"
+          className="flex-1 text-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm"
         >
           View Batch Details →
         </Link>
+        {onDelete && (
+          <button
+            onClick={() => onDelete(batch.id)}
+            className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium flex items-center gap-1"
+            title="Delete batch"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );

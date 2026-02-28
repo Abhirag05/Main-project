@@ -467,9 +467,6 @@ export default function CourseBuilderPage() {
                         Status
                       </th>
                       <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Reorder
-                      </th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
@@ -513,58 +510,7 @@ export default function CourseBuilderPage() {
                               {cs.is_active ? "Active" : "Inactive"}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-center">
-                            <div className="flex items-center justify-center gap-1">
-                              <button
-                                onClick={() => handleMoveUp(cs)}
-                                disabled={index === 0}
-                                className={`p-1 rounded ${
-                                  index === 0
-                                    ? "text-muted-foreground/50 cursor-not-allowed"
-                                    : "text-muted-foreground hover:bg-secondary"
-                                }`}
-                                title="Move up"
-                              >
-                                <svg
-                                  className="w-5 h-5"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M5 15l7-7 7 7"
-                                  />
-                                </svg>
-                              </button>
-                              <button
-                                onClick={() => handleMoveDown(cs)}
-                                disabled={index === courseSubjects.length - 1}
-                                className={`p-1 rounded ${
-                                  index === courseSubjects.length - 1
-                                    ? "text-muted-foreground/50 cursor-not-allowed"
-                                    : "text-muted-foreground hover:bg-secondary"
-                                }`}
-                                title="Move down"
-                              >
-                                <svg
-                                  className="w-5 h-5"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M19 9l-7 7-7-7"
-                                  />
-                                </svg>
-                              </button>
-                            </div>
-                          </td>
+                          
                           <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                             <div className="flex items-center justify-center gap-4">
                               {cs.is_active ? (

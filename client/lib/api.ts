@@ -995,6 +995,20 @@ class ApiClient {
     });
   }
 
+  /**
+   * Set or update the common meeting link for a batch.
+   * PATCH /api/batches/{id}/set-meeting-link/
+   */
+  async setMeetingLink(batchId: number, meetingLink: string): Promise<Batch> {
+    return this.authenticatedFetch(
+      `${this.baseURL}/batches/${batchId}/set-meeting-link/`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ meeting_link: meetingLink }),
+      },
+    );
+  }
+
   // ============== Batch Student Assignment APIs (Centre Admin) ==============
 
   /**
@@ -1033,6 +1047,17 @@ class ApiClient {
     return this.authenticatedFetch(
       `${this.baseURL}/batches/${batchId}/details/`,
       { method: "GET" },
+    );
+  }
+
+  /**
+   * Remove a student from a batch
+   * DELETE /api/batches/{batchId}/remove-student/{studentProfileId}/
+   */
+  async removeStudentFromBatch(batchId: number, studentProfileId: number): Promise<{ message: string }> {
+    return this.authenticatedFetch(
+      `${this.baseURL}/batches/${batchId}/remove-student/${studentProfileId}/`,
+      { method: "DELETE" },
     );
   }
 
@@ -1109,40 +1134,6 @@ class ApiClient {
     );
   }
 
-  /**
-   * Get recorded sessions for a mentor's batch
-   * GET /api/mentor/batches/{batch_id}/recordings/
-   */
-  async getMentorBatchRecordings(
-    batchId: number,
-  ): Promise<MentorBatchRecording[]> {
-    return this.authenticatedFetch(
-      `${this.baseURL}/mentor/batches/${batchId}/recordings/`,
-      { method: "GET" },
-    );
-  }
-
-  /**
-   * Create a recorded session for a mentor's batch
-   * POST /api/mentor/batches/{batch_id}/recordings/
-   */
-  async createMentorBatchRecording(
-    batchId: number,
-    data: {
-      session_date: string;
-      meeting_topic: string;
-      recording_link: string;
-    },
-  ): Promise<MentorBatchRecording> {
-    return this.authenticatedFetch(
-      `${this.baseURL}/mentor/batches/${batchId}/recordings/`,
-      {
-        method: "POST",
-        body: JSON.stringify(data),
-      },
-    );
-  }
-
   // ============== Student APIs ==============
 
   /**
@@ -1170,16 +1161,6 @@ class ApiClient {
     }
 
     return null;
-  }
-
-  /**
-   * Get recorded classes for student (recorded batches only)
-   * GET /api/student/recordings/
-   */
-  async getStudentRecordedSessions(): Promise<MentorBatchRecording[]> {
-    return this.authenticatedFetch(`${this.baseURL}/student/recordings/`, {
-      method: "GET",
-    });
   }
 
   /**
@@ -1629,7 +1610,7 @@ interface StudentRegistrationRequest {
   phone_number: string;
   password: string;
   interested_courses?: string;
-  study_mode?: "LIVE" | "RECORDED";
+  study_mode?: "LIVE";
   payment_method?: string;
   referral_code?: string;
   discovery_sources?: string[];
@@ -1662,7 +1643,7 @@ interface BatchTemplate {
   course: number;
   course_detail: Course;
   name: string;
-  mode: "LIVE" | "RECORDED";
+  mode: string;
   max_students: number;
   is_active: boolean;
   created_at: string;
@@ -1672,7 +1653,7 @@ interface BatchTemplate {
 interface CreateBatchTemplateRequest {
   course: number;
   name: string;
-  mode: "LIVE" | "RECORDED";
+  mode: string;
   max_students: number;
   is_active: boolean;
 }
@@ -1790,9 +1771,10 @@ interface Batch {
   course_name: string;
   course_code: string;
   course_duration_months: number;
-  mode: "LIVE" | "RECORDED";
+  mode: string;
   max_students: number;
   current_student_count: number;
+  meeting_link: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -1846,7 +1828,7 @@ interface BatchDetails {
   centre_code: string;
   course_name: string;
   course_code: string;
-  mode: "LIVE" | "RECORDED";
+  mode: string;
   start_date: string;
   end_date: string;
   status: "ACTIVE" | "COMPLETED" | "CANCELLED";
@@ -2047,7 +2029,7 @@ interface MentorBatch {
   start_date: string;
   end_date: string;
   batch_status: "ACTIVE" | "COMPLETED" | "CANCELLED";
-  mode: "LIVE" | "RECORDED";
+  mode: string;
   total_students: number;
 }
 
@@ -2064,17 +2046,6 @@ interface MentorSessionAttendanceStudent {
   full_name: string;
   email: string;
   status: "PRESENT" | "ABSENT" | null;
-}
-
-interface MentorBatchRecording {
-  id: number;
-  batch: number;
-  session_date: string;
-  meeting_topic: string;
-  recording_link: string;
-  uploaded_by: number | null;
-  created_at: string;
-  updated_at: string;
 }
 
 interface MentorSessionAttendance {
@@ -2103,7 +2074,7 @@ interface StudentBatch {
   start_date: string;
   end_date: string;
   batch_status: "ACTIVE" | "COMPLETED" | "CANCELLED";
-  mode: "LIVE" | "RECORDED";
+  mode: string;
   mentor_name: string | null;
   mentor_email: string | null;
   total_students: number;
@@ -2336,7 +2307,6 @@ export type {
   AssignMentorResponse,
   MentorDetail,
   MentorBatch,
-  MentorBatchRecording,
   MentorBatchStudent,
   MentorSessionAttendance,
   MentorSessionAttendanceStudent,

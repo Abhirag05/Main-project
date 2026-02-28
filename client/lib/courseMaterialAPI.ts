@@ -25,7 +25,7 @@ export interface ModuleMini {
 export interface BatchMini {
   id: number;
   code: string;
-  mode: string; // "LIVE" | "RECORDED"
+  mode: string; // Delivery mode (e.g. "LIVE")
 }
 
 export interface FacultyMini {

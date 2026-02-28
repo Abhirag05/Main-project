@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { StudentAdmission, AdmissionStatus } from "@/lib/financeAPI";
 import Pagination, { usePagination } from "@/components/shared/Pagination";
 
@@ -9,45 +9,45 @@ interface StudentAdmissionsTableProps {
   isLoading: boolean;
   onVerifyFullPayment: (studentProfileId: number) => void;
   onVerifyInstallment: (studentProfileId: number) => void;
-  onDisableAccess: (studentProfileId: number) => void;
-  onEnableAccess: (studentProfileId: number) => void;
-  onCompleteCourse?: (studentProfileId: number) => void;
+  onMarkOverdue: (studentProfileId: number) => void;
+  onCollectPayment: (studentProfileId: number) => void;
+  onSuspend: (studentProfileId: number) => void;
+  onReactivate: (studentProfileId: number) => void;
+  onDrop: (studentProfileId: number) => void;
   isProcessing: boolean;
 }
 
+// ── Status Badge ────────────────────────────────────────────────
+
 function StatusBadge({ status }: { status: AdmissionStatus }) {
-  const styles = {
+  const styles: Record<string, string> = {
     PENDING: "bg-yellow-100 text-yellow-800 border-yellow-200",
-    APPROVED: "bg-green-100 text-green-800 border-green-200",
-    REJECTED: "bg-red-100 text-red-800 border-red-200",
-    FULL_PAYMENT_VERIFIED: "bg-green-100 text-green-800 border-green-200",
-    INSTALLMENT_VERIFIED: "bg-primary/10 text-primary border-primary/20",
-    INSTALLMENT_PENDING: "bg-orange-100 text-orange-800 border-orange-200",
-    COURSE_COMPLETED: "bg-purple-100 text-purple-800 border-purple-200",
-    DISABLED: "bg-secondary text-foreground border-border",
+    ACTIVE: "bg-emerald-100 text-emerald-800 border-emerald-200",
+    PAYMENT_DUE: "bg-orange-100 text-orange-800 border-orange-200",
+    SUSPENDED: "bg-red-100 text-red-800 border-red-200",
+    DROPPED: "bg-gray-100 text-gray-800 border-gray-200",
   };
 
-  const labels = {
+  const labels: Record<string, string> = {
     PENDING: "Pending",
-    APPROVED: "Approved",
-    REJECTED: "Rejected",
-    FULL_PAYMENT_VERIFIED: "Payment Completed",
-    INSTALLMENT_VERIFIED: "Installment Active",
-    INSTALLMENT_PENDING: "Installment Pending",
-    COURSE_COMPLETED: "Course Completed",
-    DISABLED: "Disabled",
+    ACTIVE: "Active",
+    PAYMENT_DUE: "Payment Due",
+    SUSPENDED: "Suspended",
+    DROPPED: "Dropped",
   };
 
   return (
     <span
       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-        styles[status]
+        styles[status] || "bg-secondary text-foreground border-border"
       }`}
     >
-      {labels[status]}
+      {labels[status] || status}
     </span>
   );
 }
+
+// ── Skeleton ────────────────────────────────────────────────────
 
 function TableSkeleton() {
   return (
@@ -66,14 +66,18 @@ function TableSkeleton() {
   );
 }
 
+// ── Main Table ──────────────────────────────────────────────────
+
 function StudentAdmissionsTable({
   admissions,
   isLoading,
   onVerifyFullPayment,
   onVerifyInstallment,
-  onDisableAccess,
-  onEnableAccess,
-  onCompleteCourse,
+  onMarkOverdue,
+  onCollectPayment,
+  onSuspend,
+  onReactivate,
+  onDrop,
   isProcessing,
 }: StudentAdmissionsTableProps) {
   const {
@@ -96,25 +100,11 @@ function StudentAdmissionsTable({
   if (admissions.length === 0) {
     return (
       <div className="bg-card shadow-md rounded-lg p-12 text-center">
-        <svg
-          className="mx-auto h-12 w-12 text-muted-foreground/70"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-          />
+        <svg className="mx-auto h-12 w-12 text-muted-foreground/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
-        <h3 className="mt-2 text-sm font-medium text-foreground">
-          No students found
-        </h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          No student admissions match the current filter.
-        </p>
+        <h3 className="mt-2 text-sm font-medium text-foreground">No students found</h3>
+        <p className="mt-1 text-sm text-muted-foreground">No student admissions match the current filter.</p>
       </div>
     );
   }
@@ -125,72 +115,37 @@ function StudentAdmissionsTable({
         <table className="min-w-full divide-y divide-border">
           <thead className="bg-secondary/50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Student Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Phone
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Course
-                
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Referral
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Payment Mode
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Study Mode
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Created Date
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Actions
-              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Student Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Phone</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Course</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Referral</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Payment Mode</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Created Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-card divide-y divide-border">
             {paginatedData.map((admission) => (
-              <tr
-                key={admission.student_profile_id}
-                className="hover:bg-secondary/50"
-              >
+              <tr key={admission.student_profile_id} className="hover:bg-secondary/50">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-foreground">
-                    {admission.full_name}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    ID: {admission.user_id}
-                  </div>
+                  <div className="text-sm font-medium text-foreground">{admission.full_name}</div>
+                  <div className="text-xs text-muted-foreground">ID: {admission.user_id}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-foreground">{admission.email}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-foreground">
-                    {admission.phone || "N/A"}
-                  </div>
+                  <div className="text-sm text-foreground">{admission.phone || "N/A"}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-foreground">
-                    {admission.interested_courses || "N/A"}
-                  </div>
+                  <div className="text-sm text-foreground">{admission.interested_courses || "N/A"}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {admission.referred_by_name ? (
                     <div>
-                      <div className="text-sm text-foreground">
-                        {admission.referred_by_name}
-                      </div>
+                      <div className="text-sm text-foreground">{admission.referred_by_name}</div>
                       <div className="text-xs text-muted-foreground">
                         {admission.referred_by_code || "Referral"} •{" "}
                         {admission.referral_confirmed ? "Confirmed" : "Pending"}
@@ -199,31 +154,15 @@ function StudentAdmissionsTable({
                   ) : (
                     <div>
                       <div className="text-sm text-muted-foreground">Not referred</div>
-                      {admission.discovery_sources &&
-                        admission.discovery_sources.length > 0 && (
-                          <div className="text-xs text-muted-foreground">
-                            {admission.discovery_sources.join(", ")}
-                          </div>
-                        )}
+                      {admission.discovery_sources && admission.discovery_sources.length > 0 && (
+                        <div className="text-xs text-muted-foreground">{admission.discovery_sources.join(", ")}</div>
+                      )}
                     </div>
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-foreground">
-                    {admission.payment_method === "FULL"
-                      ? "Full Payment"
-                      : admission.payment_method === "INSTALLMENT"
-                        ? "Installment"
-                        : admission.payment_method || "N/A"}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-foreground">
-                    {admission.study_mode === "LIVE"
-                      ? "Live"
-                      : admission.study_mode === "RECORDED"
-                        ? "Recorded"
-                        : "N/A"}
+                    {admission.payment_method === "FULL" ? "Full Payment" : admission.payment_method === "INSTALLMENT" ? "Installment" : admission.payment_method || "N/A"}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -238,9 +177,11 @@ function StudentAdmissionsTable({
                     isProcessing={isProcessing}
                     onVerifyFullPayment={onVerifyFullPayment}
                     onVerifyInstallment={onVerifyInstallment}
-                    onDisableAccess={onDisableAccess}
-                    onEnableAccess={onEnableAccess}
-                    onCompleteCourse={onCompleteCourse}
+                    onMarkOverdue={onMarkOverdue}
+                    onCollectPayment={onCollectPayment}
+                    onSuspend={onSuspend}
+                    onReactivate={onReactivate}
+                    onDrop={onDrop}
                   />
                 </td>
               </tr>
@@ -249,7 +190,6 @@ function StudentAdmissionsTable({
         </table>
       </div>
 
-      {/* Pagination */}
       {totalItems > 0 && (
         <Pagination
           currentPage={currentPage}
@@ -263,165 +203,121 @@ function StudentAdmissionsTable({
   );
 }
 
+// ── Action Buttons ──────────────────────────────────────────────
+
 function ActionButtons({
   admission,
   isProcessing,
   onVerifyFullPayment,
   onVerifyInstallment,
-  onDisableAccess,
-  onEnableAccess,
-  onCompleteCourse,
+  onMarkOverdue,
+  onCollectPayment,
+  onSuspend,
+  onReactivate,
+  onDrop,
 }: {
   admission: StudentAdmission;
   isProcessing: boolean;
   onVerifyFullPayment: (id: number) => void;
   onVerifyInstallment: (id: number) => void;
-  onDisableAccess: (id: number) => void;
-  onEnableAccess: (id: number) => void;
-  onCompleteCourse?: (id: number) => void;
+  onMarkOverdue: (id: number) => void;
+  onCollectPayment: (id: number) => void;
+  onSuspend: (id: number) => void;
+  onReactivate: (id: number) => void;
+  onDrop: (id: number) => void;
 }) {
   const id = admission.student_profile_id;
   const status = admission.admission_status;
   const paymentMethod = admission.payment_method;
 
-  const btnClass = (color: string) =>
-    `inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-${color}-600 hover:bg-${color}-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${color}-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors`;
+  const base =
+    "inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 
-  // ── PENDING: Show payment verification based on payment_method + Disable ──
-  if (status === "PENDING" || status === "APPROVED") {
+  // ── PENDING → Verify Payment + Drop ───────────────────────────
+  if (status === "PENDING") {
     return (
       <div className="flex flex-wrap gap-2">
         {paymentMethod === "FULL" && (
-          <button
-            type="button"
-            onClick={(e) => { e.preventDefault(); onVerifyFullPayment(id); }}
-            disabled={isProcessing}
-            className={btnClass("emerald")}
-          >
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Full Payment
+          <button type="button" disabled={isProcessing} onClick={() => onVerifyFullPayment(id)} className={`${base} bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500`}>
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            Verify Payment
           </button>
         )}
         {paymentMethod === "INSTALLMENT" && (
-          <button
-            type="button"
-            onClick={(e) => { e.preventDefault(); onVerifyInstallment(id); }}
-            disabled={isProcessing}
-            className={btnClass("blue")}
-          >
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
+          <button type="button" disabled={isProcessing} onClick={() => onVerifyInstallment(id)} className={`${base} bg-blue-600 hover:bg-blue-700 focus:ring-blue-500`}>
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
             Verify Installment
           </button>
         )}
-        <button
-          type="button"
-          onClick={(e) => { e.preventDefault(); onDisableAccess(id); }}
-          disabled={isProcessing}
-          className={btnClass("gray")}
-        >
-          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-          </svg>
-          Disable
+        <button type="button" disabled={isProcessing} onClick={() => onDrop(id)} className={`${base} bg-gray-600 hover:bg-gray-700 focus:ring-gray-500`}>
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          Drop
         </button>
       </div>
     );
   }
 
-  // ── FULL_PAYMENT_VERIFIED: Only "Course Complete" action ──
-  if (status === "FULL_PAYMENT_VERIFIED") {
+  // ── ACTIVE (FULL) → Suspend ───────────────────────────────────
+  if (status === "ACTIVE" && paymentMethod === "FULL") {
     return (
       <div className="flex flex-wrap gap-2">
-        {onCompleteCourse && (
-          <button
-            type="button"
-            onClick={(e) => { e.preventDefault(); onCompleteCourse(id); }}
-            disabled={isProcessing}
-            className={btnClass("purple")}
-          >
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-            </svg>
-            Course Complete
-          </button>
-        )}
+        <button type="button" disabled={isProcessing} onClick={() => onSuspend(id)} className={`${base} bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500`}>
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+          Suspend
+        </button>
       </div>
     );
   }
 
-  // ── INSTALLMENT_VERIFIED: Suspend (disable for pending installment) ──
-  if (status === "INSTALLMENT_VERIFIED") {
+  // ── ACTIVE (INSTALLMENT) → Mark Overdue + Suspend ─────────────
+  if (status === "ACTIVE" && paymentMethod === "INSTALLMENT") {
     return (
       <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={(e) => { e.preventDefault(); onDisableAccess(id); }}
-          disabled={isProcessing}
-          className={btnClass("orange")}
-        >
-          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          Suspend Access
+        <button type="button" disabled={isProcessing} onClick={() => onMarkOverdue(id)} className={`${base} bg-orange-600 hover:bg-orange-700 focus:ring-orange-500`}>
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          Mark Overdue
+        </button>
+        <button type="button" disabled={isProcessing} onClick={() => onSuspend(id)} className={`${base} bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500`}>
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+          Suspend
         </button>
       </div>
     );
   }
 
-  // ── INSTALLMENT_PENDING: Re-verify installment to restore access ──
-  if (status === "INSTALLMENT_PENDING") {
+  // ── PAYMENT_DUE → Collect Payment + Drop ──────────────────────
+  if (status === "PAYMENT_DUE") {
     return (
       <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={(e) => { e.preventDefault(); onVerifyInstallment(id); }}
-          disabled={isProcessing}
-          className={btnClass("blue")}
-        >
-          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Verify Installment
+        <button type="button" disabled={isProcessing} onClick={() => onCollectPayment(id)} className={`${base} bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500`}>
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          Collect Payment
         </button>
-        <button
-          type="button"
-          onClick={(e) => { e.preventDefault(); onDisableAccess(id); }}
-          disabled={isProcessing}
-          className={btnClass("gray")}
-        >
-          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-          </svg>
-          Disable
+        <button type="button" disabled={isProcessing} onClick={() => onDrop(id)} className={`${base} bg-gray-600 hover:bg-gray-700 focus:ring-gray-500`}>
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          Drop
         </button>
       </div>
     );
   }
 
-  // ── DISABLED: Enable access back ──
-  if (status === "DISABLED") {
+  // ── SUSPENDED → Reactivate + Drop ─────────────────────────────
+  if (status === "SUSPENDED") {
     return (
       <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={(e) => { e.preventDefault(); onEnableAccess(id); }}
-          disabled={isProcessing}
-          className={btnClass("green")}
-        >
-          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Enable Access
+        <button type="button" disabled={isProcessing} onClick={() => onReactivate(id)} className={`${base} bg-green-600 hover:bg-green-700 focus:ring-green-500`}>
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          Reactivate
+        </button>
+        <button type="button" disabled={isProcessing} onClick={() => onDrop(id)} className={`${base} bg-gray-600 hover:bg-gray-700 focus:ring-gray-500`}>
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          Drop
         </button>
       </div>
     );
   }
 
-  // ── COURSE_COMPLETED / REJECTED: No actions ──
+  // ── DROPPED → No actions ──────────────────────────────────────
   return <span className="text-muted-foreground/70 text-xs italic">No actions</span>;
 }
 

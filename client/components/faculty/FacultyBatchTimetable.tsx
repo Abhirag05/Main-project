@@ -113,6 +113,32 @@ export default function FacultyBatchTimetable({
           )}
 
           {!loading && timetable && (
+            <div>
+              {/* Meeting Link Banner */}
+              {timetable.meeting_link && (
+                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-4 flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-sm font-medium text-primary">
+                      Class meeting link for this batch
+                    </span>
+                  </div>
+                  <a
+                    href={timetable.meeting_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90"
+                  >
+                    Join Class
+                    <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              )}
+
             <div className="overflow-x-auto">
               {timetable.weekly_schedule.length === 0 ? (
                 <div className="text-center py-8">
@@ -202,6 +228,7 @@ export default function FacultyBatchTimetable({
                   </tbody>
                 </table>
               )}
+            </div>
             </div>
           )}
 

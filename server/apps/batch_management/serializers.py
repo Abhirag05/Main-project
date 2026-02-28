@@ -4,7 +4,7 @@ Handles serialization of BatchTemplate, Batch, and related models.
 """
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from apps.batch_management.models import BatchTemplate, Batch, BatchStudent, BatchMentorAssignment, BatchRecordedSession
+from apps.batch_management.models import BatchTemplate, Batch, BatchStudent, BatchMentorAssignment
 from apps.academics.models import Course
 from apps.students.models import StudentProfile
 
@@ -154,6 +154,7 @@ class BatchSerializer(serializers.ModelSerializer):
             'current_student_count',
             'mentor',
             'mentor_detail',
+            'meeting_link',
             'is_active',
             'created_at',
             'updated_at',
@@ -222,6 +223,7 @@ class BatchListSerializer(serializers.ModelSerializer):
             'current_student_count',
             'max_students',
             'mentor_name',
+            'meeting_link',
             'is_active',
         ]
         read_only_fields = fields
@@ -644,24 +646,3 @@ class MentorBatchStudentSerializer(serializers.ModelSerializer):
         if obj.student.user.phone:
             return obj.student.user.phone
         return None
-
-
-class BatchRecordedSessionSerializer(serializers.ModelSerializer):
-    """
-    Serializer for recorded batch sessions (mentor upload).
-    """
-
-    class Meta:
-        model = BatchRecordedSession
-        fields = [
-            'id',
-            'batch',
-            'session_date',
-            'meeting_topic',
-            'recording_link',
-            'uploaded_by',
-            'created_at',
-            'updated_at',
-        ]
-        read_only_fields = ['id', 'batch',
-                            'uploaded_by', 'created_at', 'updated_at']

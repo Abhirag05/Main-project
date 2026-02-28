@@ -10,10 +10,8 @@ interface Props {
 export default function CourseDetailsCard({ batch }: Props) {
   const formatDate = (d: string) => new Date(d).toLocaleDateString();
 
-  // Derive mode from batch_code if available (e.g., LIVE/RECORDED in code)
-  const mode = batch.batch_code?.toUpperCase().includes("LIVE")
-    ? "Live"
-    : "Recorded";
+  // Mode is always Live
+  const mode = "Live";
 
   return (
     <div className="bg-card rounded-lg shadow-md p-6 mt-6">

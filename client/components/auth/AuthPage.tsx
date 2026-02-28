@@ -70,7 +70,6 @@ export default function AuthPage() {
     confirmPassword: "",
     interested_courses: "",
     payment_method: "",
-    study_mode: "",
     hasReferral: "no",
     referralCode: "",
     discoverySources: [] as string[],
@@ -241,11 +240,6 @@ export default function AuthPage() {
       newErrors.interested_courses = "Please select a course";
     }
 
-    // Study mode is required
-    if (!registerData.study_mode) {
-      newErrors.study_mode = "Study mode is required";
-    }
-
     // Payment method is required
     if (!registerData.payment_method) {
       newErrors.payment_method = "Payment method is required";
@@ -287,7 +281,7 @@ export default function AuthPage() {
         password: registerData.password,
         interested_courses: registerData.interested_courses,
         payment_method: registerData.payment_method,
-        study_mode: registerData.study_mode,
+        study_mode: "LIVE",
         discovery_sources:
           registerData.hasReferral === "no"
             ? registerData.discoverySources
@@ -322,7 +316,6 @@ export default function AuthPage() {
           confirmPassword: "",
           interested_courses: "",
           payment_method: "",
-          study_mode: "",
           hasReferral: "no",
           referralCode: "",
           discoverySources: [],
@@ -688,58 +681,33 @@ export default function AuthPage() {
               </span>
             )}
 
-            {/* Study Mode & Payment Method Row */}
-            <div className={styles.fieldRow}>
-              <div className={`${styles.inputField} ${styles.inputFieldSmall}`}>
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-                <select
-                  value={registerData.study_mode}
-                  onChange={(e) =>
-                    setRegisterData({
-                      ...registerData,
-                      study_mode: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Study Mode</option>
-                  <option value="LIVE">Live</option>
-                  <option value="RECORDED">Recorded</option>
-                </select>
-              </div>
-              <div className={`${styles.inputField} ${styles.inputFieldSmall}`}>
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                  />
-                </svg>
-                <select
-                  value={registerData.payment_method}
-                  onChange={(e) =>
-                    setRegisterData({
-                      ...registerData,
-                      payment_method: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Payment</option>
-                  <option value="FULL">Full Payment</option>
-                  <option value="INSTALLMENT">Installment</option>
-                </select>
-              </div>
+            {/* Payment Method */}
+            <div className={styles.inputField}>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                />
+              </svg>
+              <select
+                value={registerData.payment_method}
+                onChange={(e) =>
+                  setRegisterData({
+                    ...registerData,
+                    payment_method: e.target.value,
+                  })
+                }
+              >
+                <option value="">Payment Method</option>
+                <option value="FULL">Full Payment</option>
+                <option value="INSTALLMENT">Installment</option>
+              </select>
             </div>
-            {(errors.study_mode || errors.payment_method) && (
+            {errors.payment_method && (
               <span className={styles.errorText}>
-                {errors.study_mode || errors.payment_method}
+                {errors.payment_method}
               </span>
             )}
 

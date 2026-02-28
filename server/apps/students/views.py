@@ -3,8 +3,7 @@ Public student registration API.
 """
 from apps.faculty.models import FacultyModuleAssignment, FacultyBatchAssignment
 from apps.academics.models import CourseModule
-from apps.batch_management.models import BatchStudent, BatchMentorAssignment, BatchRecordedSession
-from apps.batch_management.serializers import BatchRecordedSessionSerializer
+from apps.batch_management.models import BatchStudent, BatchMentorAssignment
 from apps.audit.services import AuditService
 from common.permissions import IsFinanceUser, IsStudent, IsAdminUser
 from apps.users.models import User
@@ -127,21 +126,27 @@ class ReferralCodeValidationView(APIView):
 
 class FinanceAdmissionViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Finance API for managing student admissions.
+    Finance / Admin API for managing the student admission lifecycle.
 
-    PERMISSIONS:
-    - Only users with FINANCE role can access these endpoints
+    STUDENT LIFECYCLE
+    ─────────────────
+    PENDING      → Registered, awaiting first payment verification
+    ACTIVE       → Payment verified (full or installment), student has LMS access
+    PAYMENT_DUE  → Installment overdue, access temporarily revoked
+    SUSPENDED    → Admin manually suspended access
+    DROPPED      → Permanently removed from the system
 
-    ENDPOINTS:
-    - GET /api/finance/admissions/ - List all student admissions
-    - GET /api/finance/admissions/?admission_status=PENDING - Filter by status
-    - PATCH /api/finance/admissions/{id}/approve/ - Approve admission
-    - PATCH /api/finance/admissions/{id}/reject/ - Reject admission
-
-    BUSINESS RULES:
-    - Only PENDING admissions can be approved or rejected
-    - All status changes are logged in AuditLog
-    - FINANCE users can view all students regardless of centre
+    TRANSITION TABLE
+    ────────────────
+    PENDING     ─── verify-full-payment  ──→ ACTIVE
+    PENDING     ─── verify-installment   ──→ ACTIVE
+    PENDING     ─── drop                 ──→ DROPPED
+    ACTIVE      ─── mark-overdue         ──→ PAYMENT_DUE   (installment only)
+    ACTIVE      ─── suspend              ──→ SUSPENDED
+    PAYMENT_DUE ─── collect-payment      ──→ ACTIVE
+    PAYMENT_DUE ─── drop                 ──→ DROPPED
+    SUSPENDED   ─── reactivate           ──→ ACTIVE
+    SUSPENDED   ─── drop                 ──→ DROPPED
     """
     permission_classes = [IsAuthenticated, IsFinanceUser]
     serializer_class = StudentAdmissionListSerializer
@@ -152,14 +157,6 @@ class FinanceAdmissionViewSet(viewsets.ReadOnlyModelViewSet):
     ).filter(user__role__code='STUDENT')
 
     def get_queryset(self):
-        """
-        Optionally filter by admission_status query parameter.
-
-        Examples:
-        - /api/finance/admissions/ - All students
-        - /api/finance/admissions/?admission_status=PENDING
-        - /api/finance/admissions/?admission_status=APPROVED
-        """
         queryset = super().get_queryset()
         admission_status = self.request.query_params.get(
             'admission_status', None)
@@ -170,48 +167,208 @@ class FinanceAdmissionViewSet(viewsets.ReadOnlyModelViewSet):
 
         return queryset.order_by('-created_at')
 
+    # ── helpers ────────────────────────────────────────────────────
+
+    def _transition(self, request, pk, *, to_status, set_active, audit_action,
+                    allowed_from=None, payment_status=None, error_msg=None):
+        """
+        Generic state-transition helper. Validates the current status against
+        `allowed_from` (if given), updates the profile, toggles `is_active`,
+        and writes an audit log entry.
+        """
+        student_profile = get_object_or_404(StudentProfile, pk=pk)
+        previous_status = student_profile.admission_status
+
+        if allowed_from and previous_status not in allowed_from:
+            return Response(
+                {'error': error_msg or f'Cannot transition from {previous_status} to {to_status}.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        student_profile.admission_status = to_status
+        update_fields = ['admission_status', 'updated_at']
+
+        if payment_status is not None:
+            student_profile.payment_status = payment_status
+            update_fields.append('payment_status')
+
+        student_profile.save(update_fields=update_fields)
+
+        student_profile.user.is_active = set_active
+        student_profile.user.save(update_fields=['is_active'])
+
+        AuditService.log(
+            action=audit_action,
+            entity='StudentProfile',
+            entity_id=str(student_profile.id),
+            performed_by=request.user,
+            details={
+                'previous_status': previous_status,
+                'new_status': to_status,
+                'student_user_id': student_profile.user.id,
+            },
+        )
+
+        return Response(
+            {'message': f'Student status changed to {to_status}.'},
+            status=status.HTTP_200_OK,
+        )
+
+    # ── PRIMARY LIFECYCLE ACTIONS ─────────────────────────────────
+
+    @action(detail=True, methods=['patch'], url_path='verify-full-payment')
+    @transaction.atomic
+    def verify_full_payment(self, request, pk=None):
+        """
+        Verify full payment → ACTIVE.
+        Allowed from: PENDING (or legacy APPROVED).
+        """
+        return self._transition(
+            request, pk,
+            to_status='ACTIVE',
+            set_active=True,
+            audit_action='FULL_PAYMENT_VERIFIED',
+            allowed_from=['PENDING', 'APPROVED'],
+            payment_status='FULL_PAYMENT',
+            error_msg='Full payment can only be verified for students in PENDING status.',
+        )
+
+    @action(detail=True, methods=['patch'], url_path='verify-installment')
+    @transaction.atomic
+    def verify_installment(self, request, pk=None):
+        """
+        Verify first installment → ACTIVE.
+        Allowed from: PENDING (or legacy APPROVED).
+        """
+        return self._transition(
+            request, pk,
+            to_status='ACTIVE',
+            set_active=True,
+            audit_action='INSTALLMENT_VERIFIED',
+            allowed_from=['PENDING', 'APPROVED'],
+            payment_status='INSTALLMENT',
+            error_msg='Installment can only be verified for students in PENDING status.',
+        )
+
+    @action(detail=True, methods=['patch'], url_path='mark-overdue')
+    @transaction.atomic
+    def mark_overdue(self, request, pk=None):
+        """
+        Mark an installment student as overdue → PAYMENT_DUE.
+        Access is suspended until next payment is collected.
+        Allowed from: ACTIVE (installment students only).
+        """
+        student_profile = get_object_or_404(StudentProfile, pk=pk)
+        if student_profile.payment_status != 'INSTALLMENT':
+            return Response(
+                {'error': 'Only installment students can be marked as overdue.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return self._transition(
+            request, pk,
+            to_status='PAYMENT_DUE',
+            set_active=False,
+            audit_action='STUDENT_MARKED_OVERDUE',
+            allowed_from=['ACTIVE'],
+            error_msg='Only ACTIVE installment students can be marked as overdue.',
+        )
+
+    @action(detail=True, methods=['patch'], url_path='collect-payment')
+    @transaction.atomic
+    def collect_payment(self, request, pk=None):
+        """
+        Collect overdue installment → ACTIVE.
+        Restores LMS access after payment is received.
+        Allowed from: PAYMENT_DUE.
+        """
+        return self._transition(
+            request, pk,
+            to_status='ACTIVE',
+            set_active=True,
+            audit_action='INSTALLMENT_COLLECTED',
+            allowed_from=['PAYMENT_DUE'],
+            error_msg='Payment can only be collected for students in PAYMENT_DUE status.',
+        )
+
+    @action(detail=True, methods=['patch'], url_path='suspend')
+    @transaction.atomic
+    def suspend(self, request, pk=None):
+        """
+        Admin suspends a student → SUSPENDED.
+        Allowed from: ACTIVE, PAYMENT_DUE.
+        """
+        return self._transition(
+            request, pk,
+            to_status='SUSPENDED',
+            set_active=False,
+            audit_action='STUDENT_SUSPENDED',
+            allowed_from=['ACTIVE', 'PAYMENT_DUE'],
+            error_msg='Only ACTIVE or PAYMENT_DUE students can be suspended.',
+        )
+
+    @action(detail=True, methods=['patch'], url_path='reactivate')
+    @transaction.atomic
+    def reactivate(self, request, pk=None):
+        """
+        Reactivate a suspended student → ACTIVE.
+        Allowed from: SUSPENDED.
+        """
+        return self._transition(
+            request, pk,
+            to_status='ACTIVE',
+            set_active=True,
+            audit_action='STUDENT_REACTIVATED',
+            allowed_from=['SUSPENDED'],
+            error_msg='Only SUSPENDED students can be reactivated.',
+        )
+
+    @action(detail=True, methods=['patch'], url_path='drop')
+    @transaction.atomic
+    def drop(self, request, pk=None):
+        """
+        Permanently drop a student → DROPPED.
+        Allowed from: PENDING, PAYMENT_DUE, SUSPENDED.
+        """
+        return self._transition(
+            request, pk,
+            to_status='DROPPED',
+            set_active=False,
+            audit_action='STUDENT_DROPPED',
+            allowed_from=['PENDING', 'ACTIVE', 'PAYMENT_DUE', 'SUSPENDED'],
+            error_msg='Cannot drop a student in their current status.',
+        )
+
+    # ── LEGACY ENDPOINTS (kept for backward compatibility) ────────
+
     @action(detail=True, methods=['patch'], url_path='approve')
     @transaction.atomic
     def approve(self, request, pk=None):
-        """Approve admission"""
+        """Legacy: approve admission (no-op in new lifecycle, kept for compat)."""
         student_profile = get_object_or_404(StudentProfile, pk=pk)
-        if student_profile.admission_status == 'APPROVED':
-            return Response({'error': 'Admission is already approved.'}, status=status.HTTP_400_BAD_REQUEST)
-
         previous_status = student_profile.admission_status
-        student_profile.admission_status = 'APPROVED'
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-
         AuditService.log(
-            action='ADMISSION_APPROVED', entity='StudentProfile', entity_id=str(student_profile.id),
-            performed_by=request.user, details={
-                'previous_status': previous_status, 'student_user_id': student_profile.user.id}
+            action='ADMISSION_APPROVED', entity='StudentProfile',
+            entity_id=str(student_profile.id), performed_by=request.user,
+            details={'previous_status': previous_status, 'student_user_id': student_profile.user.id},
         )
-        return Response({'message': 'Admission approved successfully'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Admission noted. Use payment verification to activate.'}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['patch'], url_path='reject')
     @transaction.atomic
     def reject(self, request, pk=None):
-        """Reject admission"""
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-        if student_profile.admission_status == 'REJECTED':
-            return Response({'error': 'Admission is already rejected.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        previous_status = student_profile.admission_status
-        student_profile.admission_status = 'REJECTED'
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-
-        AuditService.log(
-            action='ADMISSION_REJECTED', entity='StudentProfile', entity_id=str(student_profile.id),
-            performed_by=request.user, details={
-                'previous_status': previous_status, 'reason': request.data.get('rejection_reason', '')}
+        """Legacy: reject → maps to DROPPED."""
+        return self._transition(
+            request, pk,
+            to_status='DROPPED',
+            set_active=False,
+            audit_action='ADMISSION_REJECTED',
+            error_msg='Cannot reject this student.',
         )
-        return Response({'message': 'Admission rejected'}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['patch'], url_path='set-pending')
     @transaction.atomic
     def set_pending(self, request, pk=None):
-        """Set to pending"""
+        """Legacy: set to pending."""
         student_profile = get_object_or_404(StudentProfile, pk=pk)
         if student_profile.admission_status == 'PENDING':
             return Response({'error': 'Already PENDING.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -222,93 +379,42 @@ class FinanceAdmissionViewSet(viewsets.ReadOnlyModelViewSet):
             student_profile.id), performed_by=request.user, details={'previous_status': previous_status})
         return Response({'message': 'Admission status set to pending'}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['patch'], url_path='verify-full-payment')
-    @transaction.atomic
-    def verify_full_payment(self, request, pk=None):
-        """Verify full payment"""
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-        student_profile.admission_status = 'FULL_PAYMENT_VERIFIED'
-        student_profile.payment_status = 'FULL_PAYMENT'
-        student_profile.save(
-            update_fields=['admission_status', 'payment_status', 'updated_at'])
-        student_profile.user.is_active = True
-        student_profile.user.save(update_fields=['is_active'])
-        AuditService.log(action='FULL_PAYMENT_VERIFIED', entity='StudentProfile', entity_id=str(
-            student_profile.id), performed_by=request.user)
-        return Response({'message': 'Full payment verified successfully'}, status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=['patch'], url_path='verify-installment')
-    @transaction.atomic
-    def verify_installment(self, request, pk=None):
-        """Verify installment"""
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-        previous_status = student_profile.admission_status
-        student_profile.admission_status = 'INSTALLMENT_VERIFIED'
-        student_profile.payment_status = 'INSTALLMENT'
-        student_profile.save(
-            update_fields=['admission_status', 'payment_status', 'updated_at'])
-        student_profile.user.is_active = True
-        student_profile.user.save(update_fields=['is_active'])
-        AuditService.log(action='INSTALLMENT_VERIFIED', entity='StudentProfile', entity_id=str(
-            student_profile.id), performed_by=request.user, details={'previous_status': previous_status})
-        return Response({'message': 'Installment payment verified successfully'}, status=status.HTTP_200_OK)
-
     @action(detail=True, methods=['patch'], url_path='complete-course')
     @transaction.atomic
     def complete_course(self, request, pk=None):
-        """Mark course as completed and disable access"""
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-        if student_profile.admission_status != 'FULL_PAYMENT_VERIFIED':
-            return Response({'error': 'Only full-payment-verified students can be marked as course completed.'},
-                            status=status.HTTP_400_BAD_REQUEST)
-        previous_status = student_profile.admission_status
-        student_profile.admission_status = 'COURSE_COMPLETED'
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-        student_profile.user.is_active = False
-        student_profile.user.save(update_fields=['is_active'])
-        AuditService.log(action='COURSE_COMPLETED', entity='StudentProfile', entity_id=str(student_profile.id),
-                         performed_by=request.user, details={'previous_status': previous_status})
-        return Response({'message': 'Course marked as completed. Student access disabled.'}, status=status.HTTP_200_OK)
+        """Legacy: maps to DROPPED."""
+        return self._transition(
+            request, pk,
+            to_status='DROPPED',
+            set_active=False,
+            audit_action='COURSE_COMPLETED',
+            allowed_from=['ACTIVE'],
+            error_msg='Only ACTIVE students can be marked as course completed.',
+        )
 
     @action(detail=True, methods=['patch'], url_path='disable-access')
     @transaction.atomic
     def disable_access(self, request, pk=None):
-        """Disable access"""
-        logger.info(f"Disable access called for pk={pk}")
+        """Legacy: maps to SUSPENDED (or PAYMENT_DUE for installment)."""
         student_profile = get_object_or_404(StudentProfile, pk=pk)
-        previous_status = student_profile.admission_status
-        if previous_status == 'INSTALLMENT_VERIFIED':
-            student_profile.admission_status = 'INSTALLMENT_PENDING'
-        else:
-            student_profile.admission_status = 'DISABLED'
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-        student_profile.user.is_active = False
-        student_profile.user.save(update_fields=['is_active'])
-        AuditService.log(action='STUDENT_ACCESS_DISABLED', entity='StudentProfile', entity_id=str(student_profile.id),
-                         performed_by=request.user, details={'previous_status': previous_status, 'new_status': student_profile.admission_status})
-        return Response({'message': 'Student access disabled'}, status=status.HTTP_200_OK)
+        if student_profile.payment_status == 'INSTALLMENT' and student_profile.admission_status == 'ACTIVE':
+            return self._transition(
+                request, pk, to_status='PAYMENT_DUE', set_active=False,
+                audit_action='STUDENT_MARKED_OVERDUE',
+            )
+        return self._transition(
+            request, pk, to_status='SUSPENDED', set_active=False,
+            audit_action='STUDENT_SUSPENDED',
+        )
 
     @action(detail=True, methods=['patch'], url_path='enable-access')
     @transaction.atomic
     def enable_access(self, request, pk=None):
-        """Enable access"""
-        logger.info(f"Enable access called for pk={pk}")
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-        previous_status = student_profile.admission_status
-        if previous_status == 'INSTALLMENT_PENDING':
-            student_profile.admission_status = 'INSTALLMENT_VERIFIED'
-        elif previous_status == 'DISABLED' and student_profile.payment_status == 'FULL_PAYMENT':
-            student_profile.admission_status = 'FULL_PAYMENT_VERIFIED'
-        elif previous_status == 'DISABLED' and student_profile.payment_status == 'INSTALLMENT':
-            student_profile.admission_status = 'INSTALLMENT_VERIFIED'
-        else:
-            student_profile.admission_status = 'PENDING'
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-        student_profile.user.is_active = True
-        student_profile.user.save(update_fields=['is_active'])
-        AuditService.log(action='STUDENT_ACCESS_ENABLED', entity='StudentProfile', entity_id=str(student_profile.id),
-                         performed_by=request.user, details={'previous_status': previous_status, 'new_status': student_profile.admission_status})
-        return Response({'message': 'Student access enabled'}, status=status.HTTP_200_OK)
+        """Legacy: maps to reactivate → ACTIVE."""
+        return self._transition(
+            request, pk, to_status='ACTIVE', set_active=True,
+            audit_action='STUDENT_REACTIVATED',
+        )
 
 
 class StudentReferralView(APIView):
@@ -410,606 +516,6 @@ class FinanceReferralViewSet(viewsets.ReadOnlyModelViewSet):
                 'student_profile_id': referred_student.id,
                 'referrer_student_profile_id': referrer.id,
                 'message': 'Referral confirmed successfully.'
-            },
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['patch'], url_path='approve')
-    @transaction.atomic
-    def approve(self, request, pk=None):
-        """
-        Approve a student admission.
-
-        PATCH /api/finance/admissions/{student_profile_id}/approve/
-
-        CONDITIONS:
-        - Can be called from any status
-
-        ACTIONS:
-        - Set admission_status = APPROVED
-        - Create audit log entry
-
-        RESPONSE:
-        {
-            "student_profile_id": 1,
-            "user_id": 5,
-            "full_name": "John Doe",
-            "email": "john@example.com",
-            "admission_status": "APPROVED",
-            "message": "Admission approved successfully"
-        }
-        """
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-
-        # Check if already approved
-        if student_profile.admission_status == 'APPROVED':
-            return Response(
-                {
-                    'error': 'Admission is already approved.'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Update status
-        previous_status = student_profile.admission_status
-        student_profile.admission_status = 'APPROVED'
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-
-        # Create audit log
-        AuditService.log(
-            action='ADMISSION_APPROVED',
-            entity='StudentProfile',
-            entity_id=str(student_profile.id),
-            performed_by=request.user,
-            details={
-                'previous_status': previous_status,
-                'student_user_id': student_profile.user.id,
-                'student_email': student_profile.user.email,
-                'student_name': student_profile.user.full_name
-            }
-        )
-
-        # Return response
-        return Response(
-            {
-                'student_profile_id': student_profile.id,
-                'user_id': student_profile.user.id,
-                'full_name': student_profile.user.full_name,
-                'email': student_profile.user.email,
-                'admission_status': student_profile.admission_status,
-                'message': 'Admission approved successfully'
-            },
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['patch'], url_path='reject')
-    @transaction.atomic
-    def reject(self, request, pk=None):
-        """
-        Reject a student admission.
-
-        PATCH /api/finance/admissions/{student_profile_id}/reject/
-
-        REQUEST:
-        {
-            "rejection_reason": "Incomplete documentation" (optional)
-        }
-
-        CONDITIONS:
-        - Can be called from any status
-
-        ACTIONS:
-        - Set admission_status = REJECTED
-        - Create audit log with reason
-
-        RESPONSE:
-        {
-            "student_profile_id": 1,
-            "user_id": 5,
-            "full_name": "John Doe",
-            "email": "john@example.com",
-            "admission_status": "REJECTED",
-            "message": "Admission rejected"
-        }
-        """
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-
-        # Check if already rejected
-        if student_profile.admission_status == 'REJECTED':
-            return Response(
-                {
-                    'error': 'Admission is already rejected.'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Get rejection reason from request (optional)
-        rejection_reason = request.data.get('rejection_reason', '')
-
-        # Update status
-        previous_status = student_profile.admission_status
-        student_profile.admission_status = 'REJECTED'
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-
-        # Create audit log
-        AuditService.log(
-            action='ADMISSION_REJECTED',
-            entity='StudentProfile',
-            entity_id=str(student_profile.id),
-            performed_by=request.user,
-            details={
-                'previous_status': previous_status,
-                'reason': rejection_reason,
-                'student_user_id': student_profile.user.id,
-                'student_email': student_profile.user.email,
-                'student_name': student_profile.user.full_name
-            }
-        )
-
-        # Return response
-        return Response(
-            {
-                'student_profile_id': student_profile.id,
-                'user_id': student_profile.user.id,
-                'full_name': student_profile.user.full_name,
-                'email': student_profile.user.email,
-                'admission_status': student_profile.admission_status,
-                'message': 'Admission rejected'
-            },
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['patch'], url_path='set-pending')
-    @transaction.atomic
-    def set_pending(self, request, pk=None):
-        """
-        Set admission status back to PENDING.
-
-        PATCH /api/finance/admissions/{student_profile_id}/set-pending/
-
-        CONDITIONS:
-        - admission_status must be APPROVED or REJECTED
-
-        ACTIONS:
-        - Set admission_status = PENDING
-        - Create audit log entry
-
-        RESPONSE:
-        {
-            "student_profile_id": 1,
-            "user_id": 5,
-            "full_name": "John Doe",
-            "email": "john@example.com",
-            "admission_status": "PENDING",
-            "message": "Admission status set to pending"
-        }
-        """
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-
-        # Validate current status
-        if student_profile.admission_status == 'PENDING':
-            return Response(
-                {
-                    'error': 'Admission status is already PENDING.'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Update status
-        previous_status = student_profile.admission_status
-        student_profile.admission_status = 'PENDING'
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-
-        # Create audit log
-        AuditService.log(
-            action='ADMISSION_SET_PENDING',
-            entity='StudentProfile',
-            entity_id=str(student_profile.id),
-            performed_by=request.user,
-            details={
-                'previous_status': previous_status,
-                'student_user_id': student_profile.user.id,
-                'student_email': student_profile.user.email,
-                'student_name': student_profile.user.full_name
-            }
-        )
-
-        # Return response
-        return Response(
-            {
-                'student_profile_id': student_profile.id,
-                'user_id': student_profile.user.id,
-                'full_name': student_profile.user.full_name,
-                'email': student_profile.user.email,
-                'admission_status': student_profile.admission_status,
-                'message': 'Admission status set to pending'
-            },
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['patch'], url_path='verify-full-payment')
-    @transaction.atomic
-    def verify_full_payment(self, request, pk=None):
-        """
-        Verify full payment for a student admission.
-
-        PATCH /api/public/student/finance/admissions/{student_profile_id}/verify-full-payment/
-
-        ACTIONS:
-        - Set admission_status = FULL_PAYMENT_VERIFIED
-        - Set payment_status = FULL_PAYMENT
-        - Enable user account (is_active = True)
-        - Create audit log entry
-
-        RESPONSE:
-        {
-            "student_profile_id": 1,
-            "user_id": 5,
-            "full_name": "John Doe",
-            "email": "john@example.com",
-            "admission_status": "FULL_PAYMENT_VERIFIED",
-            "payment_status": "FULL_PAYMENT",
-            "message": "Full payment verified successfully"
-        }
-        """
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-
-        # Update status
-        previous_admission_status = student_profile.admission_status
-        previous_payment_status = getattr(
-            student_profile, 'payment_status', 'PENDING')
-
-        student_profile.admission_status = 'FULL_PAYMENT_VERIFIED'
-        student_profile.payment_status = 'FULL_PAYMENT'
-        student_profile.save(
-            update_fields=['admission_status', 'payment_status', 'updated_at'])
-
-        # Enable user account
-        student_profile.user.is_active = True
-        student_profile.user.save(update_fields=['is_active'])
-
-        # Create audit log
-        AuditService.log(
-            action='FULL_PAYMENT_VERIFIED',
-            entity='StudentProfile',
-            entity_id=str(student_profile.id),
-            performed_by=request.user,
-            details={
-                'previous_admission_status': previous_admission_status,
-                'previous_payment_status': previous_payment_status,
-                'student_user_id': student_profile.user.id,
-                'student_email': student_profile.user.email,
-                'student_name': student_profile.user.full_name
-            }
-        )
-
-        return Response(
-            {
-                'student_profile_id': student_profile.id,
-                'user_id': student_profile.user.id,
-                'full_name': student_profile.user.full_name,
-                'email': student_profile.user.email,
-                'admission_status': student_profile.admission_status,
-                'payment_status': student_profile.payment_status,
-                'message': 'Full payment verified successfully'
-            },
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['patch'], url_path='disable-access')
-    @transaction.atomic
-    def disable_access(self, request, pk=None):
-        """
-        Disable student access.
-
-        PATCH /api/public/student/finance/admissions/{student_profile_id}/disable-access/
-
-        ACTIONS:
-        - Set admission_status = DISABLED
-        - Disable user account (is_active = False)
-        - Create audit log entry
-
-        RESPONSE:
-        {
-            "student_profile_id": 1,
-            "user_id": 5,
-            "full_name": "John Doe",
-            "email": "john@example.com",
-            "admission_status": "DISABLED",
-            "message": "Student access disabled successfully"
-        }
-        """
-        logger.info(f"Disable access called for pk={pk}")
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-
-        # Update status
-        previous_admission_status = student_profile.admission_status
-
-        student_profile.admission_status = 'DISABLED'
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-
-        # Disable user account
-        student_profile.user.is_active = False
-        student_profile.user.save(update_fields=['is_active'])
-
-        # Create audit log
-        AuditService.log(
-            action='access_disabled',
-            entity='StudentProfile',
-            entity_id=str(student_profile.id),
-            performed_by=request.user,
-            details={
-                'previous_admission_status': previous_admission_status,
-                'student_user_id': student_profile.user.id,
-                'student_email': student_profile.user.email,
-                'student_name': student_profile.user.full_name
-            }
-        )
-
-        return Response(
-            {
-                'student_profile_id': student_profile.id,
-                'user_id': student_profile.user.id,
-                'full_name': student_profile.user.full_name,
-                'email': student_profile.user.email,
-                'admission_status': student_profile.admission_status,
-                'message': 'Student access disabled successfully'
-            },
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['patch'], url_path='enable-access')
-    @transaction.atomic
-    def enable_access(self, request, pk=None):
-        logger.info(f"Enable access called for pk={pk}")
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-
-        # Update status (revert to APPROVED if it was DISABLED)
-        previous_admission_status = student_profile.admission_status
-
-        if student_profile.admission_status == 'DISABLED':
-            student_profile.admission_status = 'APPROVED'
-            student_profile.save(
-                update_fields=['admission_status', 'updated_at'])
-
-        # Enable user login
-        student_profile.user.is_active = True
-        student_profile.user.save(update_fields=['is_active'])
-
-        # Create audit log
-        AuditService.log(
-            action='access_enabled',
-            entity='StudentProfile',
-            entity_id=str(student_profile.id),
-            performed_by=request.user,
-            details={
-                'previous_admission_status': previous_admission_status,
-                'student_user_id': student_profile.user.id,
-            }
-        )
-
-        return Response(
-            {
-                'student_profile_id': student_profile.id,
-                'admission_status': student_profile.admission_status,
-                'message': 'Student access enabled successfully'
-            },
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['patch'], url_path='verify-installment')
-    @transaction.atomic
-    def verify_installment(self, request, pk=None):
-        """
-        Verify installment payment for a student admission.
-
-        PATCH /api/public/student/finance/admissions/{student_profile_id}/verify-installment/
-
-        ACTIONS:
-        - Set admission_status = INSTALLMENT_VERIFIED
-        - Set payment_status = INSTALLMENT
-        - Enable user account (is_active = True)
-        - Create audit log entry
-
-        RESPONSE:
-        {
-            "student_profile_id": 1,
-            "user_id": 5,
-            "full_name": "John Doe",
-            "email": "john@example.com",
-            "admission_status": "INSTALLMENT_VERIFIED",
-            "payment_status": "INSTALLMENT",
-            "message": "Installment payment verified successfully"
-        }
-        """
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-
-        # Update status
-        previous_admission_status = student_profile.admission_status
-        previous_payment_status = getattr(
-            student_profile, 'payment_status', 'PENDING')
-
-        student_profile.admission_status = 'INSTALLMENT_VERIFIED'
-        student_profile.payment_status = 'INSTALLMENT'
-        student_profile.save(
-            update_fields=['admission_status', 'payment_status', 'updated_at'])
-
-        # Enable user account
-        student_profile.user.is_active = True
-        student_profile.user.save(update_fields=['is_active'])
-
-        # Create audit log
-        AuditService.log(
-            action='INSTALLMENT_VERIFIED',
-            entity='StudentProfile',
-            entity_id=str(student_profile.id),
-            performed_by=request.user,
-            details={
-                'previous_admission_status': previous_admission_status,
-                'previous_payment_status': previous_payment_status,
-                'student_user_id': student_profile.user.id,
-                'student_email': student_profile.user.email,
-                'student_name': student_profile.user.full_name
-            }
-        )
-
-        return Response(
-            {
-                'student_profile_id': student_profile.id,
-                'user_id': student_profile.user.id,
-                'full_name': student_profile.user.full_name,
-                'email': student_profile.user.email,
-                'admission_status': student_profile.admission_status,
-                'payment_status': student_profile.payment_status,
-                'message': 'Installment payment verified successfully'
-            },
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['patch'], url_path='disable-access')
-    @transaction.atomic
-    def disable_access(self, request, pk=None):
-        """
-        Disable student access.
-
-        PATCH /api/public/student/finance/admissions/{student_profile_id}/disable-access/
-
-        ACTIONS:
-        - Set admission_status = DISABLED
-        - Disable user account (is_active = False)
-        - Create audit log entry
-
-        RESPONSE:
-        {
-            "student_profile_id": 1,
-            "user_id": 5,
-            "full_name": "John Doe",
-            "email": "john@example.com",
-            "admission_status": "DISABLED",
-            "message": "Student access disabled"
-        }
-        """
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-
-        # Update status - if installment verified, set to installment pending
-        previous_status = student_profile.admission_status
-
-        if previous_status == 'INSTALLMENT_VERIFIED':
-            student_profile.admission_status = 'INSTALLMENT_PENDING'
-        else:
-            student_profile.admission_status = 'DISABLED'
-
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-
-        # Disable user account
-        student_profile.user.is_active = False
-        student_profile.user.save(update_fields=['is_active'])
-
-        # Create audit log
-        AuditService.log(
-            action='STUDENT_ACCESS_DISABLED',
-            entity='StudentProfile',
-            entity_id=str(student_profile.id),
-            performed_by=request.user,
-            details={
-                'previous_status': previous_status,
-                'new_status': student_profile.admission_status,
-                'student_user_id': student_profile.user.id,
-                'student_email': student_profile.user.email,
-                'student_name': student_profile.user.full_name,
-                'reason': request.data.get('reason', '')
-            }
-        )
-
-        return Response(
-            {
-                'student_profile_id': student_profile.id,
-                'user_id': student_profile.user.id,
-                'full_name': student_profile.user.full_name,
-                'email': student_profile.user.email,
-                'admission_status': student_profile.admission_status,
-                'message': 'Student access disabled'
-            },
-            status=status.HTTP_200_OK
-        )
-
-    @action(detail=True, methods=['patch'], url_path='enable-access')
-    @transaction.atomic
-    def enable_access(self, request, pk=None):
-        """
-        Enable student access.
-
-        PATCH /api/public/student/finance/admissions/{student_profile_id}/enable-access/
-
-        ACTIONS:
-        - Restore admission_status to payment verified status (FULL_PAYMENT_VERIFIED or INSTALLMENT_VERIFIED)
-        - Enable user account (is_active = True)
-        - Create audit log entry
-
-        RESPONSE:
-        {
-            "student_profile_id": 1,
-            "user_id": 5,
-            "full_name": "John Doe",
-            "email": "john@example.com",
-            "admission_status": "FULL_PAYMENT_VERIFIED",
-            "message": "Student access enabled"
-        }
-        """
-        student_profile = get_object_or_404(StudentProfile, pk=pk)
-
-        # Validate current status
-        if student_profile.admission_status not in ['DISABLED', 'INSTALLMENT_PENDING']:
-            return Response(
-                {
-                    'error': 'Can only enable students who are currently disabled or have installment pending.'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Restore status based on current status
-        previous_status = student_profile.admission_status
-
-        if previous_status == 'INSTALLMENT_PENDING':
-            student_profile.admission_status = 'INSTALLMENT_VERIFIED'
-        elif previous_status == 'DISABLED' and student_profile.payment_status == 'FULL_PAYMENT':
-            student_profile.admission_status = 'FULL_PAYMENT_VERIFIED'
-        elif previous_status == 'DISABLED' and student_profile.payment_status == 'INSTALLMENT':
-            student_profile.admission_status = 'INSTALLMENT_VERIFIED'
-        else:
-            # Fallback to PENDING if payment status is unclear
-            student_profile.admission_status = 'PENDING'
-
-        student_profile.save(update_fields=['admission_status', 'updated_at'])
-
-        # Enable user account
-        student_profile.user.is_active = True
-        student_profile.user.save(update_fields=['is_active'])
-
-        # Create audit log
-        AuditService.log(
-            action='STUDENT_ACCESS_ENABLED',
-            entity='StudentProfile',
-            entity_id=str(student_profile.id),
-            performed_by=request.user,
-            details={
-                'previous_status': previous_status,
-                'restored_status': student_profile.admission_status,
-                'payment_status': student_profile.payment_status,
-                'student_user_id': student_profile.user.id,
-                'student_email': student_profile.user.email,
-                'student_name': student_profile.user.full_name
-            }
-        )
-
-        return Response(
-            {
-                'student_profile_id': student_profile.id,
-                'user_id': student_profile.user.id,
-                'full_name': student_profile.user.full_name,
-                'email': student_profile.user.email,
-                'admission_status': student_profile.admission_status,
-                'message': 'Student access enabled'
             },
             status=status.HTTP_200_OK
         )
@@ -1124,45 +630,6 @@ class MyBatchView(APIView):
                 },
                 status=status.HTTP_200_OK
             )
-
-
-class StudentRecordedSessionsView(drf_generics.ListAPIView):
-    """
-    List recorded sessions for the student's batch.
-
-    GET /api/student/recordings/
-    Access: STUDENT only
-    """
-
-    serializer_class = BatchRecordedSessionSerializer
-    permission_classes = [IsAuthenticated, IsStudent]
-
-    def get_queryset(self):
-        try:
-            student_profile = StudentProfile.objects.get(
-                user=self.request.user)
-        except StudentProfile.DoesNotExist:
-            return BatchRecordedSession.objects.none()
-
-        # Find active batch assignment
-        try:
-            batch_student = BatchStudent.objects.select_related(
-                'batch',
-                'batch__template'
-            ).get(
-                student=student_profile,
-                is_active=True
-            )
-        except BatchStudent.DoesNotExist:
-            return BatchRecordedSession.objects.none()
-
-        batch = batch_student.batch
-
-        # Only recorded mode batches
-        if batch.template.mode != 'RECORDED':
-            return BatchRecordedSession.objects.none()
-
-        return BatchRecordedSession.objects.filter(batch=batch).order_by('-session_date', '-created_at')
 
 
 class MySkillsView(APIView):
@@ -1405,7 +872,7 @@ class StudentProgressViewSet(viewsets.ReadOnlyModelViewSet):
         skill_name = self.request.query_params.get('skill_name', None)
         min_mastery = self.request.query_params.get('min_mastery', None)
 
-        # Base queryset - only verified students
+        # Base queryset - only active/verified students
         queryset = StudentProfile.objects.select_related(
             'user',
             'user__role',
@@ -1413,6 +880,7 @@ class StudentProgressViewSet(viewsets.ReadOnlyModelViewSet):
         ).filter(
             user__role__code='STUDENT',
             admission_status__in=[
+                'ACTIVE', 'APPROVED',
                 'FULL_PAYMENT_VERIFIED', 'INSTALLMENT_VERIFIED']
         )
 

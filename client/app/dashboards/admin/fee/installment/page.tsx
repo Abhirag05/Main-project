@@ -5,8 +5,7 @@ import { useAuth } from "@/components/dashboard/hooks/useAuth";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import StudentAdmissionsTable from "@/components/shared/StudentAdmissionsTable";
 import VerifyInstallmentModal from "@/components/shared/VerifyInstallmentModal";
-import DisableAccessModal from "@/components/shared/DisableAccessModal";
-import EnableAccessModal from "@/components/shared/EnableAccessModal";
+import ConfirmActionModal from "@/components/shared/ConfirmActionModal";
 import { useToast } from "@/lib/toast";
 import { financeAPI, StudentAdmission } from "@/lib/financeAPI";
 import { isAdminRole } from "@/lib/roles";
@@ -24,17 +23,12 @@ export default function InstallmentStudentsPage() {
     studentName: string;
   }>({ isOpen: false, studentProfileId: null, studentName: "" });
 
-  const [disableAccessModal, setDisableAccessModal] = useState<{
+  const [actionModal, setActionModal] = useState<{
     isOpen: boolean;
     studentProfileId: number | null;
     studentName: string;
-  }>({ isOpen: false, studentProfileId: null, studentName: "" });
-
-  const [enableAccessModal, setEnableAccessModal] = useState<{
-    isOpen: boolean;
-    studentProfileId: number | null;
-    studentName: string;
-  }>({ isOpen: false, studentProfileId: null, studentName: "" });
+    action: "markOverdue" | "collectPayment" | "suspend" | "reactivate" | "drop" | null;
+  }>({ isOpen: false, studentProfileId: null, studentName: "", action: null });
 
   const toast = useToast();
 
@@ -79,7 +73,7 @@ export default function InstallmentStudentsPage() {
     try {
       setIsProcessing(true);
       await financeAPI.verifyInstallment(verifyInstallmentModal.studentProfileId);
-      toast.show("success", "Installment payment verified successfully");
+      toast.show("success", "Installment verified — student is now Active");
       setVerifyInstallmentModal({ isOpen: false, studentProfileId: null, studentName: "" });
       fetchAdmissions();
     } catch (error: any) {
@@ -89,63 +83,79 @@ export default function InstallmentStudentsPage() {
     }
   };
 
-  // Handle disable access
-  const handleDisableAccessClick = (studentProfileId: number) => {
-    const admission = admissions.find(
-      (a) => a.student_profile_id === studentProfileId
-    );
+  // Generic lifecycle action handler
+  const openActionModal = (
+    studentProfileId: number,
+    action: "markOverdue" | "collectPayment" | "suspend" | "reactivate" | "drop",
+  ) => {
+    const admission = admissions.find((a) => a.student_profile_id === studentProfileId);
     if (admission) {
-      setDisableAccessModal({
-        isOpen: true,
-        studentProfileId,
-        studentName: admission.full_name,
-      });
+      setActionModal({ isOpen: true, studentProfileId, studentName: admission.full_name, action });
     }
   };
 
-  const handleDisableAccessConfirm = async () => {
-    if (!disableAccessModal.studentProfileId) return;
+  const handleActionConfirm = async () => {
+    if (!actionModal.studentProfileId || !actionModal.action) return;
+
+    const apiMap = {
+      markOverdue: financeAPI.markOverdue.bind(financeAPI),
+      collectPayment: financeAPI.collectPayment.bind(financeAPI),
+      suspend: financeAPI.suspendStudent.bind(financeAPI),
+      reactivate: financeAPI.reactivateStudent.bind(financeAPI),
+      drop: financeAPI.dropStudent.bind(financeAPI),
+    };
+
+    const successMsg: Record<string, string> = {
+      markOverdue: "Student marked as Payment Due",
+      collectPayment: "Payment collected — student is now Active",
+      suspend: "Student has been suspended",
+      reactivate: "Student has been reactivated",
+      drop: "Student has been dropped",
+    };
+
     try {
       setIsProcessing(true);
-      await financeAPI.disableAccess(disableAccessModal.studentProfileId);
-      toast.show("success", "Student access disabled");
-      setDisableAccessModal({ isOpen: false, studentProfileId: null, studentName: "" });
+      await apiMap[actionModal.action](actionModal.studentProfileId);
+      toast.show("success", successMsg[actionModal.action]);
+      setActionModal({ isOpen: false, studentProfileId: null, studentName: "", action: null });
       fetchAdmissions();
     } catch (error: any) {
-      toast.show("error", error.message || "Failed to disable access");
+      toast.show("error", error.message || "Action failed");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Handle enable access
-  const handleEnableAccessClick = (studentProfileId: number) => {
-    const admission = admissions.find(
-      (a) => a.student_profile_id === studentProfileId
-    );
-    if (admission) {
-      setEnableAccessModal({
-        isOpen: true,
-        studentProfileId,
-        studentName: admission.full_name,
-      });
-    }
+  // Action modal config
+  const actionConfig: Record<string, { title: string; description: string; variant: "warning" | "danger" | "success" | "info" }> = {
+    markOverdue: {
+      title: "Mark Payment Due",
+      description: `Are you sure you want to mark ${actionModal.studentName}'s installment as overdue? Their LMS access will be suspended until payment is collected.`,
+      variant: "warning",
+    },
+    collectPayment: {
+      title: "Collect Payment",
+      description: `Confirm that ${actionModal.studentName} has made their installment payment? Their LMS access will be restored.`,
+      variant: "success",
+    },
+    suspend: {
+      title: "Suspend Student",
+      description: `Are you sure you want to suspend ${actionModal.studentName}? Their LMS access will be revoked.`,
+      variant: "warning",
+    },
+    reactivate: {
+      title: "Reactivate Student",
+      description: `Are you sure you want to reactivate ${actionModal.studentName}? Their LMS access will be restored.`,
+      variant: "success",
+    },
+    drop: {
+      title: "Drop Student",
+      description: `Are you sure you want to permanently drop ${actionModal.studentName}? This action cannot be easily undone.`,
+      variant: "danger",
+    },
   };
 
-  const handleEnableAccessConfirm = async () => {
-    if (!enableAccessModal.studentProfileId) return;
-    try {
-      setIsProcessing(true);
-      await financeAPI.enableAccess(enableAccessModal.studentProfileId);
-      toast.show("success", "Student access enabled");
-      setEnableAccessModal({ isOpen: false, studentProfileId: null, studentName: "" });
-      fetchAdmissions();
-    } catch (error: any) {
-      toast.show("error", error.message || "Failed to enable access");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+  const currentActionConfig = actionModal.action ? actionConfig[actionModal.action] : null;
 
   // Access control
   if (!authLoading && user && !isAdminRole(user.role.code)) {
@@ -182,7 +192,7 @@ export default function InstallmentStudentsPage() {
           <div>
             <h1 className="text-3xl font-bold text-foreground">Installment Students</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Students who opted for installment payment method
+              Manage installment payment students
             </p>
           </div>
           <button
@@ -210,7 +220,7 @@ export default function InstallmentStudentsPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <div className="bg-gradient-to-r from-primary/10 to-primary/10 border border-primary/20 rounded-lg p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
@@ -227,7 +237,25 @@ export default function InstallmentStudentsPage() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 rounded-lg p-6">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="rounded-full bg-emerald-500 p-3">
+                  <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-5">
+                <h2 className="text-2xl font-bold text-foreground">
+                  {admissions.filter((a) => a.admission_status === "ACTIVE").length}
+                </h2>
+                <p className="text-sm text-muted-foreground">Active</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="rounded-full bg-amber-500 p-3">
@@ -238,9 +266,27 @@ export default function InstallmentStudentsPage() {
               </div>
               <div className="ml-5">
                 <h2 className="text-2xl font-bold text-foreground">
-                  {admissions.filter((a) => a.admission_status === "INSTALLMENT_PENDING" || a.admission_status === "PENDING" || a.admission_status === "APPROVED").length}
+                  {admissions.filter((a) => a.admission_status === "PENDING").length}
                 </h2>
-                <p className="text-sm text-muted-foreground">Pending / In Progress</p>
+                <p className="text-sm text-muted-foreground">Pending</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="rounded-full bg-orange-500 p-3">
+                  <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-5">
+                <h2 className="text-2xl font-bold text-foreground">
+                  {admissions.filter((a) => a.admission_status === "PAYMENT_DUE").length}
+                </h2>
+                <p className="text-sm text-muted-foreground">Payment Due</p>
               </div>
             </div>
           </div>
@@ -252,13 +298,16 @@ export default function InstallmentStudentsPage() {
           isLoading={isLoading}
           onVerifyFullPayment={() => {}}
           onVerifyInstallment={handleVerifyInstallmentClick}
-          onDisableAccess={handleDisableAccessClick}
-          onEnableAccess={handleEnableAccessClick}
+          onMarkOverdue={(id) => openActionModal(id, "markOverdue")}
+          onCollectPayment={(id) => openActionModal(id, "collectPayment")}
+          onSuspend={(id) => openActionModal(id, "suspend")}
+          onReactivate={(id) => openActionModal(id, "reactivate")}
+          onDrop={(id) => openActionModal(id, "drop")}
           isProcessing={isProcessing}
         />
       </div>
 
-      {/* Modals */}
+      {/* Verify Installment Modal */}
       <VerifyInstallmentModal
         isOpen={verifyInstallmentModal.isOpen}
         studentName={verifyInstallmentModal.studentName}
@@ -269,25 +318,19 @@ export default function InstallmentStudentsPage() {
         isLoading={isProcessing}
       />
 
-      <DisableAccessModal
-        isOpen={disableAccessModal.isOpen}
-        studentName={disableAccessModal.studentName}
-        onConfirm={handleDisableAccessConfirm}
-        onCancel={() =>
-          setDisableAccessModal({ isOpen: false, studentProfileId: null, studentName: "" })
-        }
-        isLoading={isProcessing}
-      />
-
-      <EnableAccessModal
-        isOpen={enableAccessModal.isOpen}
-        studentName={enableAccessModal.studentName}
-        onConfirm={handleEnableAccessConfirm}
-        onCancel={() =>
-          setEnableAccessModal({ isOpen: false, studentProfileId: null, studentName: "" })
-        }
-        isLoading={isProcessing}
-      />
+      {/* Generic Action Confirmation Modal */}
+      {currentActionConfig && (
+        <ConfirmActionModal
+          isOpen={actionModal.isOpen}
+          title={currentActionConfig.title}
+          description={currentActionConfig.description}
+          variant={currentActionConfig.variant}
+          confirmLabel={currentActionConfig.title}
+          onConfirm={handleActionConfirm}
+          onCancel={() => setActionModal({ isOpen: false, studentProfileId: null, studentName: "", action: null })}
+          isLoading={isProcessing}
+        />
+      )}
     </DashboardLayout>
   );
 }

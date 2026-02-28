@@ -118,9 +118,6 @@ function PlacementStudentsTable({
                 Interested Courses
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Study Mode
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -174,17 +171,6 @@ function PlacementStudentsTable({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {student.interested_courses || "-"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                      student.study_mode === "LIVE"
-                        ? "bg-purple-100 text-purple-800"
-                        : "bg-secondary text-foreground"
-                    }`}
-                  >
-                    {student.study_mode || "LIVE"}
-                  </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusBadge status={student.admission_status} />

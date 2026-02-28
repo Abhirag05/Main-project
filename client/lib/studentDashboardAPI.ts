@@ -21,7 +21,7 @@ export interface DashboardStudent {
   name: string;
   batch: string;
   course: string;
-  batchType: string; // "LIVE" | "RECORDED"
+  batchType: string; // Delivery mode (e.g. "LIVE")
 }
 
 export interface DashboardAttendance {
@@ -106,6 +106,11 @@ async function fetchStudentInfo(): Promise<DashboardStudent> {
 
   // Get batch info
   const batch = await apiClient.getMyBatch();
+
+  // If no batch assigned, throw a user-friendly error
+  if (!batch) {
+    throw new Error("You are not assigned to any batch yet. Please contact the admin.");
+  }
 
   return {
     name: user?.full_name || "Student",

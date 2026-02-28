@@ -423,8 +423,6 @@ function UploadMaterialPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {batches.map((b: any) => {
                       const isSelected = selectedBatchIds.includes(b.id);
-                      const isLive =
-                        b.mode?.toUpperCase() === "LIVE";
                       return (
                         <button
                           key={b.id}
@@ -462,13 +460,9 @@ function UploadMaterialPage() {
                               {b.code}
                             </span>
                             <span
-                              className={`ml-2 inline-block text-xs px-2 py-0.5 rounded-full font-semibold ${
-                                isLive
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-purple-100 text-purple-700"
-                              }`}
+                              className="ml-2 inline-block text-xs px-2 py-0.5 rounded-full font-semibold bg-green-100 text-green-700"
                             >
-                              {isLive ? "LIVE" : "RECORDED"}
+                              LIVE
                             </span>
                           </div>
                         </button>

@@ -99,9 +99,6 @@ function FacultyBatchAssignmentTable({
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Assigned At
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Assigned By
-              </th>
               <th className="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
@@ -176,9 +173,6 @@ function FacultyBatchAssignmentTable({
                       day: "numeric",
                     }
                   )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                  {assignment.assigned_by?.full_name || "N/A"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                   {assignment.is_active ? (
